@@ -14,11 +14,14 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
+import javafx.stage.Stage;
 
 public class Fiche_client_controller  implements Initializable{
 	
@@ -49,13 +52,16 @@ public class Fiche_client_controller  implements Initializable{
 	MongoCursor<Client> clientCursor;
 	Client clientSelectionne;
 	
+	Stage currentStage;
+	
 
 	@FXML
-	public Commande ajoutCommande(){
+	public void onAjoutCommande(){
 		
-		Commande c = new Commande();
+		Scene fiche_commande_scene = new Scene((Parent) JfxUtils.loadFxml("/views/fiche_commande.fxml"), 1275, 722);
+		fiche_commande_scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 		
-		return c;
+		currentStage.setScene(fiche_commande_scene);
 		
 	}
 
@@ -196,7 +202,7 @@ public class Fiche_client_controller  implements Initializable{
 		liste_clients = FXCollections.observableArrayList();
 		liste_commandes  = FXCollections.observableArrayList();
 		
-		
+		currentStage = Main_BEA_BAZ.getStage();
 		
 		clientCursor = MongoAccess.request("client").as(Client.class);
 		

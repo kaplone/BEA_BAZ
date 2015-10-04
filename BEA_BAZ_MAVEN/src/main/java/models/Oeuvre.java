@@ -34,6 +34,10 @@ public class Oeuvre {
                                      traitements,
                                      fichiers,
                                      rapports;
+	@Override
+	public String toString(){
+		return this.cote_archives_6s;
+	}
 
 	public String get_id() {
 		return _id;

@@ -46,7 +46,7 @@
                   <Insets bottom="10.0" top="10.0" />
                </VBox.margin>
             </ListView>
-            <Button mnemonicParsing="false" text="Nouvelle commande">
+            <Button fx:id="nouvelle_commande_button" mnemonicParsing="false" onAction="#onAjoutCommande" text="Nouvelle commande">
                <VBox.margin>
                   <Insets bottom="10.0" top="10.0" />
                </VBox.margin>

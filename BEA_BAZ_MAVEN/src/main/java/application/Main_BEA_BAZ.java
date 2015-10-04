@@ -7,12 +7,14 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 
-
-
-
-public class Main extends Application {
+public class Main_BEA_BAZ extends Application {
+	
+	private static Stage exportStage;
+	
 	@Override
 	public void start(Stage primaryStage) {
+		
+		exportStage = primaryStage;
 		try {
 			Pane root = new Pane();
 			
@@ -33,6 +35,10 @@ public class Main extends Application {
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public static Stage getStage(){
+		return exportStage;
 	}
 	
 	public static void main(String[] args) {
