@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.Pane?>
+
+<BorderPane prefHeight="722.0" prefWidth="1275.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.Fiche_client_controller">
+   <left>
+      <VBox alignment="TOP_CENTER" prefHeight="722.0" prefWidth="156.0" BorderPane.alignment="CENTER">
+         <children>
+            <Label alignment="CENTER" contentDisplay="CENTER" text="Clients">
+               <VBox.margin>
+                  <Insets bottom="10.0" top="10.0" />
+               </VBox.margin>
+            </Label>
+            <ListView fx:id="listView_client" onKeyTyped="#onClientSelect" onMouseClicked="#onClientSelect" prefHeight="645.0" prefWidth="138.0">
+               <VBox.margin>
+                  <Insets bottom="10.0" top="10.0" />
+               </VBox.margin>
+            </ListView>
+            <Button fx:id="nouveau_client" mnemonicParsing="false" onAction="#onNouveauClientButton" text="Nouveau client">
+               <VBox.margin>
+                  <Insets bottom="10.0" top="10.0" />
+               </VBox.margin>
+            </Button>
+         </children>
+         <BorderPane.margin>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+         </BorderPane.margin>
+      </VBox>
+   </left>
+   <right>
+      <VBox alignment="TOP_CENTER" prefHeight="702.0" prefWidth="190.0" BorderPane.alignment="CENTER">
+         <children>
+            <Label alignment="CENTER" contentDisplay="CENTER" text="Commandes">
+               <VBox.margin>
+                  <Insets bottom="10.0" top="10.0" />
+               </VBox.margin>
+            </Label>
+            <ListView prefHeight="645.0" prefWidth="138.0">
+               <VBox.margin>
+                  <Insets bottom="10.0" top="10.0" />
+               </VBox.margin>
+            </ListView>
+            <Button mnemonicParsing="false" text="Nouvelle commande">
+               <VBox.margin>
+                  <Insets bottom="10.0" top="10.0" />
+               </VBox.margin>
+            </Button>
+         </children>
+         <BorderPane.margin>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+         </BorderPane.margin>
+      </VBox>
+   </right>
+   <center>
+      <VBox alignment="TOP_CENTER" prefHeight="437.0" prefWidth="869.0" BorderPane.alignment="CENTER">
+         <BorderPane.margin>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+         </BorderPane.margin>
+         <children>
+            <Pane prefHeight="50.0" prefWidth="889.0">
+               <children>
+                  <Label layoutX="35.0" layoutY="6.0" text="FICHE CLIENT :">
+                     <font>
+                        <Font size="31.0" />
+                     </font>
+                  </Label>
+                  <Line endX="800.0" endY="50.0" startY="50.0" />
+               </children>
+            </Pane>
+            <GridPane prefHeight="400.0" prefWidth="869.0" VBox.vgrow="NEVER">
+              <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="429.0" minWidth="10.0" prefWidth="119.0" />
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="764.0" minWidth="10.0" prefWidth="730.0" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints maxHeight="30.0" minHeight="30.0" prefHeight="30.0" valignment="CENTER" vgrow="NEVER" />
+                <RowConstraints minHeight="30.0" prefHeight="100.0" vgrow="SOMETIMES" />
+              </rowConstraints>
+               <VBox.margin>
+                  <Insets left="10.0" right="10.0" top="50.0" />
+               </VBox.margin>
+               <children>
+                  <Label text="Nom : " GridPane.valignment="CENTER" GridPane.vgrow="NEVER" />
+                  <Label text="Remarques : " GridPane.halignment="LEFT" GridPane.rowIndex="1" GridPane.valignment="TOP">
+                     <GridPane.margin>
+                        <Insets bottom="10.0" right="10.0" top="10.0" />
+                     </GridPane.margin>
+                  </Label>
+                  <TextArea fx:id="remarques_client" prefHeight="145.0" prefWidth="559.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                     <GridPane.margin>
+                        <Insets top="10.0" />
+                     </GridPane.margin></TextArea>
+                  <TextField fx:id="nom_client" maxHeight="25.0" minHeight="25.0" prefHeight="25.0" GridPane.columnIndex="1" GridPane.rowIndex="0" GridPane.valignment="CENTER" GridPane.vgrow="NEVER" />
+               </children>
+            </GridPane>
+            <HBox fx:id="hbox" alignment="TOP_CENTER" prefHeight="50.0" prefWidth="200.0">
+               <VBox.margin>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="100.0" />
+               </VBox.margin>
+               <children>
+                  <Button fx:id="mise_a_jour_client" mnemonicParsing="false" onAction="#onMiseAJourClientButton" text="Mise à jour" />
+                  <Button fx:id="editer" mnemonicParsing="false" onAction="#onEditerClientButton" text="Editer" />
+                  <Button fx:id="annuler" mnemonicParsing="false" onAction="#onAnnulerEditButton" text="Annuler">
+                     <HBox.margin>
+                        <Insets left="50.0" />
+                     </HBox.margin>
+                  </Button>
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+   </center>
+</BorderPane>
