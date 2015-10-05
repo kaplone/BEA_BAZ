@@ -94,7 +94,9 @@ public class Fiche_client_controller  implements Initializable{
 	public void onClientSelect(){
 		
 		clientSelectionne = listView_client.getSelectionModel().getSelectedItem();
+		Main_BEA_BAZ.setClient(clientSelectionne);
 		affichageInfos(clientSelectionne);
+		
 	}
 	
     private void affichageInfos(Client clientSelectionne){
@@ -102,6 +104,27 @@ public class Fiche_client_controller  implements Initializable{
     	
     	nom_client.setText(clientSelectionne.getNom());
     	remarques_client.setText(clientSelectionne.getRemarques());
+    	
+    	client = Main_BEA_BAZ.getClient();
+    	
+    	liste_commandes.clear();
+    	
+    	if (client != null){
+    		
+    		commandeCursor = MongoAccess.request("commande", client).as(Commande.class);
+    		
+    		while (commandeCursor.hasNext()){
+    			Commande enplus = commandeCursor.next();
+    			
+    			System.out.println(enplus);
+    			System.out.println("_" + enplus.getDateCommande());
+    			liste_commandes.add(enplus);
+    		}
+    		
+    		listView_commandes.setItems(liste_commandes);
+    		
+    	}
+    	
     	
     }
     
