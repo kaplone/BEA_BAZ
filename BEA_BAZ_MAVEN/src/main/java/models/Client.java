@@ -2,6 +2,7 @@ package models;
 
 import java.util.ArrayList;
 
+import org.bson.types.ObjectId;
 import org.jongo.marshall.jackson.oid.MongoObjectId;
 
 import utils.MongoAccess;
@@ -11,18 +12,15 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Client {
+public class Client extends Commun{
 	
-	@JsonProperty("_id") 
-	@MongoObjectId
-    private String _id;
+    private ObjectId _id;
 	
-	@JsonProperty("nom")
 	private String nom;
 	
 	private String remarques;
 	
-	private ArrayList<String> commandes;
+	private ArrayList<ObjectId> commandes;
 	
 	@JsonCreator
 	public Client() {
@@ -64,11 +62,11 @@ public class Client {
     	return this.getNom();
     }
 
-	public String get_id() {
+	public ObjectId get_id() {
 		return _id;
 	}
 
-	public void set_id(String _id) {
+	public void set_id(ObjectId _id) {
 		this._id = _id;
 	}
 
@@ -88,11 +86,11 @@ public class Client {
 		this.remarques = remarques;
 	}
 
-	public ArrayList<String> getCommandes() {
+	public ArrayList<ObjectId> getCommandes() {
 		return commandes;
 	}
 
-	public void setCommandes(ArrayList<String> commandes) {
+	public void setCommandes(ArrayList<ObjectId> commandes) {
 		this.commandes = commandes;
 	}
 	

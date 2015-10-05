@@ -1,5 +1,7 @@
 package application;
 	
+import models.Client;
+import models.Commande;
 import application.JfxUtils;
 import javafx.application.Application;
 import javafx.stage.Stage;
@@ -11,6 +13,10 @@ public class Main_BEA_BAZ extends Application {
 	
 	private static Stage exportStage;
 	
+	private static Commande commande;
+	
+	private static Client client;
+
 	@Override
 	public void start(Stage primaryStage) {
 		
@@ -24,11 +30,11 @@ public class Main_BEA_BAZ extends Application {
 			Scene fiche_commande_scene = new Scene((Parent) JfxUtils.loadFxml("/views/fiche_commande.fxml"), 1275, 722);
 			fiche_commande_scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 			
-			Scene fiche_oeuvre_scene = new Scene((Parent) JfxUtils.loadFxml("/views/fiche_oeuvre.fxml"), 1275, 722);
-			fiche_oeuvre_scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
-			
-			Scene fiche_fichier_scene = new Scene((Parent) JfxUtils.loadFxml("/views/fiche_fichier.fxml"), 1275, 722);
-			fiche_fichier_scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+//			Scene fiche_oeuvre_scene = new Scene((Parent) JfxUtils.loadFxml("/views/fiche_oeuvre.fxml"), 1275, 722);
+//			fiche_oeuvre_scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+//			
+//			Scene fiche_fichier_scene = new Scene((Parent) JfxUtils.loadFxml("/views/fiche_fichier.fxml"), 1275, 722);
+//			fiche_fichier_scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 			
 			primaryStage.setScene(fiche_client_scene);
 			primaryStage.show();
@@ -41,6 +47,23 @@ public class Main_BEA_BAZ extends Application {
 		return exportStage;
 	}
 	
+	
+	public static Commande getCommande() {
+		return commande;
+	}
+
+	public static void setCommande(Commande commande) {
+		Main_BEA_BAZ.commande = commande;
+	}
+	
+	public static Client getClient() {
+		return client;
+	}
+
+	public static void setClient(Client client) {
+		Main_BEA_BAZ.client = client;
+	}
+
 	public static void main(String[] args) {
 		launch(args);
 

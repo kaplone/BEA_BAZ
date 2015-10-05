@@ -48,21 +48,46 @@ public class Fiche_client_controller  implements Initializable{
 	private Button annuler;
 	@FXML
 	private Button editer;
+	@FXML
+	private Button versClientButton;
+	@FXML
+	private Button versCommandeButton;
+	@FXML
+	private Button versOeuvreButton;
+	@FXML
+	private Button versRapportButton;
 	
 	MongoCursor<Client> clientCursor;
+	MongoCursor<Commande> commandeCursor ;
 	Client clientSelectionne;
 	
 	Stage currentStage;
 	
+	Commande commande;
+	Client client;
+	
+	@FXML
+	public void onVersCommandeButton(){
+		
+		Scene fiche_commande_scene = new Scene((Parent) JfxUtils.loadFxml("/views/fiche_commande.fxml"), 1275, 722);
+		fiche_commande_scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+		
+		currentStage.setScene(fiche_commande_scene);	
+	}
+	
 
 	@FXML
 	public void onAjoutCommande(){
+		
+		Main_BEA_BAZ.setCommande(null);
+		Main_BEA_BAZ.setClient(clientSelectionne);
 		
 		Scene fiche_commande_scene = new Scene((Parent) JfxUtils.loadFxml("/views/fiche_commande.fxml"), 1275, 722);
 		fiche_commande_scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 		
 		currentStage.setScene(fiche_commande_scene);
 		
+
 	}
 
 	@FXML
@@ -83,27 +108,31 @@ public class Fiche_client_controller  implements Initializable{
     public void onNouveauClientButton() {
     	
     	mise_a_jour_client.setText("Enregistrer");
+    	nom_client.setText("");
+    	remarques_client.setText("");
     	nom_client.setPromptText("saisir le nom du nouveau client");
     	remarques_client.setPromptText("éventuelles remarques");
-    	nouveau_client.setText("Annuler");
+    	nouveau_client.setVisible(false);
     	
-    	mise_a_jour_client.setOnAction(new EventHandler<ActionEvent>() {
-			
-			@Override
-			public void handle(ActionEvent event) {
-				Client.save(new Client(nom_client.getText(), remarques_client.getText()));
-				rafraichirAffichage();
-				onAnnulerButton();
-			}
-		});
+    	onEditerClientButton();
     	
-        nouveau_client.setOnAction(new EventHandler<ActionEvent>() {
-			
-			@Override
-			public void handle(ActionEvent event) {
-				onAnnulerButton();
-			}
-		});
+//    	mise_a_jour_client.setOnAction(new EventHandler<ActionEvent>() {
+//			
+//			@Override
+//			public void handle(ActionEvent event) {
+//				Client.save(new Client(nom_client.getText(), remarques_client.getText()));
+//				rafraichirAffichage();
+//				onAnnulerEditButton();
+//			}
+//		});
+//    	
+//        nouveau_client.setOnAction(new EventHandler<ActionEvent>() {
+//			
+//			@Override
+//			public void handle(ActionEvent event) {
+//				onAnnulerEditButton();
+//			}
+//		});
     }
     
     public void onAnnulerButton() {
@@ -114,22 +143,25 @@ public class Fiche_client_controller  implements Initializable{
     	nom_client.setPromptText("");
     	remarques_client.setPromptText("");
     	nouveau_client.setText("Nouveau client");
+    	rafraichirAffichage();
+    	listView_client.getSelectionModel().select(clientSelectionne);
+    	affichageInfos(clientSelectionne);
     	
-    	nouveau_client.setOnAction(new EventHandler<ActionEvent>() {
-			
-    		@Override
-			public void handle(ActionEvent event) {
-				onNouveauClientButton();
-			}
-		});
-    	
-        mise_a_jour_client.setOnAction(new EventHandler<ActionEvent>() {
-			
-			@Override
-			public void handle(ActionEvent event) {
-				rafraichirAffichage();
-			}
-		});
+//    	nouveau_client.setOnAction(new EventHandler<ActionEvent>() {
+//			
+//    		@Override
+//			public void handle(ActionEvent event) {
+//				onNouveauClientButton();
+//			}
+//		});
+//    	
+//        mise_a_jour_client.setOnAction(new EventHandler<ActionEvent>() {
+//			
+//			@Override
+//			public void handle(ActionEvent event) {
+//				rafraichirAffichage();
+//			}
+//		});
     }
     
     public void rafraichirAffichage(){
@@ -152,11 +184,14 @@ public class Fiche_client_controller  implements Initializable{
     @FXML
     public void onEditerClientButton(){
     	
-    	annuler.setVisible(true);
-    	editer.setVisible(false);
-    	mise_a_jour_client.setVisible(true);
-    	nom_client.setEditable(true);
-		remarques_client.setEditable(true);
+    	if (clientSelectionne != null) {
+    	
+	    	annuler.setVisible(true);
+	    	editer.setVisible(false);
+	    	mise_a_jour_client.setVisible(true);
+	    	nom_client.setEditable(true);
+			remarques_client.setEditable(true);
+    	}
     	
     }
     
@@ -168,6 +203,10 @@ public class Fiche_client_controller  implements Initializable{
     	mise_a_jour_client.setVisible(false);
     	nom_client.setEditable(false);
 		remarques_client.setEditable(false);
+		nouveau_client.setVisible(true);
+		rafraichirAffichage();
+		listView_client.getSelectionModel().select(clientSelectionne);
+    	affichageInfos(clientSelectionne);
     	
     }
     
@@ -179,6 +218,7 @@ public class Fiche_client_controller  implements Initializable{
     	
     	Client.update(clientSelectionne);
     	rafraichirAffichage();
+		onAnnulerEditButton();
     	
     	annuler.setVisible(false);
     	editer.setVisible(true);
@@ -187,9 +227,26 @@ public class Fiche_client_controller  implements Initializable{
 		remarques_client.setEditable(false);
     	
     }
+    
+    @FXML
+    public void onVersClientButton(){}
+    @FXML
+    public void onVersOeuvreButton(){}
+    @FXML
+    public void onVersRapportButton(){}
+    @FXML
+    public void onVersFichierButton(){}
+    @FXML
+    public void onVersTraitementButton(){}
+    @FXML
+    public void onVersModeleButton(){}
+    	
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
+		
+		commande = Main_BEA_BAZ.getCommande();
+		client = Main_BEA_BAZ.getClient();
 
 		utils.MongoAccess.connect();
 		
@@ -198,6 +255,11 @@ public class Fiche_client_controller  implements Initializable{
         editer.setVisible(true);
         mise_a_jour_client.setVisible(false);
 		annuler.setVisible(false);
+		
+		versClientButton.setVisible(false);
+		versCommandeButton.setVisible(false);
+		versOeuvreButton.setVisible(false);
+		versRapportButton.setVisible(false);
 		
 		liste_clients = FXCollections.observableArrayList();
 		liste_commandes  = FXCollections.observableArrayList();
@@ -211,6 +273,23 @@ public class Fiche_client_controller  implements Initializable{
 		}
 		
 		listView_client.setItems(liste_clients);
+		
+		
+		if (client != null){
+			
+			commandeCursor = MongoAccess.request("commande", client).as(Commande.class);
+			
+			while (commandeCursor.hasNext()){
+				Commande enplus = commandeCursor.next();
+				
+				System.out.println(enplus);
+				System.out.println("_" + enplus.getDateCommande());
+				liste_commandes.add(enplus);
+			}
+			
+			listView_commandes.setItems(liste_commandes);
+		}
+        
 		
 		
 	

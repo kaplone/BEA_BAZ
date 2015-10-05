@@ -2,17 +2,18 @@ package models;
 
 import java.util.ArrayList;
 
+import org.bson.types.ObjectId;
 import org.jongo.marshall.jackson.oid.MongoObjectId;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Traitement extends Commun{
+public class Complement extends Commun {
 	
 	@JsonProperty("_id") 
 	@MongoObjectId
-    private String _id;
+    private ObjectId _id;
 	
 	private String nom;
 	
@@ -20,11 +21,11 @@ public class Traitement extends Commun{
 	
 	private ArrayList<Complement> complements;
 
-	public String get_id() {
+	public ObjectId get_id() {
 		return _id;
 	}
 
-	public void set_id(String _id) {
+	public void set_id(ObjectId _id) {
 		this._id = _id;
 	}
 
@@ -52,8 +53,6 @@ public class Traitement extends Commun{
 		this.complements = complements;
 	}
 	
-	public String toString(){
-		return this.nom;
-	}
+	
 
 }

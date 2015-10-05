@@ -41,7 +41,7 @@
                   <Insets bottom="10.0" top="10.0" />
                </VBox.margin>
             </Label>
-            <ListView prefHeight="645.0" prefWidth="138.0">
+            <ListView fx:id="listView_commandes" prefHeight="645.0" prefWidth="138.0">
                <VBox.margin>
                   <Insets bottom="10.0" top="10.0" />
                </VBox.margin>
@@ -116,4 +116,44 @@
          </children>
       </VBox>
    </center>
+   <top>
+      <HBox alignment="CENTER" prefHeight="33.0" prefWidth="1255.0" BorderPane.alignment="CENTER">
+         <BorderPane.margin>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+         </BorderPane.margin>
+         <children>
+            <Button fx:id="versClientButton" mnemonicParsing="false" onAction="#onVersClientButton" text="--&gt; Client">
+               <HBox.margin>
+                  <Insets right="10.0" />
+               </HBox.margin>
+            </Button>
+            <Button fx:id="versCommandeButton" mnemonicParsing="false" onAction="#onVersCommandeButton" text="--&gt; Commande">
+               <HBox.margin>
+                  <Insets right="10.0" />
+               </HBox.margin>
+            </Button>
+            <Button fx:id="versOeuvreButton" mnemonicParsing="false" onAction="#onVersOeuvreButton" text="--&gt; Oeuvre">
+               <HBox.margin>
+                  <Insets right="10.0" />
+               </HBox.margin>
+            </Button>
+            <Button fx:id="versRapportButton" mnemonicParsing="false" onAction="#onVersRapportButton" text="--&gt; Rapport">
+               <HBox.margin>
+                  <Insets right="10.0" />
+               </HBox.margin>
+            </Button>
+            <Button fx:id="versModeleButton" mnemonicParsing="false" onAction="#onVersModeleButton" text="Modèles">
+               <HBox.margin>
+                  <Insets left="50.0" right="10.0" />
+               </HBox.margin>
+            </Button>
+            <Button fx:id="versFichierButton" mnemonicParsing="false" onAction="#onVersFichierButton" text="Fichiers">
+               <HBox.margin>
+                  <Insets right="10.0" />
+               </HBox.margin>
+            </Button>
+            <Button fx:id="versTraitementButton" mnemonicParsing="false" onAction="#onVersTraitementButton" text="Traitements" />
+         </children>
+      </HBox>
+   </top>
 </BorderPane>

@@ -2,6 +2,7 @@ package models;
 
 import java.util.ArrayList;
 
+import org.bson.types.ObjectId;
 import org.jongo.marshall.jackson.oid.MongoObjectId;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -12,7 +13,7 @@ public class Oeuvre {
 	
 	@JsonProperty("_id") 
 	@MongoObjectId
-    private String _id;
+    private ObjectId _id;
 	
 	private String n_d_origine,
 	               cote_archives_6s,
@@ -26,10 +27,10 @@ public class Oeuvre {
 	               inscriptions_au_verso,
 	               format_de_conditionnement;
 	
-	private String auteur,
-	               client;
+	private ObjectId auteur,
+	                 client;
 	
-	private ArrayList<MongoObjectId> etats,
+	private ArrayList<ObjectId> etats,
                                      jobs,
                                      traitements,
                                      fichiers,
@@ -39,11 +40,11 @@ public class Oeuvre {
 		return this.cote_archives_6s;
 	}
 
-	public String get_id() {
+	public ObjectId get_id() {
 		return _id;
 	}
 
-	public void set_id( String _id) {
+	public void set_id( ObjectId _id) {
 		this._id = _id;
 	}
 
@@ -135,59 +136,59 @@ public class Oeuvre {
 		this.format_de_conditionnement = format_de_conditionnement;
 	}
 
-	public String getAuteur() {
+	public ObjectId getAuteur() {
 		return auteur;
 	}
 
-	public void setAuteur(String auteur) {
+	public void setAuteur(ObjectId auteur) {
 		this.auteur = auteur;
 	}
 
-	public String getClient() {
+	public ObjectId getClient() {
 		return client;
 	}
 
-	public void setClient(String client) {
+	public void setClient(ObjectId client) {
 		this.client = client;
 	}
 
-	public ArrayList<MongoObjectId> getEtats() {
+	public ArrayList<ObjectId> getEtats() {
 		return etats;
 	}
 
-	public void setEtats(ArrayList<MongoObjectId> etats) {
+	public void setEtats(ArrayList<ObjectId> etats) {
 		this.etats = etats;
 	}
 
-	public ArrayList<MongoObjectId> getJobs() {
+	public ArrayList<ObjectId> getJobs() {
 		return jobs;
 	}
 
-	public void setJobs(ArrayList<MongoObjectId> jobs) {
+	public void setJobs(ArrayList<ObjectId> jobs) {
 		this.jobs = jobs;
 	}
 
-	public ArrayList<MongoObjectId> getTraitements() {
+	public ArrayList<ObjectId> getTraitements() {
 		return traitements;
 	}
 
-	public void setTraitements(ArrayList<MongoObjectId> traitements) {
+	public void setTraitements(ArrayList<ObjectId> traitements) {
 		this.traitements = traitements;
 	}
 
-	public ArrayList<MongoObjectId> getFichiers() {
+	public ArrayList<ObjectId> getFichiers() {
 		return fichiers;
 	}
 
-	public void setFichiers(ArrayList<MongoObjectId> fichiers) {
+	public void setFichiers(ArrayList<ObjectId> fichiers) {
 		this.fichiers = fichiers;
 	}
 
-	public ArrayList<MongoObjectId> getRapports() {
+	public ArrayList<ObjectId> getRapports() {
 		return rapports;
 	}
 
-	public void setRapports(ArrayList<MongoObjectId> rapports) {
+	public void setRapports(ArrayList<ObjectId> rapports) {
 		this.rapports = rapports;
 	}
 	

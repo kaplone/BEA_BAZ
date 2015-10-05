@@ -24,6 +24,7 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.bson.types.ObjectId;
 import org.jongo.marshall.MarshallingException;
 import org.jongo.marshall.jackson.JacksonMapper;
 import org.jongo.marshall.jackson.oid.MongoObjectId;
@@ -36,13 +37,13 @@ import com.mongodb.util.JSON;
 public class Documents {
 	
 	private static Client client;
-	private static String client_id;
+	private static ObjectId client_id;
 	private static Auteur auteur;
-	private static String auteur_id;
+	private static ObjectId auteur_id;
 	private static Commande commande;
-	private static MongoObjectId commande_id;
+	private static ObjectId commande_id;
 	private static Etat etat;
-	private static MongoObjectId etat_id;
+	private static ObjectId etat_id;
 	
 	public static void init(){
 		

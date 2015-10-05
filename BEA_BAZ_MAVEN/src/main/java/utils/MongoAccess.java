@@ -11,6 +11,8 @@ import org.jongo.MongoCursor;
 import org.jongo.Update;
 
 import models.Client;
+import models.Commande;
+import models.Commun;
 import models.Modele;
 
 import com.mongodb.BasicDBObject;
@@ -58,6 +60,24 @@ public class MongoAccess {
 
 		return find;
 	}
+    
+    public static Find request(String table, Commande commande) {	
+		
+		Find find = null;
+		collec = jongo.getCollection(table);
+		find = collec.find("{commande :  commande.get_id()}");
+
+		return find;
+	}
+    
+    public static Find request(String table, Client client) {	
+		
+		Find find = null;
+		collec = jongo.getCollection(table);
+		find = collec.find("{client : #}", client.get_id());
+
+		return find;
+	}
 	
 	public static FindOne request(String table, String field, String valeur) {	
 		
@@ -93,7 +113,7 @@ public class MongoAccess {
 		
 	}
 
-	public static void update(String table, Client c) {
+	public static void update(String table, Commun c) {
 		collec = jongo.getCollection(table);	
 		collec.save(c);
 	}

@@ -2,14 +2,15 @@ package models;
 
 import java.util.ArrayList;
 
+import org.bson.types.ObjectId;
 import org.jongo.marshall.jackson.oid.MongoObjectId;
 
 public class Etat {
 	
 	@MongoObjectId
-    private String _id;
+    private ObjectId _id;
 	private ArrayList<String> alterations;
-	private String oeuvre_id;
+	private ObjectId oeuvre_id;
 	
 	public Etat(Oeuvre o) {
 		
@@ -22,11 +23,11 @@ public class Etat {
 		alterations.add(s);
 	}
 
-	public String get_id() {
+	public ObjectId get_id() {
 		return _id;
 	}
 
-	public void set_id(String _id) {
+	public void set_id(ObjectId _id) {
 		this._id = _id;
 	}
 
@@ -38,11 +39,11 @@ public class Etat {
 		this.alterations = alterations;
 	}
 
-	public String getOeuvre_id() {
+	public ObjectId getOeuvre_id() {
 		return oeuvre_id;
 	}
 
-	public void setOeuvre_id(String oeuvre_id) {
+	public void setOeuvre_id(ObjectId oeuvre_id) {
 		this.oeuvre_id = oeuvre_id;
 	}
 	
