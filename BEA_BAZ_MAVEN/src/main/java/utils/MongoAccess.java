@@ -19,6 +19,7 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
+import com.mongodb.MongoClientURI;
 
 import enums.classes;
 
@@ -34,9 +35,16 @@ public class MongoAccess {
 		
 		
 		try {
-			mc = new MongoClient();
-			db = mc.getDB("test");		
+			
+			MongoClientURI uri  = new MongoClientURI("mongodb://bea:beabaz@ds055852.mongolab.com:55852/heroku_g9z5lnn2"); 
+			MongoClient client = new MongoClient(uri);
+			db = client.getDB(uri.getDatabase());
+			
+			//mc = new MongoClient();
+			//db = mc.getDB("test");		
 			jongo = new Jongo(db);
+			
+			
 		}
 		catch (UnknownHostException UHE){
 					System.out.println("erreur " + UHE);

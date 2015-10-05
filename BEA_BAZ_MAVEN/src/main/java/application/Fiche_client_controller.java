@@ -137,6 +137,8 @@ public class Fiche_client_controller  implements Initializable{
     	remarques_client.setPromptText("éventuelles remarques");
     	nouveau_client.setVisible(false);
     	
+    	clientSelectionne = new Client();
+    	
     	onEditerClientButton();
     	
 //    	mise_a_jour_client.setOnAction(new EventHandler<ActionEvent>() {
@@ -207,15 +209,14 @@ public class Fiche_client_controller  implements Initializable{
     @FXML
     public void onEditerClientButton(){
     	
-    	if (clientSelectionne != null) {
-    	
-	    	annuler.setVisible(true);
-	    	editer.setVisible(false);
-	    	mise_a_jour_client.setVisible(true);
-	    	nom_client.setEditable(true);
-			remarques_client.setEditable(true);
-    	}
-    	
+
+    	annuler.setVisible(true);
+    	editer.setVisible(false);
+    	mise_a_jour_client.setVisible(true);
+    	nom_client.setEditable(true);
+		remarques_client.setEditable(true);
+
+	
     }
     
     @FXML
@@ -304,9 +305,6 @@ public class Fiche_client_controller  implements Initializable{
 			
 			while (commandeCursor.hasNext()){
 				Commande enplus = commandeCursor.next();
-				
-				System.out.println(enplus);
-				System.out.println("_" + enplus.getDateCommande());
 				liste_commandes.add(enplus);
 			}
 			
