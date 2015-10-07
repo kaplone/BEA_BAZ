@@ -60,6 +60,7 @@ public class Fiche_client_controller  implements Initializable{
 	MongoCursor<Client> clientCursor;
 	MongoCursor<Commande> commandeCursor ;
 	Client clientSelectionne;
+	Commande commandeSelectionne;
 	
 	Stage currentStage;
 	
@@ -96,6 +97,19 @@ public class Fiche_client_controller  implements Initializable{
 		clientSelectionne = listView_client.getSelectionModel().getSelectedItem();
 		Main_BEA_BAZ.setClient(clientSelectionne);
 		affichageInfos(clientSelectionne);
+		
+	}
+	
+	@FXML
+	public void onCommandeSelect(){
+		
+		commandeSelectionne = listView_commandes.getSelectionModel().getSelectedItem();
+		Main_BEA_BAZ.setCommande(commandeSelectionne);
+		
+		Scene fiche_commande_scene = new Scene((Parent) JfxUtils.loadFxml("/views/fiche_commande.fxml"), 1275, 722);
+		fiche_commande_scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+		currentStage.setScene(fiche_commande_scene);
+		
 		
 	}
 	

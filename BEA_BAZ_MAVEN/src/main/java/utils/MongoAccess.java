@@ -73,7 +73,7 @@ public class MongoAccess {
 		
 		Find find = null;
 		collec = jongo.getCollection(table);
-		find = collec.find("{commande :  commande.get_id()}");
+		find = collec.find("{commande :  #}", commande.get_id());
 
 		return find;
 	}

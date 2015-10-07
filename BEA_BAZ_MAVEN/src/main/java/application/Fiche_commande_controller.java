@@ -206,6 +206,7 @@ public class Fiche_commande_controller  implements Initializable{
 			annuler.setVisible(false);
 			fiche_commande_label.setText("FICHE COMMANDE :");
 			nomClientLabel.setText(client.getNom());
+			
 			oeuvresCursor = MongoAccess.request("oeuvre", commande).as(Oeuvre.class);
 			
 			while (oeuvresCursor.hasNext()){
