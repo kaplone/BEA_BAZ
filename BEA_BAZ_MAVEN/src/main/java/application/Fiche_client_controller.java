@@ -56,6 +56,8 @@ public class Fiche_client_controller  implements Initializable{
 	private Button versOeuvreButton;
 	@FXML
 	private Button versRapportButton;
+	@FXML
+	private Button versTraitementButton;
 	
 	MongoCursor<Client> clientCursor;
 	MongoCursor<Commande> commandeCursor ;
@@ -154,24 +156,6 @@ public class Fiche_client_controller  implements Initializable{
     	clientSelectionne = new Client();
     	
     	onEditerClientButton();
-    	
-//    	mise_a_jour_client.setOnAction(new EventHandler<ActionEvent>() {
-//			
-//			@Override
-//			public void handle(ActionEvent event) {
-//				Client.save(new Client(nom_client.getText(), remarques_client.getText()));
-//				rafraichirAffichage();
-//				onAnnulerEditButton();
-//			}
-//		});
-//    	
-//        nouveau_client.setOnAction(new EventHandler<ActionEvent>() {
-//			
-//			@Override
-//			public void handle(ActionEvent event) {
-//				onAnnulerEditButton();
-//			}
-//		});
     }
     
     public void onAnnulerButton() {
@@ -185,22 +169,6 @@ public class Fiche_client_controller  implements Initializable{
     	rafraichirAffichage();
     	listView_client.getSelectionModel().select(clientSelectionne);
     	affichageInfos(clientSelectionne);
-    	
-//    	nouveau_client.setOnAction(new EventHandler<ActionEvent>() {
-//			
-//    		@Override
-//			public void handle(ActionEvent event) {
-//				onNouveauClientButton();
-//			}
-//		});
-//    	
-//        mise_a_jour_client.setOnAction(new EventHandler<ActionEvent>() {
-//			
-//			@Override
-//			public void handle(ActionEvent event) {
-//				rafraichirAffichage();
-//			}
-//		});
     }
     
     public void rafraichirAffichage(){
@@ -275,7 +243,12 @@ public class Fiche_client_controller  implements Initializable{
     @FXML
     public void onVersFichierButton(){}
     @FXML
-    public void onVersTraitementButton(){}
+    public void onVersTraitementButton(){
+    	Scene fiche_traitement_scene = new Scene((Parent) JfxUtils.loadFxml("/views/fiche_traitement.fxml"), 1275, 722);
+		fiche_traitement_scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+		
+		currentStage.setScene(fiche_traitement_scene);
+    }
     @FXML
     public void onVersModeleButton(){}
     	

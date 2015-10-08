@@ -14,6 +14,7 @@ import models.Client;
 import models.Commande;
 import models.Commun;
 import models.Modele;
+import models.Traitement;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
@@ -78,11 +79,31 @@ public class MongoAccess {
 		return find;
 	}
     
+    public static Find request(String table, String field, Commande commande) {	
+    	
+    	System.out.println(field);
+		
+		Find find = null;
+		collec = jongo.getCollection(table);
+		find = collec.find("{commande :  #}", commande.get_id());//.projection("{# : 1}", field);
+
+		return find;
+	}
+    
     public static Find request(String table, Client client) {	
 		
 		Find find = null;
 		collec = jongo.getCollection(table);
 		find = collec.find("{client : #}", client.get_id());
+
+		return find;
+	}
+    
+    public static Find request(String table, Traitement traitement) {	
+		
+		Find find = null;
+		collec = jongo.getCollection(table);
+		find = collec.find("{traitement : #}", traitement.get_id());
 
 		return find;
 	}
@@ -94,12 +115,6 @@ public class MongoAccess {
 		one = collec.findOne(String.format("{\"%s\" : \"%s\"}", field, valeur));
 
 		return one;
-	}
-		
-	
-	public static void update (int i) {
-		//collec.update("{long1 : 466}").with("{$set : {long2 : #}}", i);
-		
 	}
 	
 	public static void insert (String table, Object m) {
@@ -123,7 +138,8 @@ public class MongoAccess {
 
 	public static void update(String table, Commun c) {
 		collec = jongo.getCollection(table);	
-		collec.save(c);
+		System.out.println("mise a jour _id : " + c.get_id());
+		collec.update("{_id : #}", c.get_id()).with(c);
 	}
 
 

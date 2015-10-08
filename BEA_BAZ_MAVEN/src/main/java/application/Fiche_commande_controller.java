@@ -5,6 +5,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import org.jongo.MongoCursor;
@@ -16,6 +17,7 @@ import models.Client;
 import models.Commande;
 import models.Oeuvre;
 import models.Traitement;
+import models.TraitementsAttendus;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -45,6 +47,8 @@ public class Fiche_commande_controller  implements Initializable{
 	private Label nomClientLabel;
 	@FXML
 	private Label fiche_commande_label;
+	@FXML
+	private Label nom_commande_label;
 	@FXML
 	private TextField nomCommandeTextField;
 	@FXML
@@ -90,8 +94,11 @@ public class Fiche_commande_controller  implements Initializable{
 	@FXML
 	private GridPane traitementGrid;
 	
-	private ChoiceBox<Traitement> [] traitements_selectionnes;
+	private ArrayList<ChoiceBox<Traitement>> traitements_selectionnes;
 	private ArrayList<Traitement> traitements_attendus;
+	private MongoCursor<TraitementsAttendus> traitementsCursor;
+	private ObservableList<Traitement> observableTraitements;
+
 	
 	private MongoCursor<Oeuvre> oeuvresCursor;
 	private Oeuvre oeuvreSelectionne;
@@ -102,7 +109,8 @@ public class Fiche_commande_controller  implements Initializable{
 	
 	private Client client;
 	
-	private ObservableList<Traitement> observableTraitements;
+	
+	private boolean edit = false;
 	
 	@FXML
 	public void onVersClientButton(){
@@ -114,11 +122,60 @@ public class Fiche_commande_controller  implements Initializable{
 	}
 	
 	@FXML
+	public void onEditerButton(){
+		
+		importCommandeButton.setDisable(true);
+		dateCommandePicker.setEditable(true);
+		dateDebutProjetPicker.setEditable(true);
+		dateFinProjetPicker.setEditable(true);
+		remarques_client.setEditable(true);
+        editer.setVisible(false);
+        mise_a_jour_commande.setText("Mise à jour");
+        mise_a_jour_commande.setVisible(true);
+		annuler.setVisible(true);
+		rapportsButton.setVisible(false);
+		commandeExportVbox.setVisible(false);
+		versRapportButton.setVisible(false);
+		versModeleButton.setVisible(false);
+		versTraitementButton.setVisible(false);
+		versFichierButton.setVisible(false);
+		fiche_commande_label.setText("FICHE COMMANDE :");
+		nom_commande_label.setText(commande.getNom());
+		nomCommandeTextField.setDisable(false);
+		edit = true;
+		
+	}
+	
+	@FXML
+	public void onAnnulerButton(){
+		
+		importCommandeButton.setDisable(false);
+		dateCommandePicker.setEditable(false);
+		dateDebutProjetPicker.setEditable(false);
+		dateFinProjetPicker.setEditable(false);
+		remarques_client.setEditable(false);
+        editer.setVisible(true);
+        mise_a_jour_commande.setVisible(false);
+		annuler.setVisible(false);
+		fiche_commande_label.setText("FICHE COMMANDE :");
+		nomCommandeTextField.setDisable(true);
+		
+		
+		if (edit) {
+			afficherCommande();
+		}
+		else {
+			onVersClientButton();
+		}
+		edit = false;
+	}
+	
+	@FXML
 	public void onMiseAJourButton(){
 		
 		traitements_attendus.clear();
 		
-		commande = new Commande();
+		commande = Main_BEA_BAZ.getCommande(); 
 		commande.setClient(client.get_id());
 		commande.setDateCommande(dateCommandePicker.getValue());
 		commande.setDateDebutProjet(dateDebutProjetPicker.getValue());
@@ -137,14 +194,53 @@ public class Fiche_commande_controller  implements Initializable{
 		}
 		
 		commande.setTraitements_attendus(traitements_attendus);
-		Commande.save(commande);
 		
 		Main_BEA_BAZ.setCommande(commande);
 		
-		onVersClientButton();
-		
-
+		if (edit) {
+			Commande.update(commande);
+			afficherCommande();
+		}
+		else {
+		   Commande.save(commande);
+		   onVersClientButton();
+		}
 	}
+	
+	public void afficherCommande(){
+		
+		importCommandeButton.setDisable(false);
+		dateCommandePicker.setEditable(false);
+		dateDebutProjetPicker.setEditable(false);
+		dateFinProjetPicker.setEditable(false);
+		remarques_client.setEditable(false);
+        editer.setVisible(true);
+        mise_a_jour_commande.setVisible(false);
+		annuler.setVisible(false);
+		fiche_commande_label.setText("FICHE COMMANDE :");
+		nomClientLabel.setText(client.getNom());
+		nomCommandeTextField.setDisable(true);
+		nomClientLabel.setText(client.getNom());
+		oeuvresCursor = MongoAccess.request("oeuvre", commande).as(Oeuvre.class);
+		
+		while (oeuvresCursor.hasNext()){
+			liste_oeuvres.add(oeuvresCursor.next());
+		}
+		
+		listView_oeuvres.setItems(liste_oeuvres);
+        
+        int i = 0;
+
+		for (Traitement t : commande.getTraitements_attendus()){
+			traitements_selectionnes.get(i).setItems(FXCollections.observableArrayList(commande.getTraitements_attendus()));;
+			traitements_selectionnes.get(i).getSelectionModel().select(i);
+			i++;
+		}
+		
+		loadCommande(commande);
+		
+	}
+	
     @FXML
     public void onVersCommandeButton(){}
     @FXML
@@ -154,13 +250,29 @@ public class Fiche_commande_controller  implements Initializable{
     @FXML
     public void onVersFichierButton(){}
     @FXML
-    public void onVersTraitementButton(){}
+    public void onVersTraitementButton(){
+		Scene fiche_traitement_scene = new Scene((Parent) JfxUtils.loadFxml("/views/fiche_traitement.fxml"), 1275, 722);
+		fiche_traitement_scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+		
+		currentStage.setScene(fiche_traitement_scene);
+    }
     @FXML
     public void onVersModeleButton(){}
 	@FXML
     public void onExporterToutButton(){}
 	@FXML
     public void onRapportsButton(){}
+	
+	public void loadCommande(Commande c){
+		
+		dateCommandePicker.setValue(c.getDateCommande());;
+		dateDebutProjetPicker.setValue(c.getDateDebutProjet());;
+		dateFinProjetPicker.setValue(c.getDateFinProjet());
+		remarques_client.setText(c.getRemarques());
+		nom_commande_label.setText(c.getNom());
+		nomCommandeTextField.setText(c.getNom());
+		
+	}
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -181,8 +293,9 @@ public class Fiche_commande_controller  implements Initializable{
 		observableTraitements = FXCollections.observableArrayList();
 		
 		traitements_attendus = new ArrayList<>();
+		traitements_selectionnes = new ArrayList<>();
 		
-		MongoCursor<Traitement> mgCursor = MongoAccess.request("traitements").as(Traitement.class);
+		MongoCursor<Traitement> mgCursor = MongoAccess.request("traitement").as(Traitement.class);
 		
 		while (mgCursor.hasNext()){
 			observableTraitements.addAll(mgCursor.next());
@@ -192,33 +305,17 @@ public class Fiche_commande_controller  implements Initializable{
 		for (Node cb : traitementGrid.getChildren()){
 			
 			((ChoiceBox<Traitement>) cb).setItems(observableTraitements);
+			traitements_selectionnes.add(((ChoiceBox<Traitement>) cb));
 		}
         
 		if (commande != null) {
 			
-			importCommandeButton.setDisable(true);
-			dateCommandePicker.setEditable(false);
-			dateDebutProjetPicker.setEditable(false);
-			dateFinProjetPicker.setEditable(false);
-			remarques_client.setEditable(false);
-	        editer.setVisible(true);
-	        mise_a_jour_commande.setVisible(false);
-			annuler.setVisible(false);
-			fiche_commande_label.setText("FICHE COMMANDE :");
-			nomClientLabel.setText(client.getNom());
-			
-			oeuvresCursor = MongoAccess.request("oeuvre", commande).as(Oeuvre.class);
-			
-			while (oeuvresCursor.hasNext()){
-				liste_oeuvres.add(oeuvresCursor.next());
-			}
-			
-			listView_oeuvres.setItems(liste_oeuvres);
+			afficherCommande();
 			
 		}
 		else { 
 			
-			importCommandeButton.setDisable(false);
+			importCommandeButton.setDisable(true);
 			dateCommandePicker.setEditable(true);
 			dateDebutProjetPicker.setEditable(true);
 			dateFinProjetPicker.setEditable(true);
@@ -234,6 +331,7 @@ public class Fiche_commande_controller  implements Initializable{
 			versTraitementButton.setVisible(false);
 			versFichierButton.setVisible(false);
 			fiche_commande_label.setText("FICHE COMMANDE (nouvelle commande) :");
+			nom_commande_label.setText("");
 
 			try {
 			    nomClientLabel.setText(client.getNom());

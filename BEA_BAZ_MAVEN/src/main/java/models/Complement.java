@@ -9,7 +9,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Complement extends Commun {
+public class Complement extends Traitement {
 	
 	@JsonProperty("_id") 
 	@MongoObjectId

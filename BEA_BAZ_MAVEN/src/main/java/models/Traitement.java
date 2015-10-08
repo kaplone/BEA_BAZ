@@ -4,36 +4,33 @@ import java.util.ArrayList;
 
 import org.jongo.marshall.jackson.oid.MongoObjectId;
 
+import utils.MongoAccess;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Traitement extends Commun{
-	
-	@JsonProperty("_id") 
-	@MongoObjectId
-    private String _id;
-	
-	private String nom;
-	
+
 	private String detail;
 	
 	private ArrayList<Complement> complements;
+	
+	public static void update(Traitement t){
 
-	public String get_id() {
-		return _id;
+		MongoAccess.update("traitement", t);
 	}
-
-	public void set_id(String _id) {
-		this._id = _id;
+	
+    public static void save(Traitement t){
+		
+		MongoAccess.save("traitement", t);
+		
 	}
-
-	public String getNom() {
-		return nom;
-	}
-
-	public void setNom(String nom) {
-		this.nom = nom;
+    
+    public static void insert(Traitement t){
+		
+		MongoAccess.insert("traitement", t);
+		
 	}
 
 	public String getDetail() {
@@ -51,9 +48,4 @@ public class Traitement extends Commun{
 	public void setComplements(ArrayList<Complement> complements) {
 		this.complements = complements;
 	}
-	
-	public String toString(){
-		return this.nom;
-	}
-
 }

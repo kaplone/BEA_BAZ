@@ -13,9 +13,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Client extends Commun{
-	
-    private ObjectId _id;
-	
+
 	private String nom;
 	
 	private String remarques;
@@ -61,14 +59,6 @@ public class Client extends Commun{
     	
     	return this.getNom();
     }
-
-	public ObjectId get_id() {
-		return _id;
-	}
-
-	public void set_id(ObjectId _id) {
-		this._id = _id;
-	}
 
 	public String getNom() {
 		return nom;

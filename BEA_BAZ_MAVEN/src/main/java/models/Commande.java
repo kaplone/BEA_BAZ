@@ -7,6 +7,8 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 
+import javafx.collections.ObservableList;
+
 import org.bson.types.ObjectId;
 import org.jongo.marshall.jackson.oid.MongoObjectId;
 
@@ -22,8 +24,6 @@ import com.fasterxml.jackson.datatype.jsr310.deser.*;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Commande  extends Commun{
-
-    private ObjectId _id;
 	
 	private String nom;
 	
@@ -45,6 +45,7 @@ public class Commande  extends Commun{
 	
 	private ArrayList<String> oeuvres;
 	private ArrayList<Traitement> traitements_attendus;
+	private ArrayList<Traitement> tous_les_traitements;
 	
 	public static void update(Commande c){
 
@@ -67,14 +68,6 @@ public class Commande  extends Commun{
     	
     	return this.getNom();
     }
-
-	public ObjectId get_id() {
-		return _id;
-	}
-
-	public void set_id(ObjectId _id) {
-		this._id = _id;
-	}
 
 	public String getNom() {
 		return nom;
@@ -113,7 +106,7 @@ public class Commande  extends Commun{
 	public void setDateDebutProjet(LocalDate dateDebutProjet) {
 		Instant instant = dateDebutProjet.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant();
 		Date res = Date.from(instant);
-		this.dateCommande = res;
+		this.dateDebutProjet = res;
 	}
 
 	public LocalDate getDateFinProjet() {
@@ -125,7 +118,7 @@ public class Commande  extends Commun{
 	public void setDateFinProjet(LocalDate dateFinProjet) {
 		Instant instant = dateFinProjet.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant();
 		Date res = Date.from(instant);
-		this.dateCommande = res;
+		this.dateFinProjet = res;
 	}
 
 	public ObjectId getClient() {
@@ -148,8 +141,16 @@ public class Commande  extends Commun{
 		return traitements_attendus;
 	}
 
-	public void setTraitements_attendus(ArrayList<Traitement> traitements_attendus) {
-		this.traitements_attendus = traitements_attendus;
+	public void setTraitements_attendus(ArrayList<Traitement> traitements_attendus2) {
+		this.traitements_attendus = traitements_attendus2;
+	}
+
+	public ArrayList<Traitement> getTous_les_traitements() {
+		return tous_les_traitements;
+	}
+
+	public void setTous_les_traitements(ArrayList<Traitement> tous_les_traitements) {
+		this.tous_les_traitements = tous_les_traitements;
 	}
 	
 	

@@ -47,6 +47,11 @@
                      </font>
                   </Label>
                   <Line endX="800.0" endY="50.0" startY="50.0" />
+                  <Label fx:id="nom_commande_label" layoutX="382.0" layoutY="18.0" text="Label">
+                     <font>
+                        <Font size="20.0" />
+                     </font>
+                  </Label>
                </children>
             </Pane>
             <HBox prefHeight="60.0" prefWidth="1040.0">
@@ -132,11 +137,6 @@
                   <HBox alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="4">
                      <children>
                         <TextField fx:id="nomCommandeTextField" prefHeight="25.0" prefWidth="549.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                        <Button mnemonicParsing="false" text="Modifier">
-                           <HBox.margin>
-                              <Insets left="10.0" />
-                           </HBox.margin>
-                        </Button>
                      </children>
                   </HBox>
                </children>
@@ -155,8 +155,8 @@
                </VBox.margin>
                <children>
                   <Button fx:id="mise_a_jour_commande" mnemonicParsing="false" onAction="#onMiseAJourButton" text="Mise à jour" />
-                  <Button fx:id="editer" mnemonicParsing="false" text="Editer" />
-                  <Button fx:id="annuler" mnemonicParsing="false" text="Annuler">
+                  <Button fx:id="editer" mnemonicParsing="false" onAction="#onEditerButton" text="Editer" />
+                  <Button fx:id="annuler" mnemonicParsing="false" onAction="#onAnnulerButton" text="Annuler">
                      <HBox.margin>
                         <Insets left="50.0" />
                      </HBox.margin>
