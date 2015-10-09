@@ -28,17 +28,11 @@ public class Commande  extends Commun{
 	private String nom;
 	
 	private String remarques;
-	
-	//@JsonSerialize(using = LocalDateSerializer.class)
-	//@JsonDeserialize(using = LocalDateDeserializer.class)
+
 	private Date dateCommande;
-	
-	//@JsonSerialize(using = LocalDateSerializer.class)
-	//@JsonDeserialize(using = LocalDateDeserializer.class)
+
 	private Date dateDebutProjet;
-    
-	//@JsonSerialize(using = LocalDateSerializer.class)
-	//@JsonDeserialize(using = LocalDateDeserializer.class)
+
 	private Date dateFinProjet;
 
 	private ObjectId client;

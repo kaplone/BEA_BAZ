@@ -8,6 +8,7 @@ import org.jongo.MongoCursor;
 import utils.MongoAccess;
 import models.Client;
 import models.Commande;
+import models.Traitement;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -35,9 +36,9 @@ public class Fiche_client_controller  implements Initializable{
 	@FXML
 	private ListView<Commande> listView_commandes;
 	@FXML
-	private TextField nom_client;
+	private TextField nom_client_textField;
 	@FXML
-	private TextArea remarques_client;
+	private TextArea remarques_client_textArea;
 	@FXML
 	private Button nouveau_client;
 	@FXML
@@ -68,6 +69,8 @@ public class Fiche_client_controller  implements Initializable{
 	
 	Commande commande;
 	Client client;
+	
+	private boolean edit = false;
 	
 	@FXML
 	public void onVersCommandeButton(){
@@ -118,8 +121,8 @@ public class Fiche_client_controller  implements Initializable{
     private void affichageInfos(Client clientSelectionne){
 
     	
-    	nom_client.setText(clientSelectionne.getNom());
-    	remarques_client.setText(clientSelectionne.getRemarques());
+    	nom_client_textField.setText(clientSelectionne.getNom());
+    	remarques_client_textArea.setText(clientSelectionne.getRemarques());
     	
     	client = Main_BEA_BAZ.getClient();
     	
@@ -147,24 +150,29 @@ public class Fiche_client_controller  implements Initializable{
     public void onNouveauClientButton() {
     	
     	mise_a_jour_client.setText("Enregistrer");
-    	nom_client.setText("");
-    	remarques_client.setText("");
-    	nom_client.setPromptText("saisir le nom du nouveau client");
-    	remarques_client.setPromptText("éventuelles remarques");
+    	nom_client_textField.setText("");
+    	remarques_client_textArea.setText("");
+    	nom_client_textField.setPromptText("saisir le nom du nouveau client");
+    	remarques_client_textArea.setPromptText("éventuelles remarques");
     	nouveau_client.setVisible(false);
     	
     	clientSelectionne = new Client();
     	
-    	onEditerClientButton();
+    	edit = false;
+    	annuler.setVisible(true);
+    	editer.setVisible(false);
+    	mise_a_jour_client.setVisible(true);
+    	nom_client_textField.setEditable(true);
+		remarques_client_textArea.setEditable(true);
     }
     
     public void onAnnulerButton() {
     	
     	mise_a_jour_client.setText("Mise à jour");
-    	nom_client.setText("");
-    	remarques_client.setText("");
-    	nom_client.setPromptText("");
-    	remarques_client.setPromptText("");
+    	nom_client_textField.setText("");
+    	remarques_client_textArea.setText("");
+    	nom_client_textField.setPromptText("");
+    	remarques_client_textArea.setPromptText("");
     	nouveau_client.setText("Nouveau client");
     	rafraichirAffichage();
     	listView_client.getSelectionModel().select(clientSelectionne);
@@ -195,8 +203,10 @@ public class Fiche_client_controller  implements Initializable{
     	annuler.setVisible(true);
     	editer.setVisible(false);
     	mise_a_jour_client.setVisible(true);
-    	nom_client.setEditable(true);
-		remarques_client.setEditable(true);
+    	nom_client_textField.setEditable(true);
+		remarques_client_textArea.setEditable(true);
+		
+		edit = true;
 
 	
     }
@@ -207,30 +217,47 @@ public class Fiche_client_controller  implements Initializable{
     	annuler.setVisible(false);
     	editer.setVisible(true);
     	mise_a_jour_client.setVisible(false);
-    	nom_client.setEditable(false);
-		remarques_client.setEditable(false);
+    	nom_client_textField.setEditable(false);
+		remarques_client_textArea.setEditable(false);
 		nouveau_client.setVisible(true);
 		rafraichirAffichage();
 		listView_client.getSelectionModel().select(clientSelectionne);
     	affichageInfos(clientSelectionne);
+    	
+    	edit = false;
     	
     }
     
     @FXML
     public void onMiseAJourClientButton(){
     	
-    	clientSelectionne.setNom(nom_client.getText());
-    	clientSelectionne.setRemarques(remarques_client.getText());
+    	if (clientSelectionne == null){
+    		clientSelectionne = new Client();
+    	}
     	
-    	Client.update(clientSelectionne);
-    	rafraichirAffichage();
-		onAnnulerEditButton();
+    	clientSelectionne.setNom(nom_client_textField.getText());
+    	clientSelectionne.setRemarques(remarques_client_textArea.getText());
     	
     	annuler.setVisible(false);
     	editer.setVisible(true);
     	mise_a_jour_client.setVisible(false);
-    	nom_client.setEditable(false);
-		remarques_client.setEditable(false);
+    	nom_client_textField.setEditable(false);
+		remarques_client_textArea.setEditable(false);
+		
+		if (edit) {
+			Client.update(clientSelectionne);
+			//afficherClient();
+			rafraichirAffichage();
+			onAnnulerEditButton();
+		}
+		else {
+			
+			System.out.println(clientSelectionne);
+			
+		   Client.save(clientSelectionne);
+		   //afficherClient();
+		   onAnnulerEditButton();
+		}
     	
     }
     
@@ -261,8 +288,8 @@ public class Fiche_client_controller  implements Initializable{
 
 		utils.MongoAccess.connect();
 		
-		nom_client.setEditable(false);
-		remarques_client.setEditable(false);
+		nom_client_textField.setEditable(false);
+		remarques_client_textArea.setEditable(false);
         editer.setVisible(true);
         mise_a_jour_client.setVisible(false);
 		annuler.setVisible(false);

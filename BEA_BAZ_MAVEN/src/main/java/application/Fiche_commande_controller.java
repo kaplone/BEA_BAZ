@@ -106,6 +106,7 @@ public class Fiche_commande_controller  implements Initializable{
 	private Stage currentStage;
 	
 	private Commande commande;
+	private Commande commandeSelectionne;
 	
 	private Client client;
 	
@@ -173,9 +174,16 @@ public class Fiche_commande_controller  implements Initializable{
 	@FXML
 	public void onMiseAJourButton(){
 		
+		if (commande == null){
+			commande = new Commande();
+		}
+		else{
+			commande = Main_BEA_BAZ.getCommande(); 
+		}
+		
 		traitements_attendus.clear();
 		
-		commande = Main_BEA_BAZ.getCommande(); 
+		
 		commande.setClient(client.get_id());
 		commande.setDateCommande(dateCommandePicker.getValue());
 		commande.setDateDebutProjet(dateDebutProjetPicker.getValue());

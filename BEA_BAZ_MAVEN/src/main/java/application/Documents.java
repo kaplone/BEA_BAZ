@@ -49,17 +49,6 @@ public class Documents {
 		
 		ObjectMapper mapper = new ObjectMapper();
 		
-		//if(utils.MongoAccess.checkIfExists("client", "nom", "Musée Départemental Arles Antique")){
-		try {
-			client = utils.MongoAccess.request("client", "nom", "Musée Départemental Arles Antique").as(Client.class);
-			client_id = client.get_id();	
-		}
-		catch (MarshallingException | NullPointerException ME) {
-			client = new Client("Musée Départemental Arles Antique");
-			utils.MongoAccess.save("client", client);
-			client_id = client.get_id();
-		}
-		
 		//if(utils.MongoAccess.checkIfExists("auteur", "nom", "Jean-Claude Golvin")){
 		try {
 			auteur = utils.MongoAccess.request("auteur", "nom", "Jean-Claude Golvin").as(Auteur.class);

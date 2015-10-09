@@ -47,6 +47,8 @@ public class Fiche_traitement_controller  implements Initializable{
 	@FXML
 	private Button editer;
 	@FXML
+	private Button versCommandeButton;
+	@FXML
 	private Button versTraitementButton;
 	@FXML
 	private Button versModeleButton;
@@ -183,6 +185,7 @@ public class Fiche_traitement_controller  implements Initializable{
     	mise_a_jour_traitement.setVisible(true);
     	nom_traitement_textField.setEditable(true);
 		remarques_traitement_textArea.setEditable(true);
+		
 		edit = true;
 
 	
@@ -207,9 +210,7 @@ public class Fiche_traitement_controller  implements Initializable{
     
     @FXML
     public void onMiseAJourTraitementButton(){
-    	
-    	
-    	
+
     	if (traitementSelectionne == null) {
     		traitementSelectionne = new Traitement();
     	}
@@ -267,7 +268,12 @@ public class Fiche_traitement_controller  implements Initializable{
     @FXML
     public void onVersModeleButton(){}
     @FXML
-    public void onVersClientButton(){}
+    public void onVersClientButton(){
+    	Scene fiche_client_scene = new Scene((Parent) JfxUtils.loadFxml("/views/fiche_client.fxml"), 1275, 722);
+		fiche_client_scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+		
+		currentStage.setScene(fiche_client_scene);
+    }
 
     	
 
@@ -285,6 +291,7 @@ public class Fiche_traitement_controller  implements Initializable{
         mise_a_jour_traitement.setVisible(false);
 		annuler.setVisible(false);
 		
+		versCommandeButton.setVisible(false);
 		versTraitementButton.setVisible(false);
 		versModeleButton.setVisible(false);
 		versOeuvreButton.setVisible(false);

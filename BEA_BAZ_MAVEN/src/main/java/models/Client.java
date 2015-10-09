@@ -14,30 +14,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Client extends Commun{
 
-	private String nom;
-	
 	private String remarques;
 	
 	private ArrayList<ObjectId> commandes;
-	
-	@JsonCreator
-	public Client() {
-		super () ;
-	}
-    
-	//@JsonCreator
-	public Client(String nom) {
-		super () ;
-		this.nom = nom;
-	}
-	
-	//@JsonCreator
-	public Client(@JsonProperty("nom") String nom_, @JsonProperty("remarques") String remarques ) {
-		super (); 
-		this.remarques = remarques;
-		this.nom = nom_;
-	}
-	
+
 	public static void update(Client c){
 
 		MongoAccess.update("client", c);
@@ -59,14 +39,6 @@ public class Client extends Commun{
     	
     	return this.getNom();
     }
-
-	public String getNom() {
-		return nom;
-	}
-
-	public void setNom(String nom) {
-		this.nom = nom;
-	}
 
 	public String getRemarques() {
 		return remarques;
