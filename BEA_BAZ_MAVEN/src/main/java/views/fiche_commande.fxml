@@ -10,17 +10,17 @@
 
 <BorderPane prefHeight="650.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.Fiche_commande_controller">
    <right>
-      <VBox alignment="TOP_CENTER" prefHeight="702.0" prefWidth="190.0" BorderPane.alignment="CENTER">
+      <VBox alignment="TOP_CENTER" prefHeight="577.0" prefWidth="291.0" BorderPane.alignment="CENTER">
          <children>
             <Label alignment="CENTER" contentDisplay="CENTER" text="Oeuvres">
                <VBox.margin>
                   <Insets bottom="10.0" top="10.0" />
                </VBox.margin>
             </Label>
-            <TableView prefHeight="504.0" prefWidth="190.0">
+            <TableView fx:id="tableOeuvre" prefHeight="504.0" prefWidth="190.0">
               <columns>
-                <TableColumn fx:id="oeuvres_nom_colonne" prefWidth="141.0" text="Nom" />
-                <TableColumn fx:id="oeuvres_fait_colonne" prefWidth="48.0" text="Fait" />
+                <TableColumn fx:id="oeuvres_nom_colonne" prefWidth="248.0" text="Nom" />
+                <TableColumn fx:id="oeuvres_fait_colonne" prefWidth="42.0" text="Fait" />
               </columns>
             </TableView>
             <Button fx:id="nouvelle_oeuvre_button" mnemonicParsing="false" text="Nouvelle oeuvre">
@@ -35,7 +35,7 @@
       </VBox>
    </right>
    <center>
-      <VBox alignment="TOP_CENTER" prefHeight="577.0" prefWidth="1006.0" BorderPane.alignment="CENTER">
+      <VBox alignment="TOP_CENTER" maxWidth="950.0" prefHeight="577.0" prefWidth="950.0" BorderPane.alignment="CENTER">
          <BorderPane.margin>
             <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
          </BorderPane.margin>

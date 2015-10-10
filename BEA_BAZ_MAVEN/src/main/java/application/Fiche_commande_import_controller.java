@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
+import org.jongo.Find;
 import org.jongo.MongoCursor;
 
 import com.mongodb.DBPortPool.NoMoreConnection;
@@ -39,6 +40,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
@@ -60,11 +62,9 @@ public class Fiche_commande_import_controller  implements Initializable{
 	@FXML
 	private TextField nomCommandeTextField;
 	@FXML
-	private TableView<Oeuvre> listView_oeuvres;
+	private TableColumn<Oeuvre, String> oeuvres_nom_colonne;
 	@FXML
-	private TableColumn<Oeuvre, String> oeuvre_nom_colonne;
-	@FXML
-	private TableColumn<Oeuvre, ImageView> oeuvre_fait_colonne;
+	private TableColumn<Oeuvre, ImageView> oeuvres_fait_colonne;
 	
 	@FXML
 	private TextArea remarques_client;
@@ -122,6 +122,10 @@ public class Fiche_commande_import_controller  implements Initializable{
 	
 	@FXML
 	private GridPane traitementGrid;
+	
+	@FXML
+	private TableView tableOeuvre;
+	
 	
 	private ArrayList<ChoiceBox<Traitement>> traitements_selectionnes;
 	private ArrayList<Traitement> traitements_attendus;
@@ -266,12 +270,17 @@ public class Fiche_commande_import_controller  implements Initializable{
 		nomClientLabel.setText(client.getNom());
 		nomCommandeTextField.setDisable(true);
 		nomClientLabel.setText(client.getNom());
-		oeuvresCursor = MongoAccess.request("oeuvre", commande).as(Oeuvre.class);
 		
-		while (oeuvresCursor.hasNext()){
-			liste_oeuvres.add(oeuvresCursor.next());
+		if (commandeSelectionne != null){
+			oeuvresCursor = MongoAccess.request("oeuvre", commandeSelectionne).as(Oeuvre.class);
+			
+			while (oeuvresCursor.hasNext()){
+				liste_oeuvres.add(oeuvresCursor.next());
+			}
+			
+			oeuvres_nom_colonne.setCellValueFactory(new PropertyValueFactory<Oeuvre, String>("nom"));
 		}
-		
+
 		//listView_oeuvres.setItems(liste_oeuvres);
 		
 		for (ChoiceBox<Traitement> cbt : traitements_selectionnes){
@@ -314,16 +323,19 @@ public class Fiche_commande_import_controller  implements Initializable{
 	public void on_select_file_button(){
 		
 		file = chooseExport();
+		file_path_textField.setText(file.toString());
+	}
+	@FXML
+	public void on_import_file_button(){
 		try {
 			Documents.init();
-			Documents.read(file);
+			Documents.read(file, commandeSelectionne);
+			afficherOeuvres();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
-	@FXML
-	public void on_import_file_button(){}
     @FXML
     public void onVersCommandeButton(){}
     @FXML
@@ -346,6 +358,22 @@ public class Fiche_commande_import_controller  implements Initializable{
 	@FXML
     public void onRapportsButton(){}
 	
+	public void afficherOeuvres(){
+		
+		
+		
+        oeuvresCursor = MongoAccess.request("oeuvre", commandeSelectionne).as(Oeuvre.class);
+		
+		while (oeuvresCursor.hasNext()){
+			liste_oeuvres.add(oeuvresCursor.next());
+		}
+		
+		oeuvres_nom_colonne.setCellValueFactory(new PropertyValueFactory<Oeuvre, String>("nom"));
+		
+		tableOeuvre.setItems(liste_oeuvres);
+		
+	}
+	
 	public void loadCommande(Commande c){
 		
 		dateCommandePicker.setValue(c.getDateCommande());;
@@ -361,6 +389,7 @@ public class Fiche_commande_import_controller  implements Initializable{
 	public void initialize(URL location, ResourceBundle resources) {
 		
 		commande = Main_BEA_BAZ.getCommande();
+		commandeSelectionne = Main_BEA_BAZ.getCommande();
 		client = Main_BEA_BAZ.getClient();
 
 		utils.MongoAccess.connect();

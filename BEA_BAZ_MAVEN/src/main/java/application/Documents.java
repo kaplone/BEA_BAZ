@@ -64,7 +64,9 @@ public class Documents {
 		
 	}
 
-	public static void read(File file_) throws IOException {
+	public static void read(File file_, Commande commande_) throws IOException {
+		
+		commande_id = commande_.get_id();
 		
 		boolean titres = true;
 		boolean update = false;
@@ -105,12 +107,11 @@ public class Documents {
                 	update = true;
                 }
                 else {
+                	
                 	o = new Oeuvre();
                     string_oeuvre = "";
                     string_oeuvre_liste.clear();
-                    
-                    System.out.println(auteur_id);
-                    
+                    string_oeuvre_liste.add(String.format("\"%s\" : \"%s\"", "commande", commande_id));
                     string_oeuvre_liste.add(String.format("\"%s\" : \"%s\"", "auteur", auteur_id));
                     
                     update = false;
@@ -123,12 +124,11 @@ public class Documents {
         			update = true;
         		}
         		else {
+        			
         			 o = new Oeuvre();
                      string_oeuvre = "";
                      string_oeuvre_liste.clear();
-                     
-                     System.out.println(auteur_id);
-                     
+                     string_oeuvre_liste.add(String.format("\"%s\" : \"%s\"", "commande", commande_id));
                      string_oeuvre_liste.add(String.format("\"%s\" : \"%s\"", "auteur", auteur_id));
                      update = false;
         		}
@@ -138,7 +138,7 @@ public class Documents {
                 o = new Oeuvre();
                 string_oeuvre = "";
                 string_oeuvre_liste.clear();
-  
+                string_oeuvre_liste.add(String.format("\"%s\" : \"%s\"", "commande", commande_id));
                 string_oeuvre_liste.add(String.format("\"%s\" : \"%s\"", "auteur", auteur_id));
                 update = false;
         		
@@ -183,6 +183,7 @@ public class Documents {
 		                        	string_oeuvre_liste.add(String.format("\"%s\" : \"%s\"", noms_titres.get(index), Normalize.normalizeField(cell.getStringCellValue())));
 		                        }
 		                        
+		                        System.out.println(string_oeuvre_liste);
 		                        
 		                        break;
 		                }

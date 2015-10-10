@@ -37,6 +37,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
@@ -56,12 +57,6 @@ public class Fiche_commande_controller  implements Initializable{
 	private Label nom_commande_label;
 	@FXML
 	private TextField nomCommandeTextField;
-	@FXML
-	private TableView<Oeuvre> listView_oeuvres;
-	@FXML
-	private TableColumn<Oeuvre, String> oeuvre_nom_colonne;
-	@FXML
-	private TableColumn<Oeuvre, ImageView> oeuvre_fait_colonne;
 
 	@FXML
 	private TextArea remarques_client;
@@ -100,6 +95,10 @@ public class Fiche_commande_controller  implements Initializable{
 	
 	@FXML
 	private VBox commandeExportVbox;
+	@FXML
+	private TableView tableOeuvre;
+	@FXML
+	private TableColumn<Oeuvre, String> oeuvres_nom_colonne;
 	
 	@FXML
 	private GridPane traitementGrid;
@@ -245,10 +244,17 @@ public class Fiche_commande_controller  implements Initializable{
 		nomClientLabel.setText(client.getNom());
 		nomCommandeTextField.setDisable(true);
 		nomClientLabel.setText(client.getNom());
-		oeuvresCursor = MongoAccess.request("oeuvre", commande).as(Oeuvre.class);
 		
-		while (oeuvresCursor.hasNext()){
-			liste_oeuvres.add(oeuvresCursor.next());
+		if (commandeSelectionne != null){
+			
+			afficherOeuvres();
+			
+//			oeuvresCursor = MongoAccess.request("oeuvre", commandeSelectionne).as(Oeuvre.class);
+//			
+//			while (oeuvresCursor.hasNext()){
+//				liste_oeuvres.add(oeuvresCursor.next());
+//			}
+//			oeuvres_nom_colonne.setCellValueFactory(new PropertyValueFactory<Oeuvre, String>("nom"));
 		}
 		
 		for (ChoiceBox<Traitement> cbt : traitements_selectionnes){
@@ -311,6 +317,20 @@ public class Fiche_commande_controller  implements Initializable{
 		nomCommandeTextField.setText(c.getNom());
 		
 	}
+	
+    public void afficherOeuvres(){
+    	
+        oeuvresCursor = MongoAccess.request("oeuvre", commandeSelectionne).as(Oeuvre.class);
+		
+		while (oeuvresCursor.hasNext()){
+			liste_oeuvres.add(oeuvresCursor.next());
+		}
+		
+		oeuvres_nom_colonne.setCellValueFactory(new PropertyValueFactory<Oeuvre, String>("nom"));
+		
+		tableOeuvre.setItems(liste_oeuvres);
+		
+	}
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -345,8 +365,12 @@ public class Fiche_commande_controller  implements Initializable{
 			((ChoiceBox<Traitement>) cb).setItems(observableTraitements);
 			traitements_selectionnes.add(((ChoiceBox<Traitement>) cb));
 		}
+		
+		System.out.println(commande);
         
 		if (commande != null) {
+			
+			commandeSelectionne = commande;
 			
 			afficherCommande();
 			

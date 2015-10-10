@@ -24,8 +24,10 @@ public class Oeuvre extends Commun{
 	               format_de_conditionnement;
 	
 	private ObjectId auteur,
-	                 client;
-	
+	                 client,
+	                 commande;
+
+
 	private ArrayList<ObjectId> etats,
                                      jobs,
                                      traitements,
@@ -34,6 +36,29 @@ public class Oeuvre extends Commun{
 	@Override
 	public String toString(){
 		return this.cote_archives_6s;
+	}
+	
+	@Override
+	public String getNom(){
+		
+		System.out.println(getCote_archives_6s() + " " + Float.parseFloat(getCote_archives_6s() != "" ? getCote_archives_6s() : "0"));
+		
+		
+		try {
+			return String.format("%04d - %s", Integer.parseInt(getCote_archives_6s() != "" ? getCote_archives_6s() : "0") , titre_de_l_oeuvre);
+		}
+		catch (NumberFormatException nfe) {
+			return String.format("%04d - %s", Integer.parseInt(getCote_archives_6s() != "" ? getCote_archives_6s().split("\\.")[0] : "0") , titre_de_l_oeuvre);
+		}
+		
+	}
+	
+	public ObjectId getCommande() {
+		return commande;
+	}
+
+	public void setCommande(ObjectId commande) {
+		this.commande = commande;
 	}
 
 	public String getN_d_origine() {
@@ -45,7 +70,7 @@ public class Oeuvre extends Commun{
 	}
 
 	public String getCote_archives_6s() {
-		return cote_archives_6s;
+		return cote_archives_6s != null ? cote_archives_6s : "0";
 	}
 
 	public void setCote_archives_6s(String cote_archives_6s) {
