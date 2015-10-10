@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 import org.jongo.MongoCursor;
 
@@ -220,12 +221,17 @@ public class Fiche_commande_import_controller  implements Initializable{
 		commande.setDateFinProjet(dateFinProjetPicker.getValue());
 		commande.setRemarques(remarques_client.getText());
 		commande.setNom(nomCommandeTextField.getText());
+		
+		traitements_attendus.clear();
+		
 		for (Node cb : traitementGrid.getChildren()){
 			
 			ChoiceBox<Traitement> cbox = (ChoiceBox<Traitement>) cb;
 			Traitement t = cbox.getValue();
 
-			if (t != null){
+			if (t != null && 
+				!traitements_attendus.stream().map(a -> a.get_id().toString()).collect(Collectors.toList()).contains(t.get_id().toString())){
+
 				traitements_attendus.add(((ChoiceBox<Traitement>) cb).getValue());
 			}
 			
@@ -243,6 +249,7 @@ public class Fiche_commande_import_controller  implements Initializable{
 		   Commande.save(commande);
 		   onVersClientButton();
 		}
+		edit = false;
 	}
 	
 	public void afficherCommande(){
@@ -266,6 +273,11 @@ public class Fiche_commande_import_controller  implements Initializable{
 		}
 		
 		//listView_oeuvres.setItems(liste_oeuvres);
+		
+		for (ChoiceBox<Traitement> cbt : traitements_selectionnes){
+			cbt.setItems(null);
+			cbt.getSelectionModel().clearSelection();
+		}
         
         int i = 0;
 
@@ -274,8 +286,9 @@ public class Fiche_commande_import_controller  implements Initializable{
 			traitements_selectionnes.get(i).getSelectionModel().select(i);
 			i++;
 		}
+
 		
-		loadCommande(commande);
+		//loadCommande(commande);
 		
 	}
 	

@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 import org.jongo.MongoCursor;
 
@@ -199,12 +200,18 @@ public class Fiche_commande_controller  implements Initializable{
 		commande.setDateFinProjet(dateFinProjetPicker.getValue());
 		commande.setRemarques(remarques_client.getText());
 		commande.setNom(nomCommandeTextField.getText());
+		
+        traitements_attendus.clear();
+		
 		for (Node cb : traitementGrid.getChildren()){
 			
 			ChoiceBox<Traitement> cbox = (ChoiceBox<Traitement>) cb;
 			Traitement t = cbox.getValue();
 
-			if (t != null){
+			if (t != null && 
+				!traitements_attendus.stream().map(a -> a.get_id().toString()).collect(Collectors.toList()).contains(t.get_id().toString())){
+				
+				System.out.println("______\n" + t.get_id().toString() + "\n" + traitements_attendus.stream().map(a -> a.get_id().toString()).collect(Collectors.toList()));
 				traitements_attendus.add(((ChoiceBox<Traitement>) cb).getValue());
 			}
 			
@@ -244,12 +251,19 @@ public class Fiche_commande_controller  implements Initializable{
 			liste_oeuvres.add(oeuvresCursor.next());
 		}
 		
+		for (ChoiceBox<Traitement> cbt : traitements_selectionnes){
+			cbt.getSelectionModel().clearSelection();
+		}
+		
 		//listView_oeuvres.setItems(liste_oeuvres);
         
         int i = 0;
+        
+        ObservableList<Traitement> menuList = FXCollections.observableArrayList(commande.getTraitements_attendus());
+        menuList.add(null);
 
 		for (Traitement t : commande.getTraitements_attendus()){
-			traitements_selectionnes.get(i).setItems(FXCollections.observableArrayList(commande.getTraitements_attendus()));;
+			traitements_selectionnes.get(i).setItems(menuList);
 			traitements_selectionnes.get(i).getSelectionModel().select(i);
 			i++;
 		}
