@@ -10,6 +10,7 @@ import org.jongo.MongoCollection;
 import org.jongo.MongoCursor;
 import org.jongo.Update;
 
+import models.Auteur;
 import models.Client;
 import models.Commande;
 import models.Commun;
@@ -35,8 +36,8 @@ public class MongoAccess {
 	
 		try {
 			
-			MongoClientURI uri  = new MongoClientURI("mongodb://bea:beabaz@ds055852.mongolab.com:55852/heroku_g9z5lnn2"); 
-			//MongoClientURI uri  = new MongoClientURI("mongodb://127.0.0.1/test"); 
+			//MongoClientURI uri  = new MongoClientURI("mongodb://bea:beabaz@ds055852.mongolab.com:55852/heroku_g9z5lnn2"); 
+			MongoClientURI uri  = new MongoClientURI("mongodb://127.0.0.1/test"); 
 			MongoClient client = new MongoClient(uri);
 			db = client.getDB(uri.getDatabase());	
 			jongo = new Jongo(db);
@@ -124,8 +125,12 @@ public class MongoAccess {
 		collec.save(m);
 		
 	}
-
-
+	
+	public static void save (String table, Auteur a) {
+		collec = jongo.getCollection(table);
+		collec.save(a);
+		
+	}
 
 	public static void drop() {
 		collec.drop();

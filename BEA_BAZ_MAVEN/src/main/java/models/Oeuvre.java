@@ -9,11 +9,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Oeuvre {
-	
-	@JsonProperty("_id") 
-	@MongoObjectId
-    private ObjectId _id;
+public class Oeuvre extends Commun{
 	
 	private String n_d_origine,
 	               cote_archives_6s,
@@ -38,14 +34,6 @@ public class Oeuvre {
 	@Override
 	public String toString(){
 		return this.cote_archives_6s;
-	}
-
-	public ObjectId get_id() {
-		return _id;
-	}
-
-	public void set_id( ObjectId _id) {
-		this._id = _id;
 	}
 
 	public String getN_d_origine() {

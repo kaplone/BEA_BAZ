@@ -56,7 +56,8 @@ public class Documents {
 			
 		}
 		catch (MarshallingException | NullPointerException MEME)  {
-			auteur = new Auteur("Jean-Claude Golvin");
+			auteur = new Auteur();
+			auteur.setNom("Jean-Claude Golvin");
 			utils.MongoAccess.save("auteur", auteur);
 			auteur_id = auteur.get_id();
 		}
@@ -137,9 +138,7 @@ public class Documents {
                 o = new Oeuvre();
                 string_oeuvre = "";
                 string_oeuvre_liste.clear();
-                
-                System.out.println(auteur_id);
-                
+  
                 string_oeuvre_liste.add(String.format("\"%s\" : \"%s\"", "auteur", auteur_id));
                 update = false;
         		
@@ -197,6 +196,8 @@ public class Documents {
 	
 	            
 	            string_oeuvre = string_oeuvre_liste.stream().collect(Collectors.joining(", ", "{", "}"));
+	            
+	            System.out.println(string_oeuvre);
 	
 	            o = mapper.readValue(string_oeuvre, Oeuvre.class);
 	            

@@ -1,5 +1,7 @@
 package application;
 
+import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -41,9 +43,10 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
-public class Fiche_commande_controller  implements Initializable{
+public class Fiche_commande_import_controller  implements Initializable{
 	
 	@FXML
 	private ObservableList<Oeuvre> liste_oeuvres;
@@ -61,7 +64,7 @@ public class Fiche_commande_controller  implements Initializable{
 	private TableColumn<Oeuvre, String> oeuvre_nom_colonne;
 	@FXML
 	private TableColumn<Oeuvre, ImageView> oeuvre_fait_colonne;
-
+	
 	@FXML
 	private TextArea remarques_client;
 	@FXML
@@ -98,6 +101,22 @@ public class Fiche_commande_controller  implements Initializable{
 	private DatePicker dateFinProjetPicker;
 	
 	@FXML
+	private TextField file_path_textField;
+	@FXML
+	private Button select_file_button;
+	@FXML
+	private Button import_file_button;
+	
+	@FXML
+	private GridPane grid;
+	@FXML
+	private HBox hbox_1;
+	@FXML
+	private HBox hbox_2;
+	@FXML
+	private HBox hbox_3;
+	
+	@FXML
 	private VBox commandeExportVbox;
 	
 	@FXML
@@ -118,6 +137,8 @@ public class Fiche_commande_controller  implements Initializable{
 	private Commande commandeSelectionne;
 	
 	private Client client;
+	
+	private File file;
 	
 	
 	private boolean edit = false;
@@ -258,17 +279,44 @@ public class Fiche_commande_controller  implements Initializable{
 		
 	}
 	
+    protected File chooseExport(){
+		
+		Stage newStage = new Stage();
+		
+		FileChooser fileChooser = new FileChooser();
+		fileChooser.setTitle("Fichier à importer");
+		fileChooser.getExtensionFilters().addAll(
+		         new FileChooser.ExtensionFilter("feuille de calcul", "*.xlsx"));
+		File selectedFile = fileChooser.showOpenDialog(newStage);
+		if (selectedFile != null) {
+			 return selectedFile;
+		}
+		else {
+			 return (File) null;
+		}
+		
+	}
+	
+	@FXML
+	public void on_select_file_button(){
+		
+		file = chooseExport();
+		try {
+			Documents.init();
+			Documents.read(file);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	@FXML
+	public void on_import_file_button(){}
     @FXML
     public void onVersCommandeButton(){}
     @FXML
     public void onVersOeuvreButton(){}
     @FXML
-    public void onImporterButton(){
-    	Scene fiche_commande_import_scene = new Scene((Parent) JfxUtils.loadFxml("/views/fiche_commande_import.fxml"), 1275, 722);
-		fiche_commande_import_scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
-		
-		currentStage.setScene(fiche_commande_import_scene);
-    }
+    public void onVersRapportButton(){}
     @FXML
     public void onVersFichierButton(){}
     @FXML
@@ -284,8 +332,6 @@ public class Fiche_commande_controller  implements Initializable{
     public void onExporterToutButton(){}
 	@FXML
     public void onRapportsButton(){}
-	@FXML
-    public void onVersRapportButton(){}
 	
 	public void loadCommande(Commande c){
 		
@@ -310,6 +356,11 @@ public class Fiche_commande_controller  implements Initializable{
 		versCommandeButton.setVisible(false);
 		versOeuvreButton.setVisible(false);
 		versRapportButton.setVisible(false);
+		
+		grid.setVisible(false);
+		hbox_1.setVisible(false);
+		hbox_2.setVisible(false);
+		hbox_3.setVisible(false);
 		
 		currentStage = Main_BEA_BAZ.getStage();
 		
