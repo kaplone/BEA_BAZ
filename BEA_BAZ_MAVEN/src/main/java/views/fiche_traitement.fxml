@@ -54,6 +54,24 @@
                   </Label>
                </children>
             </Pane>
+            <HBox alignment="CENTER_LEFT" prefHeight="73.0" prefWidth="1019.0">
+               <children>
+                  <Button fx:id="selectFileButton" mnemonicParsing="false" onAction="#on_select_file_button" text="Selectionner un fichier" />
+                  <TextField fx:id="file_path_textField" prefHeight="25.0" prefWidth="440.0">
+                     <HBox.margin>
+                        <Insets left="10.0" />
+                     </HBox.margin>
+                  </TextField>
+                  <Button fx:id="importerButton" mnemonicParsing="false" onAction="#on_import_file_button" text="Importer">
+                     <HBox.margin>
+                        <Insets left="10.0" />
+                     </HBox.margin>
+                  </Button>
+               </children>
+               <VBox.margin>
+                  <Insets left="10.0" top="40.0" />
+               </VBox.margin>
+            </HBox>
             <GridPane prefHeight="400.0" prefWidth="869.0" VBox.vgrow="NEVER">
               <columnConstraints>
                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="429.0" minWidth="10.0" prefWidth="100.0" />
@@ -61,8 +79,8 @@
               </columnConstraints>
               <rowConstraints>
                 <RowConstraints maxHeight="30.0" minHeight="30.0" prefHeight="30.0" valignment="CENTER" vgrow="NEVER" />
-                  <RowConstraints maxHeight="179.0" minHeight="7.0" prefHeight="35.0" vgrow="SOMETIMES" />
-                <RowConstraints maxHeight="359.0" minHeight="30.0" prefHeight="331.0" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="179.0" minHeight="7.0" prefHeight="41.0" vgrow="SOMETIMES" />
+                <RowConstraints maxHeight="359.0" minHeight="30.0" prefHeight="296.0" vgrow="SOMETIMES" />
               </rowConstraints>
                <VBox.margin>
                   <Insets left="10.0" right="10.0" top="50.0" />
@@ -80,7 +98,7 @@
                      </GridPane.margin></TextArea>
                   <TextField fx:id="nom_traitement_textField" maxHeight="25.0" minHeight="25.0" prefHeight="25.0" GridPane.columnIndex="1" GridPane.rowIndex="0" GridPane.valignment="CENTER" GridPane.vgrow="NEVER" />
                   <Label text="Nom complet : " GridPane.rowIndex="1" />
-                  <TextField fx:id="nom_complet_traitement_textField1" maxHeight="25.0" minHeight="25.0" prefHeight="25.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                  <TextField fx:id="nom_complet_traitement_textField" maxHeight="25.0" minHeight="25.0" prefHeight="25.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                </children>
             </GridPane>
             <HBox fx:id="hbox" alignment="TOP_CENTER" prefHeight="50.0" prefWidth="200.0">

@@ -20,8 +20,11 @@ public class Main_BEA_BAZ extends Application {
 	private static Client client;
 	
 	private static Traitement traitement;
+	private static Traitement traitementEdited;
 	
 	private static Produit detail;
+	
+	
 
 	@Override
 	public void start(Stage primaryStage) {
@@ -91,5 +94,14 @@ public class Main_BEA_BAZ extends Application {
 		Main_BEA_BAZ.detail = detail;
 	}
 
+	public static Traitement getTraitementEdited() {
+		return traitementEdited;
+	}
+
+	public static void setTraitementEdited(Traitement traitementEdited) {
+		Main_BEA_BAZ.traitementEdited = traitementEdited;
+	}
+    
+	
 	
 }

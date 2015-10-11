@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 import org.jongo.MongoCursor;
 
@@ -63,6 +64,8 @@ public class Fiche_produit_controller  implements Initializable{
 	@FXML
 	private Button versProduitsButton;
 	@FXML
+	private Button lier_button;
+	@FXML
 	private TextField file_path_textField;
 	
 	@FXML
@@ -82,19 +85,11 @@ public class Fiche_produit_controller  implements Initializable{
 
 	MongoCursor<Produit> produitCursor ;
 	Produit produitSelectionne;
+	Traitement traitementSelectionne;
 	
 	Stage currentStage;
 
 	Produit detail;
-	
-	@FXML
-	public void onVersCommandeButton(){
-		
-		Scene fiche_commande_scene = new Scene((Parent) JfxUtils.loadFxml("/views/fiche_commande.fxml"), 1275, 722);
-		fiche_commande_scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
-		
-		currentStage.setScene(fiche_commande_scene);	
-	}
 	
 	@FXML
 	public void onVersClientButton(){
@@ -103,6 +98,15 @@ public class Fiche_produit_controller  implements Initializable{
 		fiche_client_scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 		
 		currentStage.setScene(fiche_client_scene);	
+	}
+	
+	@FXML
+	public void onVersTraitementButton(){
+		
+		Scene fiche_traitement_scene = new Scene((Parent) JfxUtils.loadFxml("/views/fiche_traitement.fxml"), 1275, 722);
+		fiche_traitement_scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+		
+		currentStage.setScene(fiche_traitement_scene);	
 	}
 	
     protected File chooseExport(){
@@ -294,15 +298,11 @@ public class Fiche_produit_controller  implements Initializable{
     }
     
     @FXML
-    public void onVerstraitementButton(){}
-    @FXML
     public void onVersOeuvreButton(){}
     @FXML
     public void onAjoutDetail(){}
     @FXML
     public void onVersFichierButton(){}
-    @FXML
-    public void onVersTraitementButton(){}
     @FXML
     public void onVersModeleButton(){}
     @FXML
@@ -311,12 +311,28 @@ public class Fiche_produit_controller  implements Initializable{
     	produitSelectionne = listView_produits.getSelectionModel().getSelectedItem();
     	Main_BEA_BAZ.setDetail(produitSelectionne);
     	afficherProduit();	
-    }    	
+    }   
+    @FXML
+    public void on_lier_button(){
+    	
+    	System.out.println(produitSelectionne);
+    	System.out.println(traitementSelectionne);
+    	
+    	if (traitementSelectionne.getProduits().size() != 0 && ! traitementSelectionne.getProduits().stream().map(a -> a.getNom_complet()).collect(Collectors.toList()).contains(produitSelectionne.getNom_complet())){
+    		traitementSelectionne.getProduits().add(produitSelectionne);
+    		Traitement.update(traitementSelectionne);
+    	}
+    	else if (traitementSelectionne.getProduits().size() == 0){
+    		traitementSelectionne.getProduits().add(produitSelectionne);
+    		Traitement.update(traitementSelectionne);
+    	}
+    }
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 
 		produitSelectionne = Main_BEA_BAZ.getDetail();
+		traitementSelectionne = Main_BEA_BAZ.getTraitementEdited();
 
 		utils.MongoAccess.connect();
 		
@@ -326,7 +342,7 @@ public class Fiche_produit_controller  implements Initializable{
         mise_a_jour_traitement.setVisible(false);
 		annuler.setVisible(false);
 		
-		versCommandeButton.setVisible(true);
+		versCommandeButton.setVisible(false);
 		versTraitementButton.setVisible(true);
 		versModeleButton.setVisible(false);
 		versOeuvreButton.setVisible(false);
@@ -334,7 +350,14 @@ public class Fiche_produit_controller  implements Initializable{
 		versFichierButton.setVisible(false);
 		versProduitsButton.setVisible(false);
 		
-		nom_traitement_label.setText("");
+		if (traitementSelectionne != null){
+			nom_traitement_label.setText("Edition pour " + traitementSelectionne.getNom());
+			lier_button.setVisible(true);
+		}
+		else {
+			nom_traitement_label.setText("");
+			lier_button.setVisible(false);
+		}
 
 		liste_produits  = FXCollections.observableArrayList();
 		

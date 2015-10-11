@@ -16,6 +16,10 @@ public class Traitement extends Commun{
 	
 	private ArrayList<Produit> produits;
 	
+	public Traitement(){
+		this.produits = new ArrayList<>();
+	}
+	
 	public static void update(Traitement t){
 
 		MongoAccess.update("traitement", t);

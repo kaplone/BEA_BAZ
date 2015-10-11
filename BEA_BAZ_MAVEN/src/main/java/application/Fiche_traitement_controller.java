@@ -39,7 +39,7 @@ public class Fiche_traitement_controller  implements Initializable{
 	@FXML
 	private ListView<Traitement> listView_traitements;
 	@FXML
-	private ListView<Produit> listView_details;
+	private ListView<Produit> listView_produits;
 	@FXML
 	private Button nouveau_traitement;
 	@FXML
@@ -69,6 +69,8 @@ public class Fiche_traitement_controller  implements Initializable{
 	private Label nom_traitement_label;
 	@FXML
 	private TextField nom_traitement_textField;
+	@FXML
+	private TextField nom_complet_traitement_textField;
 	@FXML
 	private TextArea remarques_traitement_textArea;
 	
@@ -111,21 +113,26 @@ public class Fiche_traitement_controller  implements Initializable{
 	public void onTraitementSelect(){
 		
 		traitementSelectionne = listView_traitements.getSelectionModel().getSelectedItem();
-		affichageInfos(traitementSelectionne);	
+		Main_BEA_BAZ.setTraitement(traitementSelectionne);
+		affichageInfos();	
 	}
 	
 	@FXML
 	public void onDetailSelect(){
 		
-		detailSelectionne = listView_details.getSelectionModel().getSelectedItem();
-		Main_BEA_BAZ.setDetail(detailSelectionne);
+		detailSelectionne = listView_produits.getSelectionModel().getSelectedItem();
 		
-		Scene fiche_detail_scene = new Scene((Parent) JfxUtils.loadFxml("/views/fiche_detail.fxml"), 1275, 722);
-		fiche_detail_scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
-		currentStage.setScene(fiche_detail_scene);	
+		if (detailSelectionne != null){
+			Main_BEA_BAZ.setDetail(detailSelectionne);
+			
+			Scene fiche_detail_scene = new Scene((Parent) JfxUtils.loadFxml("/views/fiche_detail.fxml"), 1275, 722);
+			fiche_detail_scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+			currentStage.setScene(fiche_detail_scene);	
+		}
+		
 	}
 	
-protected File chooseExport(){
+    protected File chooseExport(){
 		
 		Stage newStage = new Stage();
 		
@@ -154,31 +161,30 @@ protected File chooseExport(){
 		try {
 			Documents.init();
 			Documents.read(file, "traitement");
+			afficherTraitements();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 	
-    private void affichageInfos(Traitement traitementSelectionne){
+	
+	
+    private void affichageInfos(){
 
     	
     	nom_traitement_textField.setText(traitementSelectionne.getNom());
+    	nom_traitement_label.setText(traitementSelectionne.getNom());
+    	nom_complet_traitement_textField.setText(traitementSelectionne.getNom_complet());
     	remarques_traitement_textArea.setText(traitementSelectionne.getRemarques());
-    	
-    	traitementSelectionne = Main_BEA_BAZ.getTraitement();
     	
     	liste_details.clear();
     	
     	if (traitementSelectionne != null){
     		
-    		detailCursor = MongoAccess.request("detail", traitementSelectionne).as(Produit.class);
-    		
-    		while (detailCursor.hasNext()){
-    			Produit enplus = detailCursor.next();
-    			liste_details.add(enplus);
-    		}	
-    		listView_details.setItems(liste_details);		
+            liste_details.addAll(traitementSelectionne.getProduits());
+			
+			listView_produits.setItems(liste_details);		
     	}	
     }
     
@@ -213,7 +219,7 @@ protected File chooseExport(){
     	nouveau_traitement.setText("Nouveau traitement");
     	rafraichirAffichage();
     	listView_traitements.getSelectionModel().select(traitementSelectionne);
-    	affichageInfos(traitementSelectionne);
+    	affichageInfos();
     	
     }
     
@@ -260,7 +266,7 @@ protected File chooseExport(){
 		nouveau_traitement.setVisible(true);
 		rafraichirAffichage();
 		listView_traitements.getSelectionModel().select(traitementSelectionne);
-    	affichageInfos(traitementSelectionne);
+    	affichageInfos();
     	
     	edit = false;
     	
@@ -313,12 +319,38 @@ protected File chooseExport(){
 		rafraichirAffichage();
     }
     
+    public void afficherTraitements(){
+
+		remarques_traitement_textArea.setEditable(false);
+        editer.setVisible(true);
+        mise_a_jour_traitement.setVisible(false);
+		annuler.setVisible(false);
+		fiche_traitement_label.setText("FICHE TRAITEMENT :");
+		nom_traitement_textField.setDisable(true);
+		remarques_traitement_textArea.setDisable(true);
+		
+        liste_traitements.clear();
+    	
+    	if (traitementSelectionne != null){
+    		
+    		traitementCursor = MongoAccess.request("traitement").as(Traitement.class);
+    		
+    		while (traitementCursor.hasNext()){
+    			Traitement enplus = traitementCursor.next();
+    			liste_traitements.add(enplus);
+    		}	
+    		listView_traitements.setItems(liste_traitements);	
+    		
+    		rafraichirAffichage();
+    	}
+		
+		
+    }
+    
     @FXML
     public void onVerstraitementButton(){}
     @FXML
     public void onVersOeuvreButton(){}
-    @FXML
-    public void onAjoutDetail(){}
     @FXML
     public void onVersFichierButton(){}
     @FXML
@@ -326,7 +358,15 @@ protected File chooseExport(){
     @FXML
     public void onVersModeleButton(){}
     @FXML
-    public void onAjoutProduit(){}
+    public void onAjoutProduit(){
+    	
+    	Main_BEA_BAZ.setTraitementEdited(listView_traitements.getSelectionModel().getSelectedItem());
+    	
+    	Scene fiche_produit_scene = new Scene((Parent) JfxUtils.loadFxml("/views/fiche_produit.fxml"), 1275, 722);
+		fiche_produit_scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+		
+		currentStage.setScene(fiche_produit_scene);
+    }
     @FXML
     public void onVersClientButton(){
     	Scene fiche_client_scene = new Scene((Parent) JfxUtils.loadFxml("/views/fiche_client.fxml"), 1275, 722);
@@ -339,6 +379,8 @@ protected File chooseExport(){
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
+		
+		Main_BEA_BAZ.setTraitementEdited(null);
 		
 		detail = Main_BEA_BAZ.getDetail();
 		traitementSelectionne = Main_BEA_BAZ.getTraitement();
@@ -358,6 +400,7 @@ protected File chooseExport(){
 		versRapportButton.setVisible(false);
 		versFichierButton.setVisible(false);
 		
+		
 		liste_traitements = FXCollections.observableArrayList();
 		liste_details  = FXCollections.observableArrayList();
 		
@@ -374,14 +417,14 @@ protected File chooseExport(){
 		
 		if (traitementSelectionne != null){
 			
-			detailCursor = MongoAccess.request("detail", traitementSelectionne).as(Produit.class);
+			detailCursor = MongoAccess.request("produit", traitementSelectionne).as(Produit.class);
 			
 			while (detailCursor.hasNext()){
 				Produit enplus = detailCursor.next();
 				liste_details.add(enplus);
 			}
 			
-			listView_details.setItems(liste_details);
+			listView_produits.setItems(liste_details);
 		}
         
 		

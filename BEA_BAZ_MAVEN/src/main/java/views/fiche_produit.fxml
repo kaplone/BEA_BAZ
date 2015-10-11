@@ -83,10 +83,18 @@
                </VBox.margin>
                <children>
                   <Button fx:id="mise_a_jour_traitement" mnemonicParsing="false" onAction="#onMiseAJourTraitementButton" text="Mise à jour" />
-                  <Button fx:id="editer" mnemonicParsing="false" onAction="#onEditerTraitementButton" text="Editer" />
+                  <Button fx:id="editer" mnemonicParsing="false" onAction="#onEditerTraitementButton" text="Editer">
+                     <HBox.margin>
+                        <Insets left="10.0" />
+                     </HBox.margin></Button>
                   <Button fx:id="annuler" mnemonicParsing="false" onAction="#onAnnulerEditButton" text="Annuler">
                      <HBox.margin>
                         <Insets left="50.0" />
+                     </HBox.margin>
+                  </Button>
+                  <Button fx:id="lier_button" mnemonicParsing="false" onAction="#on_lier_button" text="Lier le produit">
+                     <HBox.margin>
+                        <Insets left="10.0" />
                      </HBox.margin>
                   </Button>
                </children>
@@ -130,7 +138,7 @@
                   <Insets right="10.0" />
                </HBox.margin>
             </Button>
-            <Button fx:id="versTraitementButton" mnemonicParsing="false" text="Traitements" />
+            <Button fx:id="versTraitementButton" mnemonicParsing="false" onAction="#onVersTraitementButton" text="Traitements" />
             <Button fx:id="versProduitsButton" mnemonicParsing="false" text="Produits">
                <HBox.margin>
                   <Insets left="10.0" />
