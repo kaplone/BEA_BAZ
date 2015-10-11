@@ -158,6 +158,15 @@ public class Fiche_commande_import_controller  implements Initializable{
 	}
 	
 	@FXML
+	public void onVersProduitsButton(){
+		
+		Scene fiche_produit_scene = new Scene((Parent) JfxUtils.loadFxml("/views/fiche_produit.fxml"), 1275, 722);
+		fiche_produit_scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+		
+		currentStage.setScene(fiche_produit_scene);	
+	}
+	
+	@FXML
 	public void onEditerButton(){
 		
 		importCommandeButton.setDisable(true);
@@ -407,23 +416,23 @@ public class Fiche_commande_import_controller  implements Initializable{
 		currentStage = Main_BEA_BAZ.getStage();
 		
 		liste_oeuvres = FXCollections.observableArrayList();
-		observableTraitements = FXCollections.observableArrayList();
-		
-		traitements_attendus = new ArrayList<>();
-		traitements_selectionnes = new ArrayList<>();
-		
-		MongoCursor<Traitement> mgCursor = MongoAccess.request("traitement").as(Traitement.class);
-		
-		while (mgCursor.hasNext()){
-			observableTraitements.addAll(mgCursor.next());
-		}
-		
-		
-		for (Node cb : traitementGrid.getChildren()){
-			
-			((ChoiceBox<Traitement>) cb).setItems(observableTraitements);
-			traitements_selectionnes.add(((ChoiceBox<Traitement>) cb));
-		}
+//		observableTraitements = FXCollections.observableArrayList();
+//		
+//		traitements_attendus = new ArrayList<>();
+//		traitements_selectionnes = new ArrayList<>();
+//		
+//		MongoCursor<Traitement> mgCursor = MongoAccess.request("traitement").as(Traitement.class);
+//		
+//		while (mgCursor.hasNext()){
+//			observableTraitements.addAll(mgCursor.next());
+//		}
+//		
+//		
+//		for (Node cb : traitementGrid.getChildren()){
+//			
+//			((ChoiceBox<Traitement>) cb).setItems(observableTraitements);
+//			traitements_selectionnes.add(((ChoiceBox<Traitement>) cb));
+//		}
         
 		if (commande != null) {
 			

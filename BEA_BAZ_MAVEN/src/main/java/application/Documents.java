@@ -19,6 +19,9 @@ import models.Etat;
 import models.Job;
 import models.Modele;
 import models.Oeuvre;
+import models.Produit;
+import models.Traitement;
+import enums.Classes;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -28,6 +31,8 @@ import org.bson.types.ObjectId;
 import org.jongo.marshall.MarshallingException;
 import org.jongo.marshall.jackson.JacksonMapper;
 import org.jongo.marshall.jackson.oid.MongoObjectId;
+
+import utils.Normalize;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
@@ -61,6 +66,209 @@ public class Documents {
 			utils.MongoAccess.save("auteur", auteur);
 			auteur_id = auteur.get_id();
 		}
+		
+	}
+	
+	public static void read(File file_, String table_) throws IOException {
+		
+        FileInputStream file = new FileInputStream(file_);
+		
+		int nb_colonnes = 0;
+		
+		int index = 0;
+		
+		boolean titres = true;
+		boolean update = false;
+		
+		ArrayList<String> string_produit_liste = new ArrayList<>();
+		
+		ObjectMapper mapper = new ObjectMapper();
+		 
+        //Create Workbook instance holding reference to .xlsx file
+        XSSFWorkbook workbook = new XSSFWorkbook(file);
+
+        //Get first/desired sheet from the workbook
+        XSSFSheet sheet = workbook.getSheetAt(0);
+
+        //Iterate through each rows one by one
+        Iterator<Row> rowIterator = sheet.iterator();
+        
+        String string_produit = "";
+        
+        Produit p;
+        Traitement t;
+        
+        while (rowIterator.hasNext())
+        {
+
+        	Row row = rowIterator.next();
+        	
+        	String [] champs = new String[2];
+        	
+        	switch (table_){
+        	
+	        	case "produit" :
+	
+		        	try {
+		                if (utils.MongoAccess.request(table_, "nom_complet", row.getCell(0).getStringCellValue()).as(Classes.valueOf(table_).getUsedClass()) != null){
+		                	
+		                	p = (Produit) utils.MongoAccess.request(table_, "nom_complet", row.getCell(0).getStringCellValue()).as(Classes.valueOf(table_).getUsedClass());
+		                	update = true;
+		                }
+		                else {
+		                	
+		                	p = new Produit();
+		                    string_produit = "";
+		                    string_produit_liste.clear();
+		                    
+		                    update = false;
+		                }
+		        	}
+		
+		        	catch (NullPointerException mpe){
+		        		
+		                p = new Produit();
+		                string_produit = "";
+		                string_produit_liste.clear();
+		                update = false;
+		        		
+		        	}
+		        	
+		        	if (update) {
+		        		
+		        	}
+		        	else{
+			            
+			            //For each row, iterate through all the columns
+			            Iterator<Cell> cellIterator = row.cellIterator();
+			            
+			            
+			
+			            while (cellIterator.hasNext())
+			            {
+			                Cell cell = cellIterator.next();
+			                
+			                // le premier passage est 'à vide'
+			                // c'est la liste des champs
+			                if (titres){
+		
+			            	}
+			                // les valeurs suivantes servent à construire 
+			                // une json string
+			            	else {
+			
+			            		champs [index] = (String) Normalize.normalizeField(cell.getStringCellValue()); 	
+		
+				                }
+				                index ++; // on  avance dans la liste des champs
+			            	}
+			            }
+			            
+		        	    
+		        	
+			            titres = false; // après le premier passage ce ne sera plus un titre
+			            
+			            index = 0; // on initialise pour la prochaine ligne
+			            
+			            if (champs[0] != null){
+			            	
+			            	string_produit = String.format("{\"nom_complet\" : \"%s\", \"nom\" : \"%s\"}", champs[0], champs[1]);
+
+				            p = mapper.readValue(string_produit, Produit.class);
+				            
+				            utils.MongoAccess.save("produit", p);
+			            	
+			            }
+			            
+			            
+	            break;
+	        
+	        case "traitement" :
+	        	
+	        	try {
+	                if (utils.MongoAccess.request(table_, "nom_complet", row.getCell(0).getStringCellValue()).as(Classes.valueOf(table_).getUsedClass()) != null){
+	                	
+	                	t = (Traitement) utils.MongoAccess.request(table_, "nom_complet", row.getCell(0).getStringCellValue()).as(Classes.valueOf(table_).getUsedClass());
+	                	update = true;
+	                }
+	                else {
+	                	
+	                	t = new Traitement();
+	                    string_produit = "";
+	                    string_produit_liste.clear();
+	                    
+	                    update = false;
+	                }
+	        	}
+	
+	        	catch (NullPointerException mpe){
+	        		
+	                t = new Traitement();
+	                string_produit = "";
+	                string_produit_liste.clear();
+	                update = false;
+	        		
+	        	}
+	        	
+	        	if (update) {
+	        		
+	        	}
+	        	else{
+		            
+		            //For each row, iterate through all the columns
+		            Iterator<Cell> cellIterator = row.cellIterator();
+		            
+		            
+		
+		            while (cellIterator.hasNext())
+		            {
+		                Cell cell = cellIterator.next();
+		                
+		                // le premier passage est 'à vide'
+		                // c'est la liste des champs
+		                if (titres){
+	
+		            	}
+		                // les valeurs suivantes servent à construire 
+		                // une json string
+		            	else {
+		
+		            		champs [index] = (String) Normalize.normalizeField(cell.getStringCellValue()); 	
+	
+			                }
+			                index ++; // on  avance dans la liste des champs
+		            	}
+		            }
+		            
+	        	    
+	        	
+		            titres = false; // après le premier passage ce ne sera plus un titre
+		            
+		            index = 0; // on initialise pour la prochaine ligne
+		            
+		            if (champs[0] != null){
+		            	
+		            	string_produit = String.format("{\"nom_complet\" : \"%s\", \"nom\" : \"%s\"}", champs[0], champs[1]);
+
+			            t = (Traitement) mapper.readValue(string_produit, Classes.valueOf(table_).getUsedClass());
+			            
+			            utils.MongoAccess.save(table_, t);
+		            	
+		            }
+		            
+		            
+	        	
+	            break;
+	        
+	        default : break;
+	        	
+	}
+	        	
+        
+        workbook.close();
+        file.close();
+
+	}
 		
 	}
 

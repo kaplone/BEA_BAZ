@@ -75,10 +75,19 @@ public class Fiche_client_controller  implements Initializable{
 	@FXML
 	public void onVersCommandeButton(){
 		
-		Scene fiche_commande_scene = new Scene((Parent) JfxUtils.loadFxml("/views/fiche_commande.fxml"), 1275, 722);
-		fiche_commande_scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+//		Scene fiche_commande_scene = new Scene((Parent) JfxUtils.loadFxml("/views/fiche_commande.fxml"), 1275, 722);
+//		fiche_commande_scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+//		
+//		currentStage.setScene(fiche_commande_scene);	
+	}
+	
+	@FXML
+	public void onVersProduitsButton(){
 		
-		currentStage.setScene(fiche_commande_scene);	
+		Scene fiche_produit_scene = new Scene((Parent) JfxUtils.loadFxml("/views/fiche_produit.fxml"), 1275, 722);
+		fiche_produit_scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+		
+		currentStage.setScene(fiche_produit_scene);	
 	}
 	
 

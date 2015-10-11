@@ -2,7 +2,7 @@ package application;
 	
 import models.Client;
 import models.Commande;
-import models.Complement;
+import models.Produit;
 import models.Traitement;
 import application.JfxUtils;
 import javafx.application.Application;
@@ -21,7 +21,7 @@ public class Main_BEA_BAZ extends Application {
 	
 	private static Traitement traitement;
 	
-	private static Complement detail;
+	private static Produit detail;
 
 	@Override
 	public void start(Stage primaryStage) {
@@ -83,11 +83,11 @@ public class Main_BEA_BAZ extends Application {
 		Main_BEA_BAZ.traitement = traitement;
 	}
 
-	public static Complement getDetail() {
+	public static Produit getDetail() {
 		return detail;
 	}
 
-	public static void setDetail(Complement detail) {
+	public static void setDetail(Produit detail) {
 		Main_BEA_BAZ.detail = detail;
 	}
 

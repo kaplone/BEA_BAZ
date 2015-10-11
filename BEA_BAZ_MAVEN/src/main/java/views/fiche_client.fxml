@@ -153,6 +153,11 @@
                </HBox.margin>
             </Button>
             <Button fx:id="versTraitementButton" mnemonicParsing="false" onAction="#onVersTraitementButton" text="Traitements" />
+            <Button fx:id="versProduitsButton" mnemonicParsing="false" onAction="#onVersProduitsButton" text="Produits">
+               <HBox.margin>
+                  <Insets left="10.0" />
+               </HBox.margin>
+            </Button>
          </children>
       </HBox>
    </top>

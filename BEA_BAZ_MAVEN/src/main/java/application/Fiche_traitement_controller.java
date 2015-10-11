@@ -1,5 +1,7 @@
 package application;
 
+import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -7,7 +9,7 @@ import org.jongo.MongoCursor;
 
 import utils.MongoAccess;
 import models.Commande;
-import models.Complement;
+import models.Produit;
 import models.Traitement;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -23,6 +25,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 public class Fiche_traitement_controller  implements Initializable{
@@ -30,12 +33,13 @@ public class Fiche_traitement_controller  implements Initializable{
 	@FXML
 	private ObservableList<Traitement> liste_traitements;
 	@FXML
-	private ObservableList<Complement> liste_details;
-	
+	private ObservableList<Produit> liste_details;
+	@FXML
+	private TextField file_path_textField;
 	@FXML
 	private ListView<Traitement> listView_traitements;
 	@FXML
-	private ListView<Complement> listView_details;
+	private ListView<Produit> listView_details;
 	@FXML
 	private Button nouveau_traitement;
 	@FXML
@@ -71,14 +75,33 @@ public class Fiche_traitement_controller  implements Initializable{
 	private boolean edit = false;
 	
 	MongoCursor<Traitement> traitementCursor;
-	MongoCursor<Complement> detailCursor ;
+	MongoCursor<Produit> detailCursor ;
 	Traitement traitementSelectionne;
-	Complement detailSelectionne;
+	Produit detailSelectionne;
 	
 	Stage currentStage;
 
-	Complement detail;
+	Produit detail;
 	
+	private File file;
+	
+	@FXML
+	public void onVersProduitsButton(){
+		
+		Scene fiche_produit_scene = new Scene((Parent) JfxUtils.loadFxml("/views/fiche_produit.fxml"), 1275, 722);
+		fiche_produit_scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+		
+		currentStage.setScene(fiche_produit_scene);	
+	}
+	
+	@FXML
+	public void onVersCommandeButton(){
+		
+		Scene fiche_commande_scene = new Scene((Parent) JfxUtils.loadFxml("/views/fiche_commande.fxml"), 1275, 722);
+		fiche_commande_scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+		
+		currentStage.setScene(fiche_commande_scene);	
+	}	
 
 	@FXML
 	public void onAjoutTraitement(){
@@ -102,6 +125,41 @@ public class Fiche_traitement_controller  implements Initializable{
 		currentStage.setScene(fiche_detail_scene);	
 	}
 	
+protected File chooseExport(){
+		
+		Stage newStage = new Stage();
+		
+		FileChooser fileChooser = new FileChooser();
+		fileChooser.setTitle("Fichier à importer");
+		fileChooser.getExtensionFilters().addAll(
+		         new FileChooser.ExtensionFilter("feuille de calcul", "*.xlsx"));
+		File selectedFile = fileChooser.showOpenDialog(newStage);
+		if (selectedFile != null) {
+			 return selectedFile;
+		}
+		else {
+			 return (File) null;
+		}
+		
+	}
+	
+	@FXML
+	public void on_select_file_button(){
+		
+		file = chooseExport();
+		file_path_textField.setText(file.toString());
+	}
+	@FXML
+	public void on_import_file_button(){
+		try {
+			Documents.init();
+			Documents.read(file, "traitement");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
     private void affichageInfos(Traitement traitementSelectionne){
 
     	
@@ -114,10 +172,10 @@ public class Fiche_traitement_controller  implements Initializable{
     	
     	if (traitementSelectionne != null){
     		
-    		detailCursor = MongoAccess.request("detail", traitementSelectionne).as(Complement.class);
+    		detailCursor = MongoAccess.request("detail", traitementSelectionne).as(Produit.class);
     		
     		while (detailCursor.hasNext()){
-    			Complement enplus = detailCursor.next();
+    			Produit enplus = detailCursor.next();
     			liste_details.add(enplus);
     		}	
     		listView_details.setItems(liste_details);		
@@ -268,6 +326,8 @@ public class Fiche_traitement_controller  implements Initializable{
     @FXML
     public void onVersModeleButton(){}
     @FXML
+    public void onAjoutProduit(){}
+    @FXML
     public void onVersClientButton(){
     	Scene fiche_client_scene = new Scene((Parent) JfxUtils.loadFxml("/views/fiche_client.fxml"), 1275, 722);
 		fiche_client_scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
@@ -314,10 +374,10 @@ public class Fiche_traitement_controller  implements Initializable{
 		
 		if (traitementSelectionne != null){
 			
-			detailCursor = MongoAccess.request("detail", traitementSelectionne).as(Complement.class);
+			detailCursor = MongoAccess.request("detail", traitementSelectionne).as(Produit.class);
 			
 			while (detailCursor.hasNext()){
-				Complement enplus = detailCursor.next();
+				Produit enplus = detailCursor.next();
 				liste_details.add(enplus);
 			}
 			

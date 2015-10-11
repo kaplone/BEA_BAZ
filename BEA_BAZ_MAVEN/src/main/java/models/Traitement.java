@@ -12,9 +12,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Traitement extends Commun{
 
-	private String detail;
+	private String nom_Complet;
 	
-	private ArrayList<Complement> complements;
+	private ArrayList<Produit> produits;
 	
 	public static void update(Traitement t){
 
@@ -33,19 +33,19 @@ public class Traitement extends Commun{
 		
 	}
 
-	public String getDetail() {
-		return detail;
+	public String getNom_complet() {
+		return nom_Complet;
 	}
 
-	public void setDetail(String detail) {
-		this.detail = detail;
+	public void setNom_complet(String detail) {
+		this.nom_Complet = detail;
 	}
 
-	public ArrayList<Complement> getComplements() {
-		return complements;
+	public ArrayList<Produit> getProduits() {
+		return produits;
 	}
 
-	public void setComplements(ArrayList<Complement> complements) {
-		this.complements = complements;
+	public void setProduits(ArrayList<Produit> complements) {
+		this.produits = complements;
 	}
 }

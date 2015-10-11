@@ -132,6 +132,15 @@ public class Fiche_commande_controller  implements Initializable{
 	}
 	
 	@FXML
+	public void onVersProduitsButton(){
+		
+		Scene fiche_produit_scene = new Scene((Parent) JfxUtils.loadFxml("/views/fiche_produit.fxml"), 1275, 722);
+		fiche_produit_scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+		
+		currentStage.setScene(fiche_produit_scene);	
+	}
+	
+	@FXML
 	public void onEditerButton(){
 		
 		importCommandeButton.setDisable(true);

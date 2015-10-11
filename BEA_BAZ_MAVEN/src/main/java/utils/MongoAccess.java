@@ -23,7 +23,7 @@ import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
 
-import enums.classes;
+import enums.Classes;
 
 public class MongoAccess {
 	
@@ -52,7 +52,7 @@ public class MongoAccess {
 	public static boolean checkIfExists (String table, String field, String valeur) {
 
 		collec = jongo.getCollection(table);
-		return  collec.findOne(String.format("{\"%s\" : \"%s\"}", field, valeur)).as(classes.valueOf(table).getUsedClass()) != null;
+		return  collec.findOne(String.format("{\"%s\" : \"%s\"}", field, valeur)).as(Classes.valueOf(table).getUsedClass()) != null;
 		//return  collec.findOne(String.format("{\"%s\" : \"%s\"}", field, valeur)).as(Client.class) != null;
 		
 		
