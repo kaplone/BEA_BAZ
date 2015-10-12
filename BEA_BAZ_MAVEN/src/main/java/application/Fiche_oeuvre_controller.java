@@ -8,7 +8,9 @@ import java.util.ResourceBundle;
 import org.jongo.MongoCursor;
 
 import utils.MongoAccess;
+import models.Auteur;
 import models.Commande;
+import models.Oeuvre;
 import models.Produit;
 import models.Traitement;
 import javafx.collections.FXCollections;
@@ -24,28 +26,20 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 public class Fiche_oeuvre_controller  implements Initializable{
-	
-	@FXML
-	private ObservableList<Traitement> liste_traitements;
-	@FXML
-	private ObservableList<Produit> liste_details;
-	@FXML
-	private TextField file_path_textField;
+
 	@FXML
 	private ListView<Traitement> listView_traitements;
 	@FXML
 	private ListView<Produit> listView_produits;
 	@FXML
-	private Button nouveau_traitement;
-	@FXML
-	private Button nouveau_detail;
-	@FXML
-	private Button mise_a_jour_traitement;
+	private ListView<Oeuvre> listView_oeuvres;
+
 	@FXML
 	private Button annuler;
 	@FXML
@@ -57,35 +51,50 @@ public class Fiche_oeuvre_controller  implements Initializable{
 	@FXML
 	private Button versModeleButton;
 	@FXML
-	private Button versOeuvreButton;
-	@FXML
 	private Button versRapportButton;
 	@FXML
 	private Button versFichierButton;
+	@FXML
+	private Button mise_a_jour_traitement;
 	
 	@FXML
-	private Label fiche_traitement_label;
+	private Label fiche_oeuvre_label;
 	@FXML
-	private Label nom_traitement_label;
+	private Label nom_oeuvre_label;
 	@FXML
-	private TextField nom_traitement_textField;
+	private TextArea remarques_oeuvre_textArea;
+	
 	@FXML
-	private TextField nom_complet_traitement_textField;
+	private TextField numero_origine_textField;
 	@FXML
-	private TextArea remarques_traitement_textArea;
+	private TextField numero_archive_6s_textField;
+	@FXML
+	private TextField titre_textField;
+	@FXML
+	private TextField auteur_textField;
+	@FXML
+	private TextField date_oeuvre_textField;
+	@FXML
+	private TextField dimensions_textField;
+	@FXML
+	private TextField conditionnement_textField;
+	@FXML
+	private TextArea inscriptions_textArea;
+	@FXML
+	private TextArea observations_textArea;
+	@FXML
+	private GridPane grid;
 	
 	private boolean edit = false;
 	
-	MongoCursor<Traitement> traitementCursor;
-	MongoCursor<Produit> detailCursor ;
+	MongoCursor<Oeuvre> oeuvreCursor;
+	Oeuvre oeuvreSelectionne;
+	MongoCursor<Traitement> traitementCursor ;
+	ObservableList<Traitement> traitementsSelectionne;
+	ObservableList<Traitement> liste_traitements;
 	Traitement traitementSelectionne;
-	Produit detailSelectionne;
 	
 	Stage currentStage;
-
-	Produit detail;
-	
-	private File file;
 	
 	@FXML
 	public void onVersProduitsButton(){
@@ -106,246 +115,199 @@ public class Fiche_oeuvre_controller  implements Initializable{
 	}	
 
 	@FXML
-	public void onAjoutTraitement(){
-	}
-
-	@FXML
 	public void onTraitementSelect(){
 		
 		traitementSelectionne = listView_traitements.getSelectionModel().getSelectedItem();
 		Main_BEA_BAZ.setTraitement(traitementSelectionne);
-		affichageInfos();	
+		//affichageInfos();	
 	}
 	
 	@FXML
-	public void onDetailSelect(){
+	public void onOeuvreSelect(){
 		
-		detailSelectionne = listView_produits.getSelectionModel().getSelectedItem();
-		
-		if (detailSelectionne != null){
-			Main_BEA_BAZ.setDetail(detailSelectionne);
-			
-			Scene fiche_detail_scene = new Scene((Parent) JfxUtils.loadFxml("/views/fiche_detail.fxml"), 1275, 722);
-			fiche_detail_scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
-			currentStage.setScene(fiche_detail_scene);	
-		}
-		
-	}
+		oeuvreSelectionne = listView_oeuvres.getSelectionModel().getSelectedItem();
+		Main_BEA_BAZ.setOeuvre(oeuvreSelectionne);
 	
-    protected File chooseExport(){
-		
-		Stage newStage = new Stage();
-		
-		FileChooser fileChooser = new FileChooser();
-		fileChooser.setTitle("Fichier à importer");
-		fileChooser.getExtensionFilters().addAll(
-		         new FileChooser.ExtensionFilter("feuille de calcul", "*.xlsx"));
-		File selectedFile = fileChooser.showOpenDialog(newStage);
-		if (selectedFile != null) {
-			 return selectedFile;
-		}
-		else {
-			 return (File) null;
-		}
-		
-	}
+	}	
 	
-	@FXML
-	public void on_select_file_button(){
-		
-		file = chooseExport();
-		file_path_textField.setText(file.toString());
-	}
-	@FXML
-	public void on_import_file_button(){
-		try {
-			Documents.init();
-			Documents.read(file, "traitement");
-			afficherTraitements();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-	
-	
-	
-    private void affichageInfos(){
+//    private void affichageInfos(){
+//
+//    	
+//    	nom_traitement_textField.setText(traitementSelectionne.getNom());
+//    	nom_traitement_label.setText(traitementSelectionne.getNom());
+//    	nom_complet_traitement_textField.setText(traitementSelectionne.getNom_complet());
+//    	remarques_traitement_textArea.setText(traitementSelectionne.getRemarques());
+//    	
+//    	liste_details.clear();
+//    	
+//    	if (traitementSelectionne != null){
+//    		
+//            liste_details.addAll(traitementSelectionne.getProduits());
+//			
+//			listView_produits.setItems(liste_details);		
+//    	}	
+//    }
 
-    	
-    	nom_traitement_textField.setText(traitementSelectionne.getNom());
-    	nom_traitement_label.setText(traitementSelectionne.getNom());
-    	nom_complet_traitement_textField.setText(traitementSelectionne.getNom_complet());
-    	remarques_traitement_textArea.setText(traitementSelectionne.getRemarques());
-    	
-    	liste_details.clear();
-    	
-    	if (traitementSelectionne != null){
-    		
-            liste_details.addAll(traitementSelectionne.getProduits());
-			
-			listView_produits.setItems(liste_details);		
-    	}	
-    }
-    
+	@FXML
     public void onNouveauTraitementButton() {
-    	
-    	mise_a_jour_traitement.setText("Enregistrer");
-    	nom_traitement_textField.setText("");
-    	remarques_traitement_textArea.setText("");
-    	nom_traitement_textField.setPromptText("saisir le nom du nouveau traitement");
-    	remarques_traitement_textArea.setPromptText("éventuelles remarques");
-    	nouveau_traitement.setVisible(false);
-    	
-    	traitementSelectionne = new Traitement();
-    	
-    	edit = false;
-    	annuler.setVisible(true);
-    	editer.setVisible(false);
-    	mise_a_jour_traitement.setVisible(true);
-    	nom_traitement_textField.setEditable(true);
-		remarques_traitement_textArea.setEditable(true);
-    	
-    	
+//    	
+//    	mise_a_jour_traitement.setText("Enregistrer");
+//    	nom_traitement_textField.setText("");
+//    	remarques_traitement_textArea.setText("");
+//    	nom_traitement_textField.setPromptText("saisir le nom du nouveau traitement");
+//    	remarques_traitement_textArea.setPromptText("éventuelles remarques");
+//    	nouveau_traitement.setVisible(false);
+//    	
+//    	traitementSelectionne = new Traitement();
+//    	
+//    	edit = false;
+//    	annuler.setVisible(true);
+//    	editer.setVisible(false);
+//    	mise_a_jour_traitement.setVisible(true);
+//    	nom_traitement_textField.setEditable(true);
+//		remarques_traitement_textArea.setEditable(true);
+//    	
+//    	
     }
-    
+//  
+	@FXML
     public void onAnnulerButton() {
-    	
-    	mise_a_jour_traitement.setText("Mise à jour");
-    	nom_traitement_textField.setText("");
-    	remarques_traitement_textArea.setText("");
-    	nom_traitement_textField.setPromptText("");
-    	remarques_traitement_textArea.setPromptText("");
-    	nouveau_traitement.setText("Nouveau traitement");
-    	rafraichirAffichage();
-    	listView_traitements.getSelectionModel().select(traitementSelectionne);
-    	affichageInfos();
-    	
+//    	
+//    	mise_a_jour_traitement.setText("Mise à jour");
+//    	nom_traitement_textField.setText("");
+//    	remarques_traitement_textArea.setText("");
+//    	nom_traitement_textField.setPromptText("");
+//    	remarques_traitement_textArea.setPromptText("");
+//    	nouveau_traitement.setText("Nouveau traitement");
+//    	rafraichirAffichage();
+//    	listView_traitements.getSelectionModel().select(traitementSelectionne);
+//    	affichageInfos();
+//    	
     }
-    
-    public void rafraichirAffichage(){
-    	
-    	liste_traitements = FXCollections.observableArrayList();
-		liste_details  = FXCollections.observableArrayList();
-		
-		
-		
-		traitementCursor = MongoAccess.request("traitement").as(Traitement.class);
-		
-		while (traitementCursor.hasNext()){
-			liste_traitements.add(traitementCursor.next());
-		}
-		
-		listView_traitements.setItems(liste_traitements);
-    	
-    }
-    
+//    
+//    public void rafraichirAffichage(){
+//    	
+//    	liste_traitements = FXCollections.observableArrayList();
+//		liste_details  = FXCollections.observableArrayList();
+//		
+//		
+//		
+//		traitementCursor = MongoAccess.request("traitement").as(Traitement.class);
+//		
+//		while (traitementCursor.hasNext()){
+//			liste_traitements.add(traitementCursor.next());
+//		}
+//		
+//		listView_traitements.setItems(liste_traitements);
+//    	
+//    }
+//    
     @FXML
     public void onEditerTraitementButton(){
-    	
-
-    	annuler.setVisible(true);
-    	editer.setVisible(false);
-    	mise_a_jour_traitement.setVisible(true);
-    	nom_traitement_textField.setEditable(true);
-		remarques_traitement_textArea.setEditable(true);
-		
-		edit = true;
-
-	
+//    	
+//
+//    	annuler.setVisible(true);
+//    	editer.setVisible(false);
+//    	mise_a_jour_traitement.setVisible(true);
+//    	nom_traitement_textField.setEditable(true);
+//		remarques_traitement_textArea.setEditable(true);
+//		
+//		edit = true;
+//
+//	
     }
-    
+//    
     @FXML
     public void onAnnulerEditButton(){
-    	
-    	annuler.setVisible(false);
-    	editer.setVisible(true);
-    	mise_a_jour_traitement.setVisible(false);
-    	nom_traitement_textField.setEditable(false);
-		remarques_traitement_textArea.setEditable(false);
-		nouveau_traitement.setVisible(true);
-		rafraichirAffichage();
-		listView_traitements.getSelectionModel().select(traitementSelectionne);
-    	affichageInfos();
-    	
-    	edit = false;
-    	
+//    	
+//    	annuler.setVisible(false);
+//    	editer.setVisible(true);
+//    	mise_a_jour_traitement.setVisible(false);
+//    	nom_traitement_textField.setEditable(false);
+//		remarques_traitement_textArea.setEditable(false);
+//		nouveau_traitement.setVisible(true);
+//		rafraichirAffichage();
+//		listView_traitements.getSelectionModel().select(traitementSelectionne);
+//    	affichageInfos();
+//    	
+//    	edit = false;
+//    	
     }
-    
+//    
     @FXML
     public void onMiseAJourTraitementButton(){
-
-    	if (traitementSelectionne == null) {
-    		traitementSelectionne = new Traitement();
-    	}
-    	
-    	traitementSelectionne.setNom(nom_traitement_textField.getText());
-    	traitementSelectionne.setRemarques(remarques_traitement_textArea.getText());
-    	
-    	annuler.setVisible(false);
-    	editer.setVisible(true);
-    	mise_a_jour_traitement.setVisible(false);
-    	nom_traitement_textField.setEditable(false);
-		remarques_traitement_textArea.setEditable(false);
-		
-		if (edit) {
-			Traitement.update(traitementSelectionne);
-			afficherTraitement();
-			rafraichirAffichage();
-			onAnnulerEditButton();
-		}
-		else {
-			
-			System.out.println(traitementSelectionne);
-			
-		   Traitement.save(traitementSelectionne);
-		   afficherTraitement();
-		   onAnnulerEditButton();
-		}
-    	
+//
+//    	if (traitementSelectionne == null) {
+//    		traitementSelectionne = new Traitement();
+//    	}
+//    	
+//    	traitementSelectionne.setNom(nom_traitement_textField.getText());
+//    	traitementSelectionne.setRemarques(remarques_traitement_textArea.getText());
+//    	
+//    	annuler.setVisible(false);
+//    	editer.setVisible(true);
+//    	mise_a_jour_traitement.setVisible(false);
+//    	nom_traitement_textField.setEditable(false);
+//		remarques_traitement_textArea.setEditable(false);
+//		
+//		if (edit) {
+//			Traitement.update(traitementSelectionne);
+//			afficherTraitement();
+//			rafraichirAffichage();
+//			onAnnulerEditButton();
+//		}
+//		else {
+//			
+//			System.out.println(traitementSelectionne);
+//			
+//		   Traitement.save(traitementSelectionne);
+//		   afficherTraitement();
+//		   onAnnulerEditButton();
+//		}
+//    	
     }
-    
-    public void afficherTraitement(){
-
-		remarques_traitement_textArea.setEditable(false);
-        editer.setVisible(true);
-        mise_a_jour_traitement.setVisible(false);
-		annuler.setVisible(false);
-		fiche_traitement_label.setText("FICHE TRAITEMENT :");
-		nom_traitement_label.setText(traitementSelectionne.getNom());
-		nom_traitement_textField.setDisable(true);
-		remarques_traitement_textArea.setDisable(true);
-		nom_traitement_label.setText(traitementSelectionne.getNom());
-		rafraichirAffichage();
-    }
-    
-    public void afficherTraitements(){
-
-		remarques_traitement_textArea.setEditable(false);
-        editer.setVisible(true);
-        mise_a_jour_traitement.setVisible(false);
-		annuler.setVisible(false);
-		fiche_traitement_label.setText("FICHE TRAITEMENT :");
-		nom_traitement_textField.setDisable(true);
-		remarques_traitement_textArea.setDisable(true);
-		
-        liste_traitements.clear();
-    	
-    	if (traitementSelectionne != null){
-    		
-    		traitementCursor = MongoAccess.request("traitement").as(Traitement.class);
-    		
-    		while (traitementCursor.hasNext()){
-    			Traitement enplus = traitementCursor.next();
-    			liste_traitements.add(enplus);
-    		}	
-    		listView_traitements.setItems(liste_traitements);	
-    		
-    		rafraichirAffichage();
-    	}
-		
-		
-    }
+//    
+//    public void afficherTraitement(){
+//
+//		remarques_traitement_textArea.setEditable(false);
+//        editer.setVisible(true);
+//        mise_a_jour_traitement.setVisible(false);
+//		annuler.setVisible(false);
+//		fiche_traitement_label.setText("FICHE TRAITEMENT :");
+//		nom_traitement_label.setText(traitementSelectionne.getNom());
+//		nom_traitement_textField.setDisable(true);
+//		remarques_traitement_textArea.setDisable(true);
+//		nom_traitement_label.setText(traitementSelectionne.getNom());
+//		rafraichirAffichage();
+//    }
+//    
+//    public void afficherTraitements(){
+//
+//		remarques_traitement_textArea.setEditable(false);
+//        editer.setVisible(true);
+//        mise_a_jour_traitement.setVisible(false);
+//		annuler.setVisible(false);
+//		fiche_traitement_label.setText("FICHE TRAITEMENT :");
+//		nom_traitement_textField.setDisable(true);
+//		remarques_traitement_textArea.setDisable(true);
+//		
+//        liste_traitements.clear();
+//    	
+//    	if (traitementSelectionne != null){
+//    		
+//    		traitementCursor = MongoAccess.request("traitement").as(Traitement.class);
+//    		
+//    		while (traitementCursor.hasNext()){
+//    			Traitement enplus = traitementCursor.next();
+//    			liste_traitements.add(enplus);
+//    		}	
+//    		listView_traitements.setItems(liste_traitements);	
+//    		
+//    		rafraichirAffichage();
+//    	}
+//		
+//		
+//    }
     
     @FXML
     public void onVerstraitementButton(){}
@@ -381,14 +343,35 @@ public class Fiche_oeuvre_controller  implements Initializable{
 	public void initialize(URL location, ResourceBundle resources) {
 		
 		Main_BEA_BAZ.setTraitementEdited(null);
-		
-		detail = Main_BEA_BAZ.getDetail();
+
 		traitementSelectionne = Main_BEA_BAZ.getTraitement();
+		oeuvreSelectionne = Main_BEA_BAZ.getOeuvre();
 
 		utils.MongoAccess.connect();
 		
-		nom_traitement_textField.setEditable(false);
-		remarques_traitement_textArea.setEditable(false);
+		
+		numero_origine_textField.setEditable(false);
+		numero_archive_6s_textField.setEditable(false);
+		titre_textField.setEditable(false);
+		auteur_textField.setEditable(false);
+		date_oeuvre_textField.setEditable(false);
+		dimensions_textField.setEditable(false);
+		conditionnement_textField.setEditable(false);
+		inscriptions_textArea.setEditable(false);
+		observations_textArea.setEditable(false);
+		
+		numero_origine_textField.setText(oeuvreSelectionne.getN_d_origine());
+		numero_archive_6s_textField.setText(oeuvreSelectionne.getCote_archives_6s());
+		titre_textField.setText(oeuvreSelectionne.getTitre_de_l_oeuvre());
+		MongoCursor<Auteur> auteurCursor = MongoAccess.request("auteur", oeuvreSelectionne.getAuteur()).as(Auteur.class);
+		Auteur auteur = auteurCursor.next();
+		auteur_textField.setText(auteur.getNom());
+		date_oeuvre_textField.setText(oeuvreSelectionne.getDate());
+		dimensions_textField.setText(oeuvreSelectionne.getDimensions());
+		conditionnement_textField.setText(oeuvreSelectionne.getFormat_de_conditionnement());
+		inscriptions_textArea.setText(oeuvreSelectionne.getInscriptions_au_verso());
+		observations_textArea.setText(oeuvreSelectionne.get_observations());
+
         editer.setVisible(true);
         mise_a_jour_traitement.setVisible(false);
 		annuler.setVisible(false);
@@ -396,13 +379,12 @@ public class Fiche_oeuvre_controller  implements Initializable{
 		versCommandeButton.setVisible(false);
 		versTraitementButton.setVisible(false);
 		versModeleButton.setVisible(false);
-		versOeuvreButton.setVisible(false);
 		versRapportButton.setVisible(false);
 		versFichierButton.setVisible(false);
 		
 		
 		liste_traitements = FXCollections.observableArrayList();
-		liste_details  = FXCollections.observableArrayList();
+
 		
 		currentStage = Main_BEA_BAZ.getStage();
 		
@@ -413,23 +395,7 @@ public class Fiche_oeuvre_controller  implements Initializable{
 		}
 		
 		listView_traitements.setItems(liste_traitements);
-		
-		
-		if (traitementSelectionne != null){
-			
-			detailCursor = MongoAccess.request("produit", traitementSelectionne).as(Produit.class);
-			
-			while (detailCursor.hasNext()){
-				Produit enplus = detailCursor.next();
-				liste_details.add(enplus);
-			}
-			
-			listView_produits.setItems(liste_details);
-		}
-        
-		
-		
-	
+
 	}
 
 }

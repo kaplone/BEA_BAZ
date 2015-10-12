@@ -19,7 +19,7 @@
                         <Insets bottom="10.0" top="10.0" />
                      </padding>
                   </Label>
-                  <ListView fx:id="listView_traitements1" onKeyTyped="#onTraitementSelect" onMouseClicked="#onTraitementSelect" prefHeight="645.0" prefWidth="138.0">
+                  <ListView fx:id="listView_traitements" onKeyTyped="#onTraitementSelect" onMouseClicked="#onTraitementSelect" prefHeight="645.0" prefWidth="138.0">
                      <VBox.margin>
                         <Insets bottom="10.0" top="10.0" />
                      </VBox.margin>
@@ -39,7 +39,7 @@
                         <Insets bottom="10.0" top="10.0" />
                      </padding>
                   </Label>
-                  <ListView fx:id="listView_traitements11" onKeyTyped="#onTraitementSelect" onMouseClicked="#onTraitementSelect" prefHeight="645.0" prefWidth="138.0">
+                  <ListView fx:id="listView_fichiers" onKeyTyped="#onTraitementSelect" onMouseClicked="#onTraitementSelect" prefHeight="645.0" prefWidth="138.0">
                      <VBox.margin>
                         <Insets bottom="10.0" top="10.0" />
                      </VBox.margin>
@@ -114,7 +114,7 @@
                   </Pane>
                </children>
             </HBox>
-            <GridPane prefHeight="353.0" prefWidth="691.0">
+            <GridPane fx:id="grid" prefHeight="353.0" prefWidth="691.0">
               <columnConstraints>
                   <ColumnConstraints hgrow="SOMETIMES" maxWidth="167.0" minWidth="10.0" prefWidth="133.0" />
                   <ColumnConstraints hgrow="SOMETIMES" maxWidth="245.0" minWidth="10.0" prefWidth="180.0" />
@@ -124,6 +124,7 @@
               <rowConstraints>
                   <RowConstraints maxHeight="83.0" minHeight="10.0" prefHeight="28.0" vgrow="SOMETIMES" />
                   <RowConstraints maxHeight="124.0" minHeight="10.0" prefHeight="24.0" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="155.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                   <RowConstraints maxHeight="155.0" minHeight="10.0" prefHeight="26.0" vgrow="SOMETIMES" />
                   <RowConstraints maxHeight="187.0" minHeight="10.0" prefHeight="23.0" vgrow="SOMETIMES" />
                 <RowConstraints maxHeight="211.0" minHeight="10.0" prefHeight="78.0" vgrow="SOMETIMES" />
@@ -135,24 +136,24 @@
                <children>
                   <Label text="N° d'origine : " />
                   <Label text="N° Archive 6s : " GridPane.columnIndex="2" GridPane.halignment="RIGHT" />
-                  <TextField GridPane.columnIndex="1" />
-                  <TextField GridPane.columnIndex="3" />
-                  <TextField GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                  <TextField GridPane.columnIndex="3" GridPane.rowIndex="1" />
-                  <TextField GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                  <TextField GridPane.columnIndex="3" GridPane.rowIndex="2" />
+                  <TextField fx:id="numero_origine_textField" GridPane.columnIndex="1" />
+                  <TextField fx:id="numero_archive_6s_textField" GridPane.columnIndex="3" />
+                  <TextField fx:id="titre_textField" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="1" />
+                  <TextField fx:id="auteur_textField" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="2" />
+                  <TextField fx:id="date_oeuvre_textField" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                  <TextField fx:id="dimensions_textField" GridPane.columnIndex="3" GridPane.rowIndex="3" />
                   <Label text="Titre : " GridPane.rowIndex="1" />
-                  <Label text="Auteur : " GridPane.columnIndex="2" GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
-                  <Label text="Date : " GridPane.rowIndex="2" />
-                  <Label text="Dimensions : " GridPane.columnIndex="2" GridPane.halignment="RIGHT" GridPane.rowIndex="2" />
-                  <Label text="Observations : " GridPane.columnIndex="2" GridPane.halignment="RIGHT" GridPane.rowIndex="4" />
-                  <Label text="Etat : " GridPane.columnIndex="2" GridPane.halignment="RIGHT" GridPane.rowIndex="3" />
-                  <Label text="Inscriptions verso :" GridPane.rowIndex="4" />
-                  <Label text="Conditionnement :" GridPane.rowIndex="3" />
-                  <TextArea prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="3" GridPane.rowIndex="4" />
-                  <TextArea prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                  <TextField GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                  <TextField GridPane.columnIndex="3" GridPane.rowIndex="3" />
+                  <Label text="Auteur : " GridPane.rowIndex="2" />
+                  <Label text="Date : " GridPane.rowIndex="3" />
+                  <Label text="Dimensions : " GridPane.columnIndex="2" GridPane.halignment="RIGHT" GridPane.rowIndex="3" />
+                  <Label text="Observations : " GridPane.columnIndex="2" GridPane.halignment="RIGHT" GridPane.rowIndex="5" />
+                  <Label text="Etat : " GridPane.columnIndex="2" GridPane.halignment="RIGHT" GridPane.rowIndex="4" />
+                  <Label text="Inscriptions verso :" GridPane.rowIndex="5" />
+                  <Label text="Conditionnement :" GridPane.rowIndex="4" />
+                  <TextArea fx:id="observations_textArea" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="3" GridPane.rowIndex="5" />
+                  <TextArea fx:id="inscriptions_textArea" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                  <TextField fx:id="conditionnement_textField" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                  <TextField GridPane.columnIndex="3" GridPane.rowIndex="4" />
                </children>
             </GridPane>
             <HBox fx:id="hbox" alignment="TOP_CENTER" prefHeight="50.0" prefWidth="200.0">

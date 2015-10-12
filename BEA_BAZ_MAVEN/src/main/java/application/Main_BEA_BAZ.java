@@ -2,6 +2,7 @@ package application;
 	
 import models.Client;
 import models.Commande;
+import models.Oeuvre;
 import models.Produit;
 import models.Traitement;
 import application.JfxUtils;
@@ -23,6 +24,8 @@ public class Main_BEA_BAZ extends Application {
 	private static Traitement traitementEdited;
 	
 	private static Produit detail;
+	
+	private static Oeuvre oeuvre;
 	
 	
 
@@ -100,6 +103,14 @@ public class Main_BEA_BAZ extends Application {
 
 	public static void setTraitementEdited(Traitement traitementEdited) {
 		Main_BEA_BAZ.traitementEdited = traitementEdited;
+	}
+
+	public static Oeuvre getOeuvre() {
+		return oeuvre;
+	}
+
+	public static void setOeuvre(Oeuvre oeuvre) {
+		Main_BEA_BAZ.oeuvre = oeuvre;
 	}
     
 	

@@ -340,6 +340,17 @@ public class Fiche_commande_controller  implements Initializable{
 		tableOeuvre.setItems(liste_oeuvres);
 		
 	}
+    
+    public void onOeuvreSelect(){
+    	
+    	Main_BEA_BAZ.setOeuvre((Oeuvre) tableOeuvre.getSelectionModel().getSelectedItem());
+    	
+    	Scene fiche_oeuvre_scene = new Scene((Parent) JfxUtils.loadFxml("/views/fiche_oeuvre.fxml"), 1275, 722);
+		fiche_oeuvre_scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+		
+		currentStage.setScene(fiche_oeuvre_scene);
+    	
+    }
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
