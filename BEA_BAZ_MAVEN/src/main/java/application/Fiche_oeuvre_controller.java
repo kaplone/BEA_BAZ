@@ -7,6 +7,7 @@ import java.util.ResourceBundle;
 
 import org.jongo.MongoCursor;
 
+import enums.Etats;
 import utils.MongoAccess;
 import models.Auteur;
 import models.Commande;
@@ -24,10 +25,16 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Polygon;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
@@ -37,8 +44,6 @@ public class Fiche_oeuvre_controller  implements Initializable{
 	private ListView<Traitement> listView_traitements;
 	@FXML
 	private ListView<Produit> listView_produits;
-	@FXML
-	private ListView<Oeuvre> listView_oeuvres;
 
 	@FXML
 	private Button annuler;
@@ -56,6 +61,11 @@ public class Fiche_oeuvre_controller  implements Initializable{
 	private Button versFichierButton;
 	@FXML
 	private Button mise_a_jour_traitement;
+	
+	@FXML
+	private Polygon precedent_fleche;
+	@FXML
+	private Polygon suivant_fleche;
 	
 	@FXML
 	private Label fiche_oeuvre_label;
@@ -85,16 +95,27 @@ public class Fiche_oeuvre_controller  implements Initializable{
 	@FXML
 	private GridPane grid;
 	
+	@FXML
+	private TableView tableOeuvre;
+	@FXML
+	private TableColumn<Oeuvre, String> oeuvres_nom_colonne;
+	@FXML
+	private TableColumn<Oeuvre, ImageView> oeuvres_fait_colonne;
+	
 	private boolean edit = false;
 	
-	MongoCursor<Oeuvre> oeuvreCursor;
+	MongoCursor<Oeuvre> oeuvresCursor;
 	Oeuvre oeuvreSelectionne;
+	ObservableList<Oeuvre> liste_oeuvres;
 	MongoCursor<Traitement> traitementCursor ;
 	ObservableList<Traitement> traitementsSelectionne;
 	ObservableList<Traitement> liste_traitements;
 	Traitement traitementSelectionne;
+	Commande commandeSelectionne;
 	
 	Stage currentStage;
+	
+	boolean directSelect = false;
 	
 	@FXML
 	public void onVersProduitsButton(){
@@ -125,10 +146,85 @@ public class Fiche_oeuvre_controller  implements Initializable{
 	@FXML
 	public void onOeuvreSelect(){
 		
-		oeuvreSelectionne = listView_oeuvres.getSelectionModel().getSelectedItem();
+		oeuvreSelectionne = (Oeuvre) tableOeuvre.getSelectionModel().getSelectedItem();
 		Main_BEA_BAZ.setOeuvre(oeuvreSelectionne);
+		Main_BEA_BAZ.setOeuvre_index(tableOeuvre.getSelectionModel().getSelectedIndex());
+		directSelect = true;
+		reloadOeuvre();
 	
-	}	
+	}
+	
+	@FXML
+	public void onPrecedent_fleche(){
+
+		tableOeuvre.getSelectionModel().select(tableOeuvre.getSelectionModel().getSelectedIndex() -1);
+		
+		reloadOeuvre();
+		
+		
+		
+	}
+	@FXML
+	public void onPrecedent_fleche_on(){
+		
+		precedent_fleche.setFill(Color.DEEPSKYBLUE);
+	}
+	@FXML
+	public void onPrecedent_fleche_off(){
+
+		precedent_fleche.setFill(Color.DODGERBLUE);
+	}
+	
+	@FXML
+	public void onSuivant_fleche(){
+
+		tableOeuvre.getSelectionModel().select(tableOeuvre.getSelectionModel().getSelectedIndex() +1);
+		
+		
+		reloadOeuvre();
+		
+	}
+	@FXML
+	public void onSuivant_fleche_on(){
+		
+		suivant_fleche.setFill(Color.DEEPSKYBLUE);
+	}
+	@FXML
+	public void onSuivant_fleche_off(){
+
+		suivant_fleche.setFill(Color.DODGERBLUE);
+	}
+	
+	public void reloadOeuvre(){
+		
+		oeuvreSelectionne = (Oeuvre)tableOeuvre.getSelectionModel().getSelectedItem();
+		
+		Main_BEA_BAZ.setOeuvre_index(tableOeuvre.getSelectionModel().getSelectedIndex());
+		Main_BEA_BAZ.setOeuvre(oeuvreSelectionne);
+		
+		tableOeuvre.getSelectionModel().clearAndSelect(Main_BEA_BAZ.getOeuvre_index());
+		tableOeuvre.getSelectionModel().focus(Main_BEA_BAZ.getOeuvre_index());
+		
+		if (directSelect){
+		   tableOeuvre.scrollTo(Main_BEA_BAZ.getOeuvre_index() -9);
+		}
+		else {
+			tableOeuvre.scrollTo(Main_BEA_BAZ.getOeuvre_index());
+		}
+		
+		numero_origine_textField.setText(oeuvreSelectionne.getN_d_origine());
+		numero_archive_6s_textField.setText(oeuvreSelectionne.getCote_archives_6s());
+		titre_textField.setText(oeuvreSelectionne.getTitre_de_l_oeuvre());
+		MongoCursor<Auteur> auteurCursor = MongoAccess.request("auteur", oeuvreSelectionne.getAuteur()).as(Auteur.class);
+		Auteur auteur = auteurCursor.next();
+		auteur_textField.setText(auteur.getNom());
+		date_oeuvre_textField.setText(oeuvreSelectionne.getDate());
+		dimensions_textField.setText(oeuvreSelectionne.getDimensions());
+		conditionnement_textField.setText(oeuvreSelectionne.getFormat_de_conditionnement());
+		inscriptions_textArea.setText(oeuvreSelectionne.getInscriptions_au_verso());
+		observations_textArea.setText(oeuvreSelectionne.get_observations());
+	}
+
 	
 //    private void affichageInfos(){
 //
@@ -336,6 +432,28 @@ public class Fiche_oeuvre_controller  implements Initializable{
 		
 		currentStage.setScene(fiche_client_scene);
     }
+    
+    public void afficherOeuvres(){
+    	
+    	System.out.println("___" + Etats.valueOf(oeuvreSelectionne.getEtat_current()).getUsedImage().getImage().getWidth());
+    	
+        oeuvresCursor = MongoAccess.request("oeuvre", commandeSelectionne).as(Oeuvre.class);
+		
+		while (oeuvresCursor.hasNext()){
+			
+			liste_oeuvres.add(oeuvresCursor.next());
+			
+		}
+		
+		oeuvres_nom_colonne.setCellValueFactory(new PropertyValueFactory<Oeuvre, String>("nom"));
+		oeuvres_fait_colonne.setCellValueFactory(new PropertyValueFactory<Oeuvre, ImageView>("etat"));
+		
+		tableOeuvre.setItems(liste_oeuvres);
+		
+		tableOeuvre.getSelectionModel().clearAndSelect(Main_BEA_BAZ.getOeuvre_index());
+		tableOeuvre.getSelectionModel().focus(Main_BEA_BAZ.getOeuvre_index());
+		
+	}
 
     	
 
@@ -346,6 +464,7 @@ public class Fiche_oeuvre_controller  implements Initializable{
 
 		traitementSelectionne = Main_BEA_BAZ.getTraitement();
 		oeuvreSelectionne = Main_BEA_BAZ.getOeuvre();
+		commandeSelectionne = Main_BEA_BAZ.getCommande();
 
 		utils.MongoAccess.connect();
 		
@@ -384,6 +503,7 @@ public class Fiche_oeuvre_controller  implements Initializable{
 		
 		
 		liste_traitements = FXCollections.observableArrayList();
+		liste_oeuvres = FXCollections.observableArrayList();
 
 		
 		currentStage = Main_BEA_BAZ.getStage();
@@ -395,6 +515,9 @@ public class Fiche_oeuvre_controller  implements Initializable{
 		}
 		
 		listView_traitements.setItems(liste_traitements);
+		
+		afficherOeuvres();
+		reloadOeuvre();
 
 	}
 

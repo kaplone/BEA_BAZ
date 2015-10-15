@@ -2,11 +2,16 @@ package models;
 
 import java.util.ArrayList;
 
+import javafx.scene.image.ImageView;
+
 import org.bson.types.ObjectId;
 import org.jongo.marshall.jackson.oid.MongoObjectId;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import enums.Etats;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Oeuvre extends Commun{
@@ -33,6 +38,12 @@ public class Oeuvre extends Commun{
                                      traitements,
                                      fichiers,
                                      rapports;
+	
+	private String etat_current;
+	
+	@JsonIgnore
+	private ImageView etat;
+	
 	@Override
 	public String toString(){
 		return this.cote_archives_6s;
@@ -40,9 +51,6 @@ public class Oeuvre extends Commun{
 	
 	@Override
 	public String getNom(){
-		
-		System.out.println(getCote_archives_6s() + " " + Float.parseFloat(getCote_archives_6s() != "" ? getCote_archives_6s() : "0"));
-		
 		
 		try {
 			return String.format("%04d - %s", Integer.parseInt(getCote_archives_6s() != "" ? getCote_archives_6s() : "0") , titre_de_l_oeuvre);
@@ -204,6 +212,23 @@ public class Oeuvre extends Commun{
 	public void setRapports(ArrayList<ObjectId> rapports) {
 		this.rapports = rapports;
 	}
+
+	public String getEtat_current() {
+		return etat_current;
+	}
+
+	public void setEtat_current(String etat_current) {
+		this.etat_current = etat_current;
+	}
+
+	public ImageView getEtat() {
+		return Etats.valueOf(etat_current).getUsedImage();
+	}
+
+	public void setEtat(ImageView etat) {
+		this.etat = etat;
+	}
+
 	
 	
 	

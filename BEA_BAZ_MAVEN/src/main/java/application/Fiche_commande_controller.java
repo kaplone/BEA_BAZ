@@ -99,6 +99,8 @@ public class Fiche_commande_controller  implements Initializable{
 	private TableView tableOeuvre;
 	@FXML
 	private TableColumn<Oeuvre, String> oeuvres_nom_colonne;
+	@FXML
+	private TableColumn<Oeuvre, ImageView> oeuvres_fait_colonne;
 	
 	@FXML
 	private GridPane traitementGrid;
@@ -336,6 +338,7 @@ public class Fiche_commande_controller  implements Initializable{
 		}
 		
 		oeuvres_nom_colonne.setCellValueFactory(new PropertyValueFactory<Oeuvre, String>("nom"));
+		oeuvres_fait_colonne.setCellValueFactory(new PropertyValueFactory<Oeuvre, ImageView>("etat"));
 		
 		tableOeuvre.setItems(liste_oeuvres);
 		
@@ -344,6 +347,7 @@ public class Fiche_commande_controller  implements Initializable{
     public void onOeuvreSelect(){
     	
     	Main_BEA_BAZ.setOeuvre((Oeuvre) tableOeuvre.getSelectionModel().getSelectedItem());
+    	Main_BEA_BAZ.setOeuvre_index(tableOeuvre.getSelectionModel().getSelectedIndex());
     	
     	Scene fiche_oeuvre_scene = new Scene((Parent) JfxUtils.loadFxml("/views/fiche_oeuvre.fxml"), 1275, 722);
 		fiche_oeuvre_scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());

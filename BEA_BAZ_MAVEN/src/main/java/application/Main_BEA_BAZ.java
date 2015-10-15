@@ -26,6 +26,7 @@ public class Main_BEA_BAZ extends Application {
 	private static Produit detail;
 	
 	private static Oeuvre oeuvre;
+	private static int oeuvre_index;
 	
 	
 
@@ -111,6 +112,14 @@ public class Main_BEA_BAZ extends Application {
 
 	public static void setOeuvre(Oeuvre oeuvre) {
 		Main_BEA_BAZ.oeuvre = oeuvre;
+	}
+
+	public static int getOeuvre_index() {
+		return oeuvre_index;
+	}
+
+	public static void setOeuvre_index(int oeuvre_index) {
+		Main_BEA_BAZ.oeuvre_index = oeuvre_index;
 	}
     
 	

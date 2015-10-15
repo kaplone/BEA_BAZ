@@ -292,9 +292,15 @@ public class Fiche_commande_import_controller  implements Initializable{
 
 		//listView_oeuvres.setItems(liste_oeuvres);
 		
-		for (ChoiceBox<Traitement> cbt : traitements_selectionnes){
-			cbt.setItems(null);
-			cbt.getSelectionModel().clearSelection();
+		try {
+		
+			for (ChoiceBox<Traitement> cbt : traitements_selectionnes){
+				cbt.setItems(null);
+				cbt.getSelectionModel().clearSelection();
+			}
+		}
+		catch (NullPointerException npe){
+			
 		}
         
         int i = 0;
