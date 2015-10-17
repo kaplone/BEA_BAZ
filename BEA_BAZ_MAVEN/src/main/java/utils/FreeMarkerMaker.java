@@ -28,7 +28,7 @@ import fr.opensagres.xdocreport.template.annotations.ImageMetadata;
 
 public class FreeMarkerMaker {
 	
-	@FieldMetadata( images = { @ImageMetadata( name = "image_1" ) } )
+	@FieldMetadata( images = { @ImageMetadata( name = "image_oeuvre" ) } )
     public static File  getLogo()
     {
         return new File("/home/kaplone/Desktop/BEABASE/Béa base/P1140344.JPG" );
@@ -49,15 +49,20 @@ public class FreeMarkerMaker {
 		      IContext context = report.createContext();
 		      
 		      context.put("inventaire", o.getCote_archives_6s());
-		      context.put("titre", o.getTitre_de_l_oeuvre());
-		      context.put("dimensions", o.getDimensions());
-		      context.put("technique", o.getDimensions());
-		      context.put("inscriptions", o.getDimensions());
-		      context.put("produits", o.getDimensions());
-		      context.put("etat_final", o.getDimensions());
+		      context.put("titre", o.getTitre_de_l_oeuvre() != null ? o.getTitre_de_l_oeuvre() : "");
+		      context.put("dimensions", o.getDimensions() != null ? o.getDimensions() : "");
+		      context.put("technique", o.getDimensions() != null ? o.getDimensions() : "");
+		      context.put("inscriptions", o.getInscriptions_au_verso() != null ? o.getInscriptions_au_verso() : "");
+		      context.put("produits", o.getDimensions() != null ? o.getDimensions() : "");
+		      context.put("etat_final", o.getDimensions() != null ? o.getDimensions() : "");
 		      
-		      context.put("bea", "un pied");
-		      context.put("client", "un pied");
+		      context.put("bea", "Béatrice Alcade\n" +
+                                 "Restauratrice du patrimoine\n" +
+                                 "28 place Jean Jaurès\n" +
+                                 "34400 Lunel - 06 21 21 15 40");
+		      context.put("client", "Restauration des dessins de Jean-Claude Golvin\n" +
+                                    "Musée Départemental Arles antique\n" +
+                                    "Avril 2015");
 
 		      context.put("image_oeuvre", getLogo());
 
