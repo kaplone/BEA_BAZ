@@ -425,7 +425,7 @@ public class Fiche_commande_import_controller  implements Initializable{
 //		observableTraitements = FXCollections.observableArrayList();
 //		
 //		traitements_attendus = new ArrayList<>();
-//		traitements_selectionnes = new ArrayList<>();
+		traitements_selectionnes = new ArrayList<>();
 //		
 //		MongoCursor<Traitement> mgCursor = MongoAccess.request("traitement").as(Traitement.class);
 //		
@@ -442,7 +442,7 @@ public class Fiche_commande_import_controller  implements Initializable{
         
 		if (commande != null) {
 			
-			afficherCommande();
+			//afficherCommande();
 			
 		}
 		else { 

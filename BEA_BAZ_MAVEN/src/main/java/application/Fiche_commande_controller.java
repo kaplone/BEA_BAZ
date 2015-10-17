@@ -199,10 +199,7 @@ public class Fiche_commande_controller  implements Initializable{
 		}
 		else{
 			commande = Main_BEA_BAZ.getCommande(); 
-		}
-		
-		traitements_attendus.clear();
-		
+		}		
 		
 		commande.setClient(client.get_id());
 		commande.setDateCommande(dateCommandePicker.getValue());
@@ -221,7 +218,6 @@ public class Fiche_commande_controller  implements Initializable{
 			if (t != null && 
 				!traitements_attendus.stream().map(a -> a.get_id().toString()).collect(Collectors.toList()).contains(t.get_id().toString())){
 				
-				System.out.println("______\n" + t.get_id().toString() + "\n" + traitements_attendus.stream().map(a -> a.get_id().toString()).collect(Collectors.toList()));
 				traitements_attendus.add(((ChoiceBox<Traitement>) cb).getValue());
 			}
 			
@@ -331,14 +327,20 @@ public class Fiche_commande_controller  implements Initializable{
 	
     public void afficherOeuvres(){
     	
+    	Oeuvre o;
+    	
         oeuvresCursor = MongoAccess.request("oeuvre", commandeSelectionne).as(Oeuvre.class);
 		
 		while (oeuvresCursor.hasNext()){
-			liste_oeuvres.add(oeuvresCursor.next());
+			
+			o = oeuvresCursor.next();
+			liste_oeuvres.add(o);
 		}
 		
 		oeuvres_nom_colonne.setCellValueFactory(new PropertyValueFactory<Oeuvre, String>("nom"));
 		oeuvres_fait_colonne.setCellValueFactory(new PropertyValueFactory<Oeuvre, ImageView>("etat"));
+		
+		
 		
 		tableOeuvre.setItems(liste_oeuvres);
 		
@@ -389,8 +391,6 @@ public class Fiche_commande_controller  implements Initializable{
 			((ChoiceBox<Traitement>) cb).setItems(observableTraitements);
 			traitements_selectionnes.add(((ChoiceBox<Traitement>) cb));
 		}
-		
-		System.out.println(commande);
         
 		if (commande != null) {
 			
@@ -400,6 +400,10 @@ public class Fiche_commande_controller  implements Initializable{
 			
 		}
 		else { 
+			
+			dateCommandePicker.setValue(LocalDate.now());
+			dateDebutProjetPicker.setValue(LocalDate.now());
+			dateFinProjetPicker.setValue(LocalDate.now());
 			
 			importCommandeButton.setDisable(true);
 			dateCommandePicker.setEditable(true);

@@ -8,11 +8,13 @@ import java.util.ResourceBundle;
 import org.jongo.MongoCursor;
 
 import enums.Etats;
+import utils.FreeMarkerMaker;
 import utils.MongoAccess;
 import models.Auteur;
 import models.Commande;
 import models.Oeuvre;
 import models.Produit;
+import models.TacheTraitement;
 import models.Traitement;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -41,7 +43,7 @@ import javafx.stage.Stage;
 public class Fiche_oeuvre_controller  implements Initializable{
 
 	@FXML
-	private ListView<Traitement> listView_traitements;
+	private ListView<Traitement> traitements_supplementaires_listView;
 	@FXML
 	private ListView<Produit> listView_produits;
 
@@ -138,7 +140,7 @@ public class Fiche_oeuvre_controller  implements Initializable{
 	@FXML
 	public void onTraitementSelect(){
 		
-		traitementSelectionne = listView_traitements.getSelectionModel().getSelectedItem();
+		traitementSelectionne = traitements_supplementaires_listView.getSelectionModel().getSelectedItem();
 		Main_BEA_BAZ.setTraitement(traitementSelectionne);
 		//affichageInfos();	
 	}
@@ -416,9 +418,14 @@ public class Fiche_oeuvre_controller  implements Initializable{
     @FXML
     public void onVersModeleButton(){}
     @FXML
+    public void onExporter_rapport_button(){
+    	
+    	FreeMarkerMaker.odt2pdf(oeuvreSelectionne);
+    };
+    @FXML
     public void onAjoutProduit(){
     	
-    	Main_BEA_BAZ.setTraitementEdited(listView_traitements.getSelectionModel().getSelectedItem());
+    	Main_BEA_BAZ.setTraitementEdited(traitements_supplementaires_listView.getSelectionModel().getSelectedItem());
     	
     	Scene fiche_produit_scene = new Scene((Parent) JfxUtils.loadFxml("/views/fiche_produit.fxml"), 1275, 722);
 		fiche_produit_scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
@@ -435,8 +442,6 @@ public class Fiche_oeuvre_controller  implements Initializable{
     
     public void afficherOeuvres(){
     	
-    	System.out.println("___" + Etats.valueOf(oeuvreSelectionne.getEtat_current()).getUsedImage().getImage().getWidth());
-    	
         oeuvresCursor = MongoAccess.request("oeuvre", commandeSelectionne).as(Oeuvre.class);
 		
 		while (oeuvresCursor.hasNext()){
@@ -446,7 +451,7 @@ public class Fiche_oeuvre_controller  implements Initializable{
 		}
 		
 		oeuvres_nom_colonne.setCellValueFactory(new PropertyValueFactory<Oeuvre, String>("nom"));
-		oeuvres_fait_colonne.setCellValueFactory(new PropertyValueFactory<Oeuvre, ImageView>("etat"));
+		//oeuvres_fait_colonne.setCellValueFactory(new PropertyValueFactory<Oeuvre, ImageView>("etat"));
 		
 		tableOeuvre.setItems(liste_oeuvres);
 		
@@ -508,13 +513,13 @@ public class Fiche_oeuvre_controller  implements Initializable{
 		
 		currentStage = Main_BEA_BAZ.getStage();
 		
-		traitementCursor = MongoAccess.request("traitement").as(Traitement.class);
-		
-		while (traitementCursor.hasNext()){
-			liste_traitements.add(traitementCursor.next());
-		}
-		
-		listView_traitements.setItems(liste_traitements);
+//		traitementCursor = MongoAccess.request("traitement").as(Traitement.class);
+//		
+//		while (traitementCursor.hasNext()){
+//			liste_traitements.add(traitementCursor.next());
+//		}
+//		
+//		traitements_supplementaires_listView.setItems(liste_traitements);
 		
 		afficherOeuvres();
 		reloadOeuvre();

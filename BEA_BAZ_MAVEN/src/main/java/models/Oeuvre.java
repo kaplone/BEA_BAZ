@@ -34,10 +34,10 @@ public class Oeuvre extends Commun{
 
 
 	private ArrayList<ObjectId> etats,
-                                     jobs,
-                                     traitements,
-                                     fichiers,
-                                     rapports;
+                                jobs,
+                                traitements,
+                                fichiers,
+                                rapports;
 	
 	private String etat_current;
 	
@@ -222,17 +222,14 @@ public class Oeuvre extends Commun{
 	}
 
 	public ImageView getEtat() {
-		return Etats.valueOf(etat_current).getUsedImage();
+		
+		if (etat_current != null) {			
+			return Etats.valueOf(etat_current).getUsedImage();
+		}
+		else {
+			etat_current = "TODO_";
+			return Etats.valueOf(etat_current).getUsedImage();
+		}
+		
 	}
-
-	public void setEtat(ImageView etat) {
-		this.etat = etat;
-	}
-
-	
-	
-	
-	                      
-	                   
-
 }

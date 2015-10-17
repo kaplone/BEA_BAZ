@@ -7,9 +7,9 @@ import javafx.scene.image.ImageView;
 
 public enum Etats {
 	
-	FAIT ("/home/kaplone/git/BEA_BAZ/BEA_BAZ_MAVEN/src/main/resources/images/coche_ok.png"),
-	TODOO("/home/kaplone/git/BEA_BAZ/BEA_BAZ_MAVEN/src/main/resources/images/coche_todo.png"),
-	NULLL ("/home/kaplone/git/BEA_BAZ/BEA_BAZ_MAVEN/src/main/resources/images/coche_null.png");
+	FAIT_ ("/home/kaplone/git/BEA_BAZ/BEA_BAZ_MAVEN/src/main/resources/images/coche_ok.png"),
+	TODO_ ("/home/kaplone/git/BEA_BAZ/BEA_BAZ_MAVEN/src/main/resources/images/coche_todo.png"),
+	NULL_ ("/home/kaplone/git/BEA_BAZ/BEA_BAZ_MAVEN/src/main/resources/images/coche_null.png");
 	
     private ImageView usedImage;
 	

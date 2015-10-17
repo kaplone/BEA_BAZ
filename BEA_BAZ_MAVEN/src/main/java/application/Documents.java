@@ -4,8 +4,12 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.time.Instant;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
@@ -16,10 +20,10 @@ import models.Auteur;
 import models.Client;
 import models.Commande;
 import models.Etat;
-import models.Job;
 import models.Modele;
 import models.Oeuvre;
 import models.Produit;
+import models.TacheTraitement;
 import models.Traitement;
 import enums.Classes;
 
@@ -32,6 +36,7 @@ import org.jongo.marshall.MarshallingException;
 import org.jongo.marshall.jackson.JacksonMapper;
 import org.jongo.marshall.jackson.oid.MongoObjectId;
 
+import utils.MongoAccess;
 import utils.Normalize;
 
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -311,16 +316,22 @@ public class Documents {
         	try {
                 if (utils.MongoAccess.request("oeuvre", "cote_archives_6s", row.getCell(1).getStringCellValue()).as(Oeuvre.class) != null){
                 	
+                	System.out.println("cas 1");
+                	
                 	o = utils.MongoAccess.request("oeuvre", "cote_archives_6s", row.getCell(1).getStringCellValue()).as(Oeuvre.class);
                 	update = true;
                 }
                 else {
+                	
+                	System.out.println("cas 2");
                 	
                 	o = new Oeuvre();
                     string_oeuvre = "";
                     string_oeuvre_liste.clear();
                     string_oeuvre_liste.add(String.format("\"%s\" : \"%s\"", "commande", commande_id));
                     string_oeuvre_liste.add(String.format("\"%s\" : \"%s\"", "auteur", auteur_id));
+                    string_oeuvre_liste.add(String.format("\"%s\" : \"%s\"", "etat_current", "TODO_"));
+                    string_oeuvre_liste.add(String.format("\"%s\" : \"%s\"", "tachesTraitement",listeDesTachesTraitement(o)));
                     
                     update = false;
                 }
@@ -328,26 +339,40 @@ public class Documents {
         	catch (IllegalStateException ise){
         		
         		if (utils.MongoAccess.request("oeuvre", "cote_archives_6s", row.getCell(1).getNumericCellValue() + "").as(Oeuvre.class) != null){
+        			
+        			System.out.println("cas 3");
+        			
         			o = utils.MongoAccess.request("oeuvre", "cote_archives_6s", row.getCell(1).getNumericCellValue() + "").as(Oeuvre.class); 
         			update = true;
         		}
         		else {
+        			
+        			System.out.println("cas 4");
         			
         			 o = new Oeuvre();
                      string_oeuvre = "";
                      string_oeuvre_liste.clear();
                      string_oeuvre_liste.add(String.format("\"%s\" : \"%s\"", "commande", commande_id));
                      string_oeuvre_liste.add(String.format("\"%s\" : \"%s\"", "auteur", auteur_id));
+                     //setCreated_at(Date.from(Instant.now()));
+                     
+                     string_oeuvre_liste.add(String.format("\"%s\" : \"%s\"", "tachesTraitement",listeDesTachesTraitement(o)));
+                     
                      update = false;
         		}
             }
         	catch (NullPointerException mpe){
+        		
+        		System.out.println("cas 5");
         		
                 o = new Oeuvre();
                 string_oeuvre = "";
                 string_oeuvre_liste.clear();
                 string_oeuvre_liste.add(String.format("\"%s\" : \"%s\"", "commande", commande_id));
                 string_oeuvre_liste.add(String.format("\"%s\" : \"%s\"", "auteur", auteur_id));
+                
+                string_oeuvre_liste.add(String.format("\"%s\" : \"%s\"", "tachesTraitement",listeDesTachesTraitement(o)));
+                
                 update = false;
         		
         	}
@@ -391,8 +416,6 @@ public class Documents {
 		                        	string_oeuvre_liste.add(String.format("\"%s\" : \"%s\"", noms_titres.get(index), Normalize.normalizeField(cell.getStringCellValue())));
 		                        }
 		                        
-		                        System.out.println(string_oeuvre_liste);
-		                        
 		                        break;
 		                }
 		                index ++; // on  avance dans la liste des champs
@@ -418,6 +441,35 @@ public class Documents {
         workbook.close();
         file.close();
 
+	}
+	
+	public static String listeDesTachesTraitement(Oeuvre oeuvre){
+		
+		commande = Main_BEA_BAZ.getCommande();
+		
+		System.out.println(commande);
+		System.out.println(commande.getTraitements_attendus());
+		
+		ArrayList<TacheTraitement> listeDesTaches = new ArrayList<>();
+		
+		for (Traitement t : commande.getTraitements_attendus()){
+			
+			TacheTraitement tt = new TacheTraitement();
+			tt.setCommande(commande);
+			tt.setTraitement(t);
+			tt.setCreated_at(Date.from(Instant.now()));
+			tt.setOeuvre(oeuvre);
+			tt.setEtat_current("TODO_");
+			
+			MongoAccess.save("tacheTraitement", tt);
+			
+			listeDesTaches.add(tt);
+		}
+		
+		return listeDesTaches.stream().map(t -> t.get_id().toString()).collect(Collectors.joining(",", "[", "]"));
+		
+		
+		
 	}
 	
 	public static void write(){
