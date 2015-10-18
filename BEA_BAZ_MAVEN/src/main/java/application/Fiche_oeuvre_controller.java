@@ -199,7 +199,7 @@ public class Fiche_oeuvre_controller  implements Initializable{
 	
 	public void reloadOeuvre(){
 		
-		oeuvreSelectionne = (Oeuvre)tableOeuvre.getSelectionModel().getSelectedItem();
+		//oeuvreSelectionne = (Oeuvre)tableOeuvre.getSelectionModel().getSelectedItem();
 		
 		Main_BEA_BAZ.setOeuvre_index(tableOeuvre.getSelectionModel().getSelectedIndex());
 		Main_BEA_BAZ.setOeuvre(oeuvreSelectionne);
@@ -213,6 +213,9 @@ public class Fiche_oeuvre_controller  implements Initializable{
 		else {
 			tableOeuvre.scrollTo(Main_BEA_BAZ.getOeuvre_index());
 		}
+		
+		System.out.println("oeuvreSelectionne (reload) : " + oeuvreSelectionne);
+		System.out.println("oeuvreSelectionne.getN_d_origine() : " + oeuvreSelectionne.getN_d_origine());
 		
 		numero_origine_textField.setText(oeuvreSelectionne.getN_d_origine());
 		numero_archive_6s_textField.setText(oeuvreSelectionne.getCote_archives_6s());
@@ -483,6 +486,8 @@ public class Fiche_oeuvre_controller  implements Initializable{
 		conditionnement_textField.setEditable(false);
 		inscriptions_textArea.setEditable(false);
 		observations_textArea.setEditable(false);
+		
+		System.out.println("oeuvreSelectionne (init) : " +oeuvreSelectionne);
 		
 		numero_origine_textField.setText(oeuvreSelectionne.getN_d_origine());
 		numero_archive_6s_textField.setText(oeuvreSelectionne.getCote_archives_6s());

@@ -20,6 +20,7 @@ import utils.MongoAccess;
 import models.Client;
 import models.Commande;
 import models.Oeuvre;
+import models.TacheTraitement;
 import models.Traitement;
 import models.TraitementsAttendus;
 import javafx.collections.FXCollections;
@@ -135,6 +136,8 @@ public class Fiche_commande_import_controller  implements Initializable{
 	
 	private MongoCursor<Oeuvre> oeuvresCursor;
 	private Oeuvre oeuvreSelectionne;
+	
+	private List<Oeuvre> oeuvres;
 	
 	private Stage currentStage;
 	
@@ -281,13 +284,7 @@ public class Fiche_commande_import_controller  implements Initializable{
 		nomClientLabel.setText(client.getNom());
 		
 		if (commandeSelectionne != null){
-			oeuvresCursor = MongoAccess.request("oeuvre", commandeSelectionne).as(Oeuvre.class);
-			
-			while (oeuvresCursor.hasNext()){
-				liste_oeuvres.add(oeuvresCursor.next());
-			}
-			
-			oeuvres_nom_colonne.setCellValueFactory(new PropertyValueFactory<Oeuvre, String>("nom"));
+			afficherOeuvres();
 		}
 
 		//listView_oeuvres.setItems(liste_oeuvres);
@@ -375,17 +372,23 @@ public class Fiche_commande_import_controller  implements Initializable{
 	
 	public void afficherOeuvres(){
 		
-		
-		
-        oeuvresCursor = MongoAccess.request("oeuvre", commandeSelectionne).as(Oeuvre.class);
-		
-		while (oeuvresCursor.hasNext()){
-			liste_oeuvres.add(oeuvresCursor.next());
-		}
+		oeuvres = MongoAccess.distinct("tacheTraitement", "oeuvre", "commande._id", commandeSelectionne.get_id()).as(Oeuvre.class);
 		
 		oeuvres_nom_colonne.setCellValueFactory(new PropertyValueFactory<Oeuvre, String>("nom"));
 		
-		tableOeuvre.setItems(liste_oeuvres);
+		ObservableList<Oeuvre> obs_oeuvres = FXCollections.observableArrayList(oeuvres);
+		
+//		
+//		
+//        oeuvresCursor = MongoAccess.request("oeuvre", commandeSelectionne).as(Oeuvre.class);
+//		
+//		while (oeuvresCursor.hasNext()){
+//			liste_oeuvres.add(oeuvresCursor.next());
+//		}
+//		
+//		oeuvres_nom_colonne.setCellValueFactory(new PropertyValueFactory<Oeuvre, String>("nom"));
+		
+		tableOeuvre.setItems(obs_oeuvres);
 		
 	}
 	

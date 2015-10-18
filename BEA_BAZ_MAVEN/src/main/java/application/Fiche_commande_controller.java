@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
+import org.bson.types.ObjectId;
 import org.jongo.MongoCursor;
 
 import com.mongodb.DBPortPool.NoMoreConnection;
@@ -17,6 +18,7 @@ import utils.MongoAccess;
 import models.Client;
 import models.Commande;
 import models.Oeuvre;
+import models.TacheTraitement;
 import models.Traitement;
 import models.TraitementsAttendus;
 import javafx.collections.FXCollections;
@@ -109,6 +111,8 @@ public class Fiche_commande_controller  implements Initializable{
 	private ArrayList<Traitement> traitements_attendus;
 	private MongoCursor<TraitementsAttendus> traitementsCursor;
 	private ObservableList<Traitement> observableTraitements;
+
+	private List<Oeuvre> oeuvres;
 
 	
 	private MongoCursor<Oeuvre> oeuvresCursor;
@@ -329,20 +333,47 @@ public class Fiche_commande_controller  implements Initializable{
     	
     	Oeuvre o;
     	
-        oeuvresCursor = MongoAccess.request("oeuvre", commandeSelectionne).as(Oeuvre.class);
-		
-		while (oeuvresCursor.hasNext()){
+        //oeuvresCursor = MongoAccess.request("oeuvre", commandeSelectionne).as(Oeuvre.class);
+    	if (commandeSelectionne != null){
+			oeuvres = MongoAccess.distinct("tacheTraitement", "oeuvre", "commande._id", commandeSelectionne.get_id()).as(Oeuvre.class);
 			
-			o = oeuvresCursor.next();
-			liste_oeuvres.add(o);
+
+			//liste_oeuvres.add(o);
 		}
 		
 		oeuvres_nom_colonne.setCellValueFactory(new PropertyValueFactory<Oeuvre, String>("nom"));
 		oeuvres_fait_colonne.setCellValueFactory(new PropertyValueFactory<Oeuvre, ImageView>("etat"));
 		
 		
+//        type.setCellValueFactory(new Callback<CellDataFeatures<CellFields, ImageView>, ObservableValue<ImageView>>() {
+//	    	
+//	    	
+//	        public ObservableValue<ImageView> call(CellDataFeatures<CellFields, ImageView> p) {
+//	        	
+//	        	
+//	        	ObjectProperty<ImageView> imageview = new SimpleObjectProperty<ImageView>();
+//	        	image = p.getValue().getFieldImage();
+//	        	
+//	        	imageview.set(new ImageView(image));
+//	        	imageview.get().setEffect(dropShadow);
+//               imageview.get().setFitHeight(24);
+//               imageview.get().setFitWidth(24);
+//	            return imageview;
+//	        }
+//	     });
+//	    
+//	    nom.setCellValueFactory(
+//	        new PropertyValueFactory<CellFields,String>("fieldNameFull")
+//	    );
+//	    taille.setCellValueFactory(
+//		    new PropertyValueFactory<CellFields,Integer>("fieldSize")
+//		);
+//
+//	    table.setItems(resArray);
 		
-		tableOeuvre.setItems(liste_oeuvres);
+		ObservableList<Oeuvre> obs_oeuvres = FXCollections.observableArrayList(oeuvres);
+		
+		tableOeuvre.setItems(obs_oeuvres);
 		
 	}
     

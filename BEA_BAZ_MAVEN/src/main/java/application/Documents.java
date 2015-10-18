@@ -330,8 +330,10 @@ public class Documents {
                     string_oeuvre_liste.clear();
                     string_oeuvre_liste.add(String.format("\"%s\" : \"%s\"", "commande", commande_id));
                     string_oeuvre_liste.add(String.format("\"%s\" : \"%s\"", "auteur", auteur_id));
+                    string_oeuvre_liste.add(String.format("\"%s\" : \"%s\"", "created_at", LocalDate.now()));
+                    string_oeuvre_liste.add(String.format("\"%s\" : \"%s\"", "updated_at", null));
+                    string_oeuvre_liste.add(String.format("\"%s\" : \"%s\"", "deleted_at", null));
                     string_oeuvre_liste.add(String.format("\"%s\" : \"%s\"", "etat_current", "TODO_"));
-                    string_oeuvre_liste.add(String.format("\"%s\" : \"%s\"", "tachesTraitement",listeDesTachesTraitement(o)));
                     
                     update = false;
                 }
@@ -354,9 +356,10 @@ public class Documents {
                      string_oeuvre_liste.clear();
                      string_oeuvre_liste.add(String.format("\"%s\" : \"%s\"", "commande", commande_id));
                      string_oeuvre_liste.add(String.format("\"%s\" : \"%s\"", "auteur", auteur_id));
-                     //setCreated_at(Date.from(Instant.now()));
-                     
-                     string_oeuvre_liste.add(String.format("\"%s\" : \"%s\"", "tachesTraitement",listeDesTachesTraitement(o)));
+                     string_oeuvre_liste.add(String.format("\"%s\" : \"%s\"", "created_at", LocalDate.now()));
+                     string_oeuvre_liste.add(String.format("\"%s\" : \"%s\"", "updated_at", null));
+                     string_oeuvre_liste.add(String.format("\"%s\" : \"%s\"", "deleted_at", null));
+                     string_oeuvre_liste.add(String.format("\"%s\" : \"%s\"", "etat_current", "TODO_"));
                      
                      update = false;
         		}
@@ -370,8 +373,10 @@ public class Documents {
                 string_oeuvre_liste.clear();
                 string_oeuvre_liste.add(String.format("\"%s\" : \"%s\"", "commande", commande_id));
                 string_oeuvre_liste.add(String.format("\"%s\" : \"%s\"", "auteur", auteur_id));
-                
-                string_oeuvre_liste.add(String.format("\"%s\" : \"%s\"", "tachesTraitement",listeDesTachesTraitement(o)));
+                string_oeuvre_liste.add(String.format("\"%s\" : \"%s\"", "created_at", LocalDate.now()));
+                string_oeuvre_liste.add(String.format("\"%s\" : \"%s\"", "updated_at", null));
+                string_oeuvre_liste.add(String.format("\"%s\" : \"%s\"", "deleted_at", null));
+                string_oeuvre_liste.add(String.format("\"%s\" : \"%s\"", "etat_current", "TODO_"));
                 
                 update = false;
         		
@@ -432,8 +437,10 @@ public class Documents {
 	            System.out.println(string_oeuvre);
 	
 	            o = mapper.readValue(string_oeuvre, Oeuvre.class);
-	            
+
 	            utils.MongoAccess.save("oeuvre", o);
+	            
+	            listeDesTachesTraitement(o);
         	}
             
         }
@@ -443,14 +450,17 @@ public class Documents {
 
 	}
 	
-	public static String listeDesTachesTraitement(Oeuvre oeuvre){
+	public static void listeDesTachesTraitement(Oeuvre oeuvre){
 		
 		commande = Main_BEA_BAZ.getCommande();
 		
 		System.out.println(commande);
 		System.out.println(commande.getTraitements_attendus());
 		
-		ArrayList<TacheTraitement> listeDesTaches = new ArrayList<>();
+		System.out.println(oeuvre);
+		System.out.println(oeuvre.getNom());
+		
+		//ArrayList<TacheTraitement> listeDesTaches = new ArrayList<>();
 		
 		for (Traitement t : commande.getTraitements_attendus()){
 			
@@ -463,10 +473,10 @@ public class Documents {
 			
 			MongoAccess.save("tacheTraitement", tt);
 			
-			listeDesTaches.add(tt);
+			//listeDesTaches.add(tt);
 		}
 		
-		return listeDesTaches.stream().map(t -> t.get_id().toString()).collect(Collectors.joining(",", "[", "]"));
+		//return listeDesTaches.stream().map(t -> t.get_id().toString()).collect(Collectors.joining(",", "[", "]"));
 		
 		
 		

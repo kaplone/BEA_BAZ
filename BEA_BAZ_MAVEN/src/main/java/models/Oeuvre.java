@@ -28,9 +28,9 @@ public class Oeuvre extends Commun{
 	               inscriptions_au_verso,
 	               format_de_conditionnement;
 	
-	private ObjectId auteur,
-	                 client,
-	                 commande;
+	private ObjectId auteur;
+	                 //client,
+	                 //commande;
 
 
 	private ArrayList<ObjectId> etats,
@@ -61,13 +61,13 @@ public class Oeuvre extends Commun{
 		
 	}
 	
-	public ObjectId getCommande() {
-		return commande;
-	}
-
-	public void setCommande(ObjectId commande) {
-		this.commande = commande;
-	}
+//	public ObjectId getCommande() {
+//		return commande;
+//	}
+//
+//	public void setCommande(ObjectId commande) {
+//		this.commande = commande;
+//	}
 
 	public String getN_d_origine() {
 		return n_d_origine;
@@ -165,13 +165,13 @@ public class Oeuvre extends Commun{
 		this.auteur = auteur;
 	}
 
-	public ObjectId getClient() {
-		return client;
-	}
-
-	public void setClient(ObjectId client) {
-		this.client = client;
-	}
+//	public ObjectId getClient() {
+//		return client;
+//	}
+//
+//	public void setClient(ObjectId client) {
+//		this.client = client;
+//	}
 
 	public ArrayList<ObjectId> getEtats() {
 		return etats;

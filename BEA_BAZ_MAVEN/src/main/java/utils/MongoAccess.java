@@ -3,6 +3,7 @@ package utils;
 import java.net.UnknownHostException;
 
 import org.bson.types.ObjectId;
+import org.jongo.Distinct;
 import org.jongo.Find;
 import org.jongo.FindOne;
 import org.jongo.Jongo;
@@ -85,13 +86,56 @@ public class MongoAccess {
 		return find;
 	}
     
+    public static Find request(String table, String field, ObjectId objectId) {	
+    	
+    	System.out.println("table : " + table);
+    	System.out.println("field : " + field);
+    	System.out.println("objectId : " + objectId);
+		
+		Find find = null;
+		collec = jongo.getCollection(table);
+		find = collec.find("{# :  #}", field, objectId);
+
+		return find;
+	}
+    
+    
+    public static Distinct distinct(String table, String distinct, String field, ObjectId objectId) {	
+    	
+    	System.out.println("table : " + table);
+    	System.out.println("field : " + field);
+    	System.out.println("objectId : " + objectId);
+		
+		Distinct find = null;
+		collec = jongo.getCollection(table);
+		find = collec.distinct(distinct).query("{# :  #}", field, objectId);
+		
+		//System.out.println();
+
+		return find;
+	}
+    
+    public static Find request(String table, String field, ObjectId objectId, String object) {	
+    	
+    	System.out.println("table : " + table);
+    	System.out.println("field : " + field);
+    	System.out.println("objectId : " + objectId);
+    	System.out.println("object : " + object);
+		
+		Find find = null;
+		collec = jongo.getCollection(table);
+		find = collec.find("{# :  #}", field, objectId).projection("{# : 1, _id : 0", object);
+
+		return find;
+	}
+    
     public static Find request(String table, String field, Commande commande) {	
     	
     	System.out.println(field);
 		
 		Find find = null;
 		collec = jongo.getCollection(table);
-		find = collec.find("{commande :  #}", commande.get_id());//.projection("{# : 1}", field);
+		find = collec.find("{commande :  #}", commande.get_id());
 
 		return find;
 	}
