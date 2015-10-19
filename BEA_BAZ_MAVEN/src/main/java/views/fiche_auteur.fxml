@@ -8,21 +8,21 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.Pane?>
 
-<BorderPane prefHeight="722.0" prefWidth="1275.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.Fiche_traitement_controller">
-   <right>
-      <VBox alignment="TOP_CENTER" prefHeight="649.0" prefWidth="288.0" BorderPane.alignment="CENTER">
+<BorderPane prefHeight="722.0" prefWidth="1275.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.Fiche_auteur_controller">
+   <left>
+      <VBox alignment="TOP_CENTER" prefHeight="649.0" prefWidth="218.0" BorderPane.alignment="CENTER">
          <children>
-            <Label alignment="CENTER" contentDisplay="CENTER" text="Produits">
+            <Label alignment="CENTER" contentDisplay="CENTER" text="Auteurs">
                <VBox.margin>
                   <Insets bottom="10.0" top="10.0" />
                </VBox.margin>
             </Label>
-            <ListView fx:id="listView_produits" onKeyTyped="#onDetailSelect" onMouseClicked="#onDetailSelect" prefHeight="550.0" prefWidth="288.0">
+            <ListView fx:id="listView_auteur" onKeyTyped="#onAuteurSelect" onMouseClicked="#onAuteurSelect" prefHeight="645.0" prefWidth="138.0">
                <VBox.margin>
                   <Insets bottom="10.0" top="10.0" />
                </VBox.margin>
             </ListView>
-            <Button fx:id="nouveau_produit_button" mnemonicParsing="false" onAction="#onAjoutProduit" text="Nouveau produit">
+            <Button fx:id="nouveau_auteur" mnemonicParsing="false" onAction="#onNouveauAuteurButton" text="Nouvel auteur">
                <VBox.margin>
                   <Insets bottom="10.0" top="10.0" />
                </VBox.margin>
@@ -32,7 +32,7 @@
             <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
          </BorderPane.margin>
       </VBox>
-   </right>
+   </left>
    <center>
       <VBox alignment="TOP_CENTER" prefHeight="437.0" prefWidth="869.0" BorderPane.alignment="CENTER">
          <BorderPane.margin>
@@ -41,17 +41,12 @@
          <children>
             <Pane prefHeight="50.0" prefWidth="889.0">
                <children>
-                  <Label fx:id="fiche_traitement_label" layoutX="35.0" layoutY="-7.0" prefHeight="51.0" prefWidth="466.0" text="FICHE TACHE TRAITEMENT :">
+                  <Label layoutX="35.0" layoutY="6.0" text="FICHE AUTEUR :">
                      <font>
                         <Font size="31.0" />
                      </font>
                   </Label>
                   <Line endX="700.0" endY="50.0" startY="50.0" />
-                  <Label fx:id="nom_traitement_label" layoutX="507.0" layoutY="13.0" text="Label">
-                     <font>
-                        <Font size="20.0" />
-                     </font>
-                  </Label>
                </children>
             </Pane>
             <GridPane prefHeight="400.0" prefWidth="869.0" VBox.vgrow="NEVER">
@@ -61,8 +56,8 @@
               </columnConstraints>
               <rowConstraints>
                 <RowConstraints maxHeight="30.0" minHeight="30.0" prefHeight="30.0" valignment="CENTER" vgrow="NEVER" />
-                  <RowConstraints maxHeight="179.0" minHeight="7.0" prefHeight="41.0" vgrow="SOMETIMES" />
-                <RowConstraints maxHeight="359.0" minHeight="30.0" prefHeight="296.0" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="30.0" minHeight="30.0" prefHeight="30.0" valignment="CENTER" vgrow="NEVER" />
+                <RowConstraints minHeight="30.0" prefHeight="100.0" vgrow="SOMETIMES" />
               </rowConstraints>
                <VBox.margin>
                   <Insets left="10.0" right="10.0" top="50.0" />
@@ -74,49 +69,22 @@
                         <Insets bottom="10.0" right="10.0" top="10.0" />
                      </GridPane.margin>
                   </Label>
-                  <TextArea fx:id="remarques_traitement_textArea" prefHeight="145.0" prefWidth="559.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                  <TextArea fx:id="remarques_auteur_textArea" prefHeight="145.0" prefWidth="559.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
                      <GridPane.margin>
                         <Insets top="10.0" />
                      </GridPane.margin></TextArea>
-                  <TextField fx:id="nom_traitement_textField" maxHeight="25.0" minHeight="25.0" prefHeight="25.0" GridPane.columnIndex="1" GridPane.rowIndex="0" GridPane.valignment="CENTER" GridPane.vgrow="NEVER" />
-                  <Label text="Nom complet : " GridPane.rowIndex="1" />
-                  <TextField fx:id="nom_complet_traitement_textField" maxHeight="25.0" minHeight="25.0" prefHeight="25.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                  <TextField fx:id="nom_auteur_textField" maxHeight="25.0" minHeight="25.0" prefHeight="25.0" GridPane.columnIndex="1" GridPane.valignment="CENTER" GridPane.vgrow="NEVER" />
+                  <Label text="Nom complet :" GridPane.rowIndex="1" />
+                  <TextField fx:id="nom_complet_auteur_textField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                </children>
             </GridPane>
-            <HBox prefHeight="55.0" prefWidth="711.0">
-               <children>
-                  <Label alignment="CENTER_RIGHT" prefHeight="39.0" prefWidth="103.0" text="Fait : ">
-                     <HBox.margin>
-                        <Insets right="20.0" />
-                     </HBox.margin>
-                  </Label>
-                  <RadioButton mnemonicParsing="false" prefHeight="37.0" prefWidth="105.0" text="Fait">
-                     <HBox.margin>
-                        <Insets left="10.0" right="10.0" />
-                     </HBox.margin>
-                     <toggleGroup>
-                        <ToggleGroup fx:id="fait" />
-                     </toggleGroup>
-                  </RadioButton>
-                  <RadioButton mnemonicParsing="false" prefHeight="37.0" prefWidth="105.0" selected="true" text="Todo" toggleGroup="$fait">
-                     <HBox.margin>
-                        <Insets left="10.0" right="10.0" />
-                     </HBox.margin>
-                  </RadioButton>
-                  <RadioButton mnemonicParsing="false" prefHeight="37.0" prefWidth="105.0" text="Sans objet" toggleGroup="$fait">
-                     <HBox.margin>
-                        <Insets left="10.0" right="10.0" />
-                     </HBox.margin>
-                  </RadioButton>
-               </children>
-            </HBox>
             <HBox fx:id="hbox" alignment="TOP_CENTER" prefHeight="50.0" prefWidth="200.0">
                <VBox.margin>
                   <Insets bottom="10.0" left="10.0" right="10.0" top="100.0" />
                </VBox.margin>
                <children>
-                  <Button fx:id="mise_a_jour_traitement" mnemonicParsing="false" onAction="#onMiseAJourTraitementButton" text="Mise à jour" />
-                  <Button fx:id="editer" mnemonicParsing="false" onAction="#onEditerTraitementButton" text="Editer" />
+                  <Button fx:id="mise_a_jour_auteur" mnemonicParsing="false" onAction="#onMiseAJourAuteurButton" text="Mise à jour" />
+                  <Button fx:id="editer" mnemonicParsing="false" onAction="#onEditerAuteurButton" text="Editer" />
                   <Button fx:id="annuler" mnemonicParsing="false" onAction="#onAnnulerEditButton" text="Annuler">
                      <HBox.margin>
                         <Insets left="50.0" />
@@ -153,23 +121,23 @@
                   <Insets right="10.0" />
                </HBox.margin>
             </Button>
-            <Button fx:id="versModelesButton" mnemonicParsing="false" text="Modèles">
+            <Button fx:id="versModelesButton" mnemonicParsing="false" onAction="#onVersModelesButton" text="Modèles">
                <HBox.margin>
                   <Insets left="50.0" right="10.0" />
                </HBox.margin>
             </Button>
-            <Button fx:id="versFichiersButton" mnemonicParsing="false" text="Fichiers">
+            <Button fx:id="versFichiersButton" mnemonicParsing="false" onAction="#onVersFichiersButton" text="Fichiers">
                <HBox.margin>
                   <Insets right="10.0" />
                </HBox.margin>
             </Button>
-            <Button fx:id="versTraitementsButton" mnemonicParsing="false" text="Traitements" />
+            <Button fx:id="versTraitementsButton" mnemonicParsing="false" onAction="#onVersTraitementsButton" text="Traitements" />
             <Button fx:id="versProduitsButton" mnemonicParsing="false" onAction="#onVersProduitsButton" text="Produits">
                <HBox.margin>
                   <Insets left="10.0" />
                </HBox.margin>
             </Button>
-            <Button fx:id="versAuteursButton" mnemonicParsing="false" onAction="#onVersAuteursButton" text="Auteurs">
+            <Button fx:id="versAuteursButton" mnemonicParsing="false" text="Auteurs">
                <HBox.margin>
                   <Insets left="10.0" />
                </HBox.margin>
@@ -177,28 +145,4 @@
          </children>
       </HBox>
    </top>
-   <left>
-      <VBox alignment="TOP_CENTER" prefHeight="669.0" prefWidth="216.0" BorderPane.alignment="CENTER">
-         <BorderPane.margin>
-            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-         </BorderPane.margin>
-         <children>
-            <Label text="Compléments">
-               <VBox.margin>
-                  <Insets bottom="10.0" top="10.0" />
-               </VBox.margin>
-            </Label>
-            <ListView prefHeight="604.0" prefWidth="216.0">
-               <VBox.margin>
-                  <Insets bottom="10.0" top="10.0" />
-               </VBox.margin>
-            </ListView>
-            <Button mnemonicParsing="false" text="Nouveau complément">
-               <VBox.margin>
-                  <Insets bottom="10.0" top="10.0" />
-               </VBox.margin>
-            </Button>
-         </children>
-      </VBox>
-   </left>
 </BorderPane>

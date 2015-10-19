@@ -230,6 +230,11 @@
                   <Insets left="10.0" />
                </HBox.margin>
             </Button>
+            <Button fx:id="versAuteursButton" mnemonicParsing="false" onAction="#onVersAuteursButton" text="Auteurs">
+               <HBox.margin>
+                  <Insets left="10.0" />
+               </HBox.margin>
+            </Button>
          </children>
       </HBox>
    </top>
@@ -243,7 +248,7 @@
                         <Insets bottom="10.0" top="10.0" />
                      </VBox.margin>
                   </Label>
-                  <TableView fx:id="tableOeuvre" onKeyPressed="#onOeuvreSelect" onKeyTyped="#onOeuvreSelect" onMouseClicked="#onOeuvreSelect" prefHeight="586.0" prefWidth="291.0">
+                  <TableView fx:id="tableOeuvre" onKeyReleased="#onOeuvreSelect" onMouseClicked="#onOeuvreSelect" prefHeight="586.0" prefWidth="291.0">
                      <columns>
                         <TableColumn fx:id="oeuvres_nom_colonne" prefWidth="248.0" text="Nom" />
                         <TableColumn fx:id="oeuvres_fait_colonne" prefWidth="42.0" text="Fait" />

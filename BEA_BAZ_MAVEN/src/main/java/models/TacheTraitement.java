@@ -7,29 +7,30 @@ import javafx.scene.image.ImageView;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-import enums.Etats;
+import enums.EtatFinal;
+import enums.Progression;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class TacheTraitement extends Commun{
 	
-	private Etats fait;
+	private Progression fait;
 	private Date date;
 	private Oeuvre oeuvre;
 	private Commande commande;
 	private Complement complement;
 	private Produit produit;
 	private Traitement traitement;
-	
-    private String etat_current;
+	private Etat etat;
+    private String progression;
 	
 	@JsonIgnore
-	private ImageView etat;
+	private ImageView icone_progression;
 	
     
-	public Etats getFait() {
+	public Progression getFait() {
 		return fait;
 	}
-	public void setFait(Etats fait) {
+	public void setFait(Progression fait) {
 		this.fait = fait;
 	}
 	public Date getDate() {
@@ -68,19 +69,19 @@ public class TacheTraitement extends Commun{
 	public void setTraitement(Traitement traitement) {
 		this.traitement = traitement;
 	}
-	public String getEtat_current() {
-		return etat_current;
+	public String getProgression() {
+		return progression;
 	}
-	public void setEtat_current(String etat_current) {
-		this.etat_current = etat_current;
+	public void setProgression(String progression) {
+		this.progression = progression;
 	}
-	public ImageView getEtat() {
-		System.out.println(etat_current);
+	public ImageView getIcone_progression() {
+		System.out.println(progression);
 		
-		return Etats.valueOf(etat_current).getUsedImage();
+		return Progression.valueOf(progression).getUsedImage();
 	}
-	public void setEtat(ImageView etat) {
-		this.etat = etat;
+	public void setIcone_progression(ImageView etat) {
+		this.icone_progression = etat;
 	}
 	
 	

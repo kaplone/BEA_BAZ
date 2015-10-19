@@ -145,6 +145,13 @@ public class Fiche_commande_controller  implements Initializable{
 		
 		currentStage.setScene(fiche_produit_scene);	
 	}
+	@FXML
+    public void onVersAuteursButton(){
+    	Scene fiche_auteur_scene = new Scene((Parent) JfxUtils.loadFxml("/views/fiche_auteur.fxml"), 1275, 722);
+		fiche_auteur_scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+		
+		currentStage.setScene(fiche_auteur_scene);
+    }
 	
 	@FXML
 	public void onEditerButton(){
@@ -394,8 +401,6 @@ public class Fiche_commande_controller  implements Initializable{
 		
 		commande = Main_BEA_BAZ.getCommande();
 		client = Main_BEA_BAZ.getClient();
-
-		utils.MongoAccess.connect();
 
 		versClientButton.setVisible(true);
 		versCommandeButton.setVisible(false);

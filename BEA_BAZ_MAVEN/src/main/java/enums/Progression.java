@@ -5,7 +5,7 @@ import java.io.File;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
-public enum Etats {
+public enum Progression {
 	
 	FAIT_ ("/home/kaplone/git/BEA_BAZ/BEA_BAZ_MAVEN/src/main/resources/images/coche_ok.png"),
 	TODO_ ("/home/kaplone/git/BEA_BAZ/BEA_BAZ_MAVEN/src/main/resources/images/coche_todo.png"),
@@ -13,7 +13,7 @@ public enum Etats {
 	
     private ImageView usedImage;
 	
-	Etats(String i) {
+	Progression(String i) {
 		
 		File f = new File(i);
         Image image = new Image(f.toURI().toString());

@@ -31,14 +31,16 @@ public class FreeMarkerMaker {
 	@FieldMetadata( images = { @ImageMetadata( name = "image_oeuvre" ) } )
     public static File  getLogo()
     {
-        return new File("/home/kaplone/Desktop/BEABASE/Béa base/P1140344.JPG" );
+        //return new File("/home/kaplone/Desktop/BEABASE/Béa base/P1140344.JPG" );
+        return new File("C:\\Users\\USER\\Desktop\\BEABAZ\\P1140344.JPG");
     }
 
 	public static void odt2pdf(Oeuvre o) {
 
 		try {
 		      // 1) Load Docx file by filling Velocity template engine and cache it to the registry
-		      InputStream in = new FileInputStream(new File("/home/kaplone/Desktop/BEABASE/Béa base/modele_rapport_v2_freemarker.odt"));
+		      //InputStream in = new FileInputStream(new File("/home/kaplone/Desktop/BEABASE/Béa base/modele_rapport_v2_freemarker.odt"));
+		      InputStream in = new FileInputStream(new File("C:\\Users\\USER\\Desktop\\BEABAZ\\modele_rapport_v2_freemarker.odt"));
 		      IXDocReport report = XDocReportRegistry.getRegistry().loadReport(in,TemplateEngineKind.Freemarker);
 
 		      
@@ -46,8 +48,10 @@ public class FreeMarkerMaker {
 		      metadata.addFieldAsImage( "image_oeuvre", "image_oeuvre");
 		      report.setFieldsMetadata(metadata);
 
+		      //IContext context = report.createContext();
+		      //InputStream in = new FileInputStream(new File("/home/kaplone/Desktop/BEABASE/Béa base/modele_rapport_v2_freemarker.odt"));
 		      IContext context = report.createContext();
-		      
+		      //in = new FileInputStream(new File("C:\\Users\\USER\\Desktop\\BEABAZ\\modele_rapport_v2_freemarker.odt"));
 		      context.put("inventaire", o.getCote_archives_6s());
 		      context.put("titre", o.getTitre_de_l_oeuvre() != null ? o.getTitre_de_l_oeuvre() : "");
 		      context.put("dimensions", o.getDimensions() != null ? o.getDimensions() : "");
@@ -60,17 +64,23 @@ public class FreeMarkerMaker {
                                  "Restauratrice du patrimoine\n" +
                                  "28 place Jean Jaurès\n" +
                                  "34400 Lunel - 06 21 21 15 40");
-		      context.put("client", "Restauration des dessins de Jean-Claude Golvin\n" +
-                                    "Musée Départemental Arles antique\n" +
-                                    "Avril 2015");
+		      context.put("client", "ARCHIVES MUNICIPALES DE LA SEYNE-SUR-MER\n" +
+		    		                "Traverse Marius AUTRAN\n" +
+		    		                "83 500 La Seyne-sur-Mer");
+		      
+		      context.put("commande", "RESTAURATION DE DOCUMENTS D'ARCHIVES FONDS CHARLY\n" + 
+		                              "524 caricatures réalisées à la gouache, à l'aquarelle et au feutre");
 
 		      context.put("image_oeuvre", getLogo());
 
 		      // 3) Generate report by merging Java model with the Docx
-		      OutputStream out = new FileOutputStream(new File(String.format("/home/kaplone/Desktop/BEABASE/tests/%s_freemarker.odt", o.getCote_archives_6s())));
+		      
+		      //OutputStream out = new FileOutputStream(new File(String.format("/home/kaplone/Desktop/BEABASE/tests/%s_freemarker.odt", o.getCote_archives_6s())));
+		      OutputStream out = new FileOutputStream(new File(String.format("C:\\Users\\USER\\Desktop\\BEABAZ\\%s_freemarker.odt", o.getCote_archives_6s())));
 		      report.process(context, out);
 
-              OutputStream out2 = new FileOutputStream(new File(String.format("/home/kaplone/Desktop/BEABASE/tests/%s_freemarker.pdf", o.getCote_archives_6s())));
+		      //OutputStream out2 = new FileOutputStream(new File(String.format("/home/kaplone/Desktop/BEABASE/tests/%s_freemarker.pdf", o.getCote_archives_6s())));
+		      OutputStream out2 = new FileOutputStream(new File(String.format("C:\\Users\\USER\\Desktop\\BEABAZ\\%s_freemarker.test.pdf", o.getCote_archives_6s())));
               // 1) Create options ODT 2 PDF to select well converter form the registry
               Options options = Options.getFrom(DocumentKind.ODT).to(ConverterTypeTo.PDF);
 

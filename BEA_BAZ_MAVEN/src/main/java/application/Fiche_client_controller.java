@@ -73,15 +73,6 @@ public class Fiche_client_controller  implements Initializable{
 	private boolean edit = false;
 	
 	@FXML
-	public void onVersCommandeButton(){
-		
-//		Scene fiche_commande_scene = new Scene((Parent) JfxUtils.loadFxml("/views/fiche_commande.fxml"), 1275, 722);
-//		fiche_commande_scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
-//		
-//		currentStage.setScene(fiche_commande_scene);	
-	}
-	
-	@FXML
 	public void onVersProduitsButton(){
 		
 		Scene fiche_produit_scene = new Scene((Parent) JfxUtils.loadFxml("/views/fiche_produit.fxml"), 1275, 722);
@@ -89,6 +80,24 @@ public class Fiche_client_controller  implements Initializable{
 		
 		currentStage.setScene(fiche_produit_scene);	
 	}
+	@FXML
+    public void onVersFichiersButton(){}
+    @FXML
+    public void onVersTraitementsButton(){
+    	Scene fiche_traitement_scene = new Scene((Parent) JfxUtils.loadFxml("/views/fiche_traitement.fxml"), 1275, 722);
+		fiche_traitement_scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+		
+		currentStage.setScene(fiche_traitement_scene);
+    }
+    @FXML
+    public void onVersModelesButton(){}
+    @FXML
+    public void onVersAuteursButton(){
+    	Scene fiche_auteur_scene = new Scene((Parent) JfxUtils.loadFxml("/views/fiche_auteur.fxml"), 1275, 722);
+		fiche_auteur_scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+		
+		currentStage.setScene(fiche_auteur_scene);
+    }
 	
 
 	@FXML
@@ -269,24 +278,8 @@ public class Fiche_client_controller  implements Initializable{
 		}
     	
     }
+
     
-    @FXML
-    public void onVersClientButton(){}
-    @FXML
-    public void onVersOeuvreButton(){}
-    @FXML
-    public void onVersRapportButton(){}
-    @FXML
-    public void onVersFichierButton(){}
-    @FXML
-    public void onVersTraitementButton(){
-    	Scene fiche_traitement_scene = new Scene((Parent) JfxUtils.loadFxml("/views/fiche_traitement.fxml"), 1275, 722);
-		fiche_traitement_scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
-		
-		currentStage.setScene(fiche_traitement_scene);
-    }
-    @FXML
-    public void onVersModeleButton(){}
     	
 
 	@Override
@@ -295,8 +288,6 @@ public class Fiche_client_controller  implements Initializable{
 		commande = Main_BEA_BAZ.getCommande();
 		client = Main_BEA_BAZ.getClient();
 
-		utils.MongoAccess.connect();
-		
 		nom_client_textField.setEditable(false);
 		remarques_client_textArea.setEditable(false);
         editer.setVisible(true);

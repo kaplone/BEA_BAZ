@@ -53,15 +53,11 @@ public class Fiche_traitement_controller  implements Initializable{
 	@FXML
 	private Button versCommandeButton;
 	@FXML
-	private Button versTraitementButton;
-	@FXML
-	private Button versModeleButton;
+	private Button versTraitementsButton;
 	@FXML
 	private Button versOeuvreButton;
 	@FXML
 	private Button versRapportButton;
-	@FXML
-	private Button versFichierButton;
 	
 	@FXML
 	private Label fiche_traitement_label;
@@ -95,6 +91,17 @@ public class Fiche_traitement_controller  implements Initializable{
 		
 		currentStage.setScene(fiche_produit_scene);	
 	}
+	@FXML
+    public void onVersAuteursButton(){
+    	Scene fiche_auteur_scene = new Scene((Parent) JfxUtils.loadFxml("/views/fiche_auteur.fxml"), 1275, 722);
+		fiche_auteur_scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+		
+		currentStage.setScene(fiche_auteur_scene);
+    }
+	@FXML
+    public void onVersFichiersButton(){}
+    @FXML
+    public void onVersModelesButton(){}
 	
 	@FXML
 	public void onVersCommandeButton(){
@@ -348,15 +355,8 @@ public class Fiche_traitement_controller  implements Initializable{
     }
     
     @FXML
-    public void onVerstraitementButton(){}
-    @FXML
     public void onVersOeuvreButton(){}
-    @FXML
-    public void onVersFichierButton(){}
-    @FXML
-    public void onVersTraitementButton(){}
-    @FXML
-    public void onVersModeleButton(){}
+    
     @FXML
     public void onAjoutProduit(){
     	
@@ -385,8 +385,6 @@ public class Fiche_traitement_controller  implements Initializable{
 		detail = Main_BEA_BAZ.getDetail();
 		traitementSelectionne = Main_BEA_BAZ.getTraitement();
 
-		utils.MongoAccess.connect();
-		
 		nom_traitement_textField.setEditable(false);
 		remarques_traitement_textArea.setEditable(false);
         editer.setVisible(true);
@@ -394,11 +392,9 @@ public class Fiche_traitement_controller  implements Initializable{
 		annuler.setVisible(false);
 		
 		versCommandeButton.setVisible(false);
-		versTraitementButton.setVisible(false);
-		versModeleButton.setVisible(false);
+		versTraitementsButton.setVisible(false);
 		versOeuvreButton.setVisible(false);
 		versRapportButton.setVisible(false);
-		versFichierButton.setVisible(false);
 		
 		
 		liste_traitements = FXCollections.observableArrayList();

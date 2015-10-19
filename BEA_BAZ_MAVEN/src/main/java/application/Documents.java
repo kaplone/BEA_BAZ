@@ -469,7 +469,7 @@ public class Documents {
 			tt.setTraitement(t);
 			tt.setCreated_at(Date.from(Instant.now()));
 			tt.setOeuvre(oeuvre);
-			tt.setEtat_current("TODO_");
+			tt.setProgression("TODO_");
 			
 			MongoAccess.save("tacheTraitement", tt);
 			

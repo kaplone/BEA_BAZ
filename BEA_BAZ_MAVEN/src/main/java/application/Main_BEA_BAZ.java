@@ -1,5 +1,6 @@
 package application;
 	
+import models.Auteur;
 import models.Client;
 import models.Commande;
 import models.Oeuvre;
@@ -25,6 +26,8 @@ public class Main_BEA_BAZ extends Application {
 	
 	private static Produit detail;
 	
+	private static Auteur auteur;
+	
 	private static Oeuvre oeuvre;
 	private static int oeuvre_index;
 	
@@ -33,22 +36,17 @@ public class Main_BEA_BAZ extends Application {
 	@Override
 	public void start(Stage primaryStage) {
 		
+		String cheminMongod = "C:\\Program Files\\MongoDB\\Server\\3.0\\bin\\mongod.exe";
+		String cheminMongo = "C:\\Program Files\\MongoDB\\Server\\3.0\\bin\\mongo.exe";
+		
+		utils.MongoAccess.connect();
+		
 		exportStage = primaryStage;
 		try {
 			Pane root = new Pane();
 			
 			Scene fiche_client_scene = new Scene((Parent) JfxUtils.loadFxml("/views/fiche_client.fxml"), 1275, 722);
 			fiche_client_scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
-			
-			Scene fiche_commande_scene = new Scene((Parent) JfxUtils.loadFxml("/views/fiche_commande.fxml"), 1275, 722);
-			fiche_commande_scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
-			
-//			Scene fiche_oeuvre_scene = new Scene((Parent) JfxUtils.loadFxml("/views/fiche_oeuvre.fxml"), 1275, 722);
-//			fiche_oeuvre_scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
-//			
-//			Scene fiche_fichier_scene = new Scene((Parent) JfxUtils.loadFxml("/views/fiche_fichier.fxml"), 1275, 722);
-//			fiche_fichier_scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
-			
 			primaryStage.setScene(fiche_client_scene);
 			primaryStage.show();
 		} catch(Exception e) {
@@ -120,6 +118,14 @@ public class Main_BEA_BAZ extends Application {
 
 	public static void setOeuvre_index(int oeuvre_index) {
 		Main_BEA_BAZ.oeuvre_index = oeuvre_index;
+	}
+
+	public static Auteur getAuteur() {
+		return auteur;
+	}
+
+	public static void setAuteur(Auteur auteur) {
+		Main_BEA_BAZ.auteur = auteur;
 	}
     
 	

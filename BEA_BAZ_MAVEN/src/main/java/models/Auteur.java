@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import org.bson.types.ObjectId;
 import org.jongo.marshall.jackson.oid.MongoObjectId;
 
+import utils.MongoAccess;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -12,27 +14,17 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Auteur extends Commun{
 	
-	private MongoObjectId adresse;
+	private String nom_complet;
 	
-	private ArrayList<MongoObjectId> oeuvres;
+	public static void update(Auteur c){
 
-
-	public MongoObjectId getAdresse() {
-		return adresse;
-	}
-
-	public void setAdresse(MongoObjectId adresse) {
-		this.adresse = adresse;
-	}
-
-	public ArrayList<MongoObjectId> getOeuvres() {
-		return oeuvres;
-	}
-
-	public void setOeuvres(ArrayList<MongoObjectId> oeuvres) {
-		this.oeuvres = oeuvres;
+		MongoAccess.update("auteur", c);
 	}
 	
-	
+    public static void save(Auteur c){
+		
+		MongoAccess.save("auteur", c);
+		
+	}
 
 }

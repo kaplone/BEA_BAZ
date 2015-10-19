@@ -144,18 +144,23 @@
                   <Insets right="10.0" />
                </HBox.margin>
             </Button>
-            <Button fx:id="versModeleButton" mnemonicParsing="false" text="Modèles">
+            <Button fx:id="versModelesButton" mnemonicParsing="false" onAction="#onVersModelesButton" text="Modèles">
                <HBox.margin>
                   <Insets left="50.0" right="10.0" />
                </HBox.margin>
             </Button>
-            <Button fx:id="versFichierButton" mnemonicParsing="false" text="Fichiers">
+            <Button fx:id="versFichiersButton" mnemonicParsing="false" onAction="#onVersFichiersButton" text="Fichiers">
                <HBox.margin>
                   <Insets right="10.0" />
                </HBox.margin>
             </Button>
-            <Button fx:id="versTraitementButton" mnemonicParsing="false" text="Traitements" />
+            <Button fx:id="versTraitementsButton" mnemonicParsing="false" text="Traitements" />
             <Button fx:id="versProduitsButton" mnemonicParsing="false" onAction="#onVersProduitsButton" text="Produits">
+               <HBox.margin>
+                  <Insets left="10.0" />
+               </HBox.margin>
+            </Button>
+            <Button fx:id="versAuteursButton" mnemonicParsing="false" onAction="#onVersAuteursButton" text="Auteurs">
                <HBox.margin>
                   <Insets left="10.0" />
                </HBox.margin>

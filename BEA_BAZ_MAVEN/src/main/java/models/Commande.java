@@ -25,7 +25,11 @@ import com.fasterxml.jackson.datatype.jsr310.deser.*;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Commande  extends Commun{
 	
-	private String nom;
+	private String nom_affichage;
+	
+	private String nom_complet;
+	
+	private String complement;
 	
 	private String remarques;
 
@@ -62,14 +66,6 @@ public class Commande  extends Commun{
     	
     	return this.getNom();
     }
-
-	public String getNom() {
-		return nom;
-	}
-
-	public void setNom(String nom) {
-		this.nom = nom;
-	}
 
 	public String getRemarques() {
 		return remarques;
@@ -145,6 +141,42 @@ public class Commande  extends Commun{
 
 	public void setTous_les_traitements(ArrayList<Traitement> tous_les_traitements) {
 		this.tous_les_traitements = tous_les_traitements;
+	}
+
+	public String getNom_affichage() {
+		return nom_affichage;
+	}
+
+	public void setNom_affichage(String nom_affichage) {
+		this.nom_affichage = nom_affichage;
+	}
+
+	public String getNom_complet() {
+		return nom_complet;
+	}
+
+	public void setNom_complet(String nom_complet) {
+		this.nom_complet = nom_complet;
+	}
+
+	public String getComplement() {
+		return complement;
+	}
+
+	public void setComplement(String complement) {
+		this.complement = complement;
+	}
+
+	public void setDateCommande(Date dateCommande) {
+		this.dateCommande = dateCommande;
+	}
+
+	public void setDateDebutProjet(Date dateDebutProjet) {
+		this.dateDebutProjet = dateDebutProjet;
+	}
+
+	public void setDateFinProjet(Date dateFinProjet) {
+		this.dateFinProjet = dateFinProjet;
 	}
 	
 	

@@ -101,13 +101,20 @@ public class Fiche_produit_controller  implements Initializable{
 	}
 	
 	@FXML
-	public void onVersTraitementButton(){
+	public void onVersTraitementsButton(){
 		
 		Scene fiche_traitement_scene = new Scene((Parent) JfxUtils.loadFxml("/views/fiche_traitement.fxml"), 1275, 722);
 		fiche_traitement_scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 		
 		currentStage.setScene(fiche_traitement_scene);	
 	}
+	@FXML
+    public void onVersAuteursButton(){
+    	Scene fiche_auteur_scene = new Scene((Parent) JfxUtils.loadFxml("/views/fiche_auteur.fxml"), 1275, 722);
+		fiche_auteur_scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+		
+		currentStage.setScene(fiche_auteur_scene);
+    }
 	
     protected File chooseExport(){
 		
@@ -302,9 +309,9 @@ public class Fiche_produit_controller  implements Initializable{
     @FXML
     public void onAjoutDetail(){}
     @FXML
-    public void onVersFichierButton(){}
+    public void onVersFichiersButton(){}
     @FXML
-    public void onVersModeleButton(){}
+    public void onVersModelesButton(){}
     @FXML
     public void onProduitSelect(){
     	
@@ -334,8 +341,6 @@ public class Fiche_produit_controller  implements Initializable{
 		produitSelectionne = Main_BEA_BAZ.getDetail();
 		traitementSelectionne = Main_BEA_BAZ.getTraitementEdited();
 
-		utils.MongoAccess.connect();
-		
 		nom_produit_textField.setEditable(false);
 		remarques_produit_textArea.setEditable(false);
         editer.setVisible(true);
@@ -343,11 +348,8 @@ public class Fiche_produit_controller  implements Initializable{
 		annuler.setVisible(false);
 		
 		versCommandeButton.setVisible(false);
-		versTraitementButton.setVisible(true);
-		versModeleButton.setVisible(false);
 		versOeuvreButton.setVisible(false);
 		versRapportButton.setVisible(false);
-		versFichierButton.setVisible(false);
 		versProduitsButton.setVisible(false);
 		
 		if (traitementSelectionne != null){

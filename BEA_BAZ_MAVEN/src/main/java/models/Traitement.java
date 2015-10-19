@@ -12,7 +12,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Traitement extends Commun{
 
-	private String nom_Complet;
+	private String nom_complet;
 	
 	private ArrayList<Produit> produits;
 	
@@ -40,11 +40,11 @@ public class Traitement extends Commun{
 	}
 
 	public String getNom_complet() {
-		return nom_Complet;
+		return nom_complet;
 	}
 
 	public void setNom_complet(String detail) {
-		this.nom_Complet = detail;
+		this.nom_complet = detail;
 	}
 
 	public ArrayList<Produit> getProduits() {

@@ -3,11 +3,12 @@ package application;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import org.jongo.MongoCursor;
 
-import enums.Etats;
+import enums.Progression;
 import utils.FreeMarkerMaker;
 import utils.MongoAccess;
 import models.Auteur;
@@ -104,6 +105,8 @@ public class Fiche_oeuvre_controller  implements Initializable{
 	@FXML
 	private TableColumn<Oeuvre, ImageView> oeuvres_fait_colonne;
 	
+	private List<Oeuvre> oeuvres;
+	
 	private boolean edit = false;
 	
 	MongoCursor<Oeuvre> oeuvresCursor;
@@ -148,9 +151,7 @@ public class Fiche_oeuvre_controller  implements Initializable{
 	@FXML
 	public void onOeuvreSelect(){
 		
-		oeuvreSelectionne = (Oeuvre) tableOeuvre.getSelectionModel().getSelectedItem();
-		Main_BEA_BAZ.setOeuvre(oeuvreSelectionne);
-		Main_BEA_BAZ.setOeuvre_index(tableOeuvre.getSelectionModel().getSelectedIndex());
+		
 		directSelect = true;
 		reloadOeuvre();
 	
@@ -198,24 +199,22 @@ public class Fiche_oeuvre_controller  implements Initializable{
 	}
 	
 	public void reloadOeuvre(){
+        
+		oeuvreSelectionne = (Oeuvre)tableOeuvre.getSelectionModel().getSelectedItem();
 		
-		//oeuvreSelectionne = (Oeuvre)tableOeuvre.getSelectionModel().getSelectedItem();
-		
-		Main_BEA_BAZ.setOeuvre_index(tableOeuvre.getSelectionModel().getSelectedIndex());
 		Main_BEA_BAZ.setOeuvre(oeuvreSelectionne);
+		Main_BEA_BAZ.setOeuvre_index(tableOeuvre.getSelectionModel().getSelectedIndex());
 		
-		tableOeuvre.getSelectionModel().clearAndSelect(Main_BEA_BAZ.getOeuvre_index());
-		tableOeuvre.getSelectionModel().focus(Main_BEA_BAZ.getOeuvre_index());
+		System.out.println("on reload :  " + tableOeuvre.getSelectionModel().getSelectedIndex());
 		
 		if (directSelect){
 		   tableOeuvre.scrollTo(Main_BEA_BAZ.getOeuvre_index() -9);
+		  // tableOeuvre.getSelectionModel().clearAndSelect(Main_BEA_BAZ.getOeuvre_index());
+		  // tableOeuvre.getSelectionModel().focus(Main_BEA_BAZ.getOeuvre_index());
 		}
 		else {
 			tableOeuvre.scrollTo(Main_BEA_BAZ.getOeuvre_index());
 		}
-		
-		System.out.println("oeuvreSelectionne (reload) : " + oeuvreSelectionne);
-		System.out.println("oeuvreSelectionne.getN_d_origine() : " + oeuvreSelectionne.getN_d_origine());
 		
 		numero_origine_textField.setText(oeuvreSelectionne.getN_d_origine());
 		numero_archive_6s_textField.setText(oeuvreSelectionne.getCote_archives_6s());
@@ -415,11 +414,18 @@ public class Fiche_oeuvre_controller  implements Initializable{
     @FXML
     public void onVersOeuvreButton(){}
     @FXML
-    public void onVersFichierButton(){}
+    public void onVersFichiersButton(){}
     @FXML
-    public void onVersTraitementButton(){}
+    public void onVersTraitementsButton(){}
     @FXML
-    public void onVersModeleButton(){}
+    public void onVersModelesButton(){}
+    @FXML
+    public void onVersAuteursButton(){
+    	Scene fiche_auteur_scene = new Scene((Parent) JfxUtils.loadFxml("/views/fiche_auteur.fxml"), 1275, 722);
+		fiche_auteur_scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+		
+		currentStage.setScene(fiche_auteur_scene);
+    }
     @FXML
     public void onExporter_rapport_button(){
     	
@@ -445,18 +451,16 @@ public class Fiche_oeuvre_controller  implements Initializable{
     
     public void afficherOeuvres(){
     	
-        oeuvresCursor = MongoAccess.request("oeuvre", commandeSelectionne).as(Oeuvre.class);
+        oeuvres = MongoAccess.distinct("tacheTraitement", "oeuvre", "commande._id", commandeSelectionne.get_id()).as(Oeuvre.class);
 		
-		while (oeuvresCursor.hasNext()){
-			
-			liste_oeuvres.add(oeuvresCursor.next());
-			
-		}
+		oeuvres_nom_colonne.setCellValueFactory(new PropertyValueFactory<Oeuvre, String>("nom"));
+		
+		ObservableList<Oeuvre> obs_oeuvres = FXCollections.observableArrayList(oeuvres);
 		
 		oeuvres_nom_colonne.setCellValueFactory(new PropertyValueFactory<Oeuvre, String>("nom"));
 		//oeuvres_fait_colonne.setCellValueFactory(new PropertyValueFactory<Oeuvre, ImageView>("etat"));
 		
-		tableOeuvre.setItems(liste_oeuvres);
+		tableOeuvre.setItems(obs_oeuvres);
 		
 		tableOeuvre.getSelectionModel().clearAndSelect(Main_BEA_BAZ.getOeuvre_index());
 		tableOeuvre.getSelectionModel().focus(Main_BEA_BAZ.getOeuvre_index());
@@ -474,9 +478,6 @@ public class Fiche_oeuvre_controller  implements Initializable{
 		oeuvreSelectionne = Main_BEA_BAZ.getOeuvre();
 		commandeSelectionne = Main_BEA_BAZ.getCommande();
 
-		utils.MongoAccess.connect();
-		
-		
 		numero_origine_textField.setEditable(false);
 		numero_archive_6s_textField.setEditable(false);
 		titre_textField.setEditable(false);

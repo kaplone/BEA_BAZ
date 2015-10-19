@@ -11,7 +11,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import enums.Etats;
+import enums.Progression;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Oeuvre extends Commun{
@@ -224,11 +224,11 @@ public class Oeuvre extends Commun{
 	public ImageView getEtat() {
 		
 		if (etat_current != null) {			
-			return Etats.valueOf(etat_current).getUsedImage();
+			return Progression.valueOf(etat_current).getUsedImage();
 		}
 		else {
 			etat_current = "TODO_";
-			return Etats.valueOf(etat_current).getUsedImage();
+			return Progression.valueOf(etat_current).getUsedImage();
 		}
 		
 	}
