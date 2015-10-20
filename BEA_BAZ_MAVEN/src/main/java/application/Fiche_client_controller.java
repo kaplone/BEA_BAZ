@@ -38,6 +38,14 @@ public class Fiche_client_controller  implements Initializable{
 	@FXML
 	private TextField nom_client_textField;
 	@FXML
+	private TextField nom_complet_client_textField;
+	@FXML
+	private TextField adresse_voie_textField;
+	@FXML
+	private TextField adresse_cp_textField;
+	@FXML
+	private TextField adresse_ville_textField;
+	@FXML
 	private TextArea remarques_client_textArea;
 	@FXML
 	private Button nouveau_client;
@@ -147,6 +155,10 @@ public class Fiche_client_controller  implements Initializable{
 
     	
     	nom_client_textField.setText(clientSelectionne.getNom());
+    	nom_complet_client_textField.setText(clientSelectionne.getNom_complet());
+    	adresse_voie_textField.setText(clientSelectionne.getAdresse_rue());
+    	adresse_cp_textField.setText(clientSelectionne.getAdresse_cp());
+    	adresse_ville_textField.setText(clientSelectionne.getAdresse_ville());
     	remarques_client_textArea.setText(clientSelectionne.getRemarques());
     	
     	client = Main_BEA_BAZ.getClient();
@@ -229,7 +241,12 @@ public class Fiche_client_controller  implements Initializable{
     	editer.setVisible(false);
     	mise_a_jour_client.setVisible(true);
     	nom_client_textField.setEditable(true);
+    	nom_complet_client_textField.setEditable(true);
+    	adresse_voie_textField.setEditable(true);
+    	adresse_cp_textField.setEditable(true);
+    	adresse_ville_textField.setEditable(true);
 		remarques_client_textArea.setEditable(true);
+		
 		
 		edit = true;
 
@@ -243,6 +260,10 @@ public class Fiche_client_controller  implements Initializable{
     	editer.setVisible(true);
     	mise_a_jour_client.setVisible(false);
     	nom_client_textField.setEditable(false);
+    	nom_complet_client_textField.setEditable(false);
+    	adresse_voie_textField.setEditable(false);
+    	adresse_cp_textField.setEditable(false);
+    	adresse_ville_textField.setEditable(false);
 		remarques_client_textArea.setEditable(false);
 		nouveau_client.setVisible(true);
 		rafraichirAffichage();
@@ -262,11 +283,19 @@ public class Fiche_client_controller  implements Initializable{
     	
     	clientSelectionne.setNom(nom_client_textField.getText());
     	clientSelectionne.setRemarques(remarques_client_textArea.getText());
+    	clientSelectionne.setNom_complet(nom_complet_client_textField.getText());
+    	clientSelectionne.setAdresse_rue(adresse_voie_textField.getText());
+    	clientSelectionne.setAdresse_cp(adresse_cp_textField.getText());
+    	clientSelectionne.setAdresse_ville(adresse_ville_textField.getText());
     	
     	annuler.setVisible(false);
     	editer.setVisible(true);
     	mise_a_jour_client.setVisible(false);
     	nom_client_textField.setEditable(false);
+    	nom_complet_client_textField.setEditable(false);
+    	adresse_voie_textField.setEditable(false);
+    	adresse_cp_textField.setEditable(false);
+    	adresse_ville_textField.setEditable(false);
 		remarques_client_textArea.setEditable(false);
 		
 		if (edit) {
@@ -294,6 +323,10 @@ public class Fiche_client_controller  implements Initializable{
 		client = Main_BEA_BAZ.getClient();
 
 		nom_client_textField.setEditable(false);
+		nom_complet_client_textField.setEditable(false);
+    	adresse_voie_textField.setEditable(false);
+    	adresse_cp_textField.setEditable(false);
+    	adresse_ville_textField.setEditable(false);
 		remarques_client_textArea.setEditable(false);
         editer.setVisible(true);
         mise_a_jour_client.setVisible(false);
@@ -311,11 +344,22 @@ public class Fiche_client_controller  implements Initializable{
 		
 		clientCursor = MongoAccess.request("client").as(Client.class);
 		
+		int indexClient = 0;
+		int iClient = 0;
+		
 		while (clientCursor.hasNext()){
-			liste_clients.add(clientCursor.next());
+			
+			Client client_ = clientCursor.next();
+			liste_clients.add(client_);
+			if (client != null && client_.getNom().equals(client.getNom())){
+				indexClient = iClient;
+			}
+			iClient ++;
+			
 		}
 		
 		listView_client.setItems(liste_clients);
+		listView_client.getSelectionModel().select(indexClient);
 		
 		
 		if (client != null){
@@ -328,6 +372,9 @@ public class Fiche_client_controller  implements Initializable{
 			}
 			
 			listView_commandes.setItems(liste_commandes);
+
+			affichageInfos(client);
+			
 		}
         
 		

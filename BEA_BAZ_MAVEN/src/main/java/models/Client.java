@@ -62,14 +62,6 @@ public class Client extends Commun{
 		this.commandes = commandes;
 	}
 
-	public String getNom_Complet() {
-		return nom_complet;
-	}
-
-	public void setNom_Complet(String nom_Complet) {
-		this.nom_complet = nom_Complet;
-	}
-
 	public String getAdresse_rue() {
 		return adresse_rue;
 	}

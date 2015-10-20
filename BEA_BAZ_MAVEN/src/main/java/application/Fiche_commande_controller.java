@@ -492,13 +492,16 @@ public class Fiche_commande_controller  implements Initializable{
 			
 			Model model_  = modelsCursor.next();
 			models.addAll(model_);
-			if (model_.getNom().equals(model.getNom())){
+			if (model != null && model_.getNom().equals(model.getNom())){
 				index = i; 
 			}
 			i++;
 		}
 		
-        System.out.println(model.getNom());
+		if (model != null){
+			System.out.println(model.getNom());
+		}
+        
         
 		modelChoiceBox.setItems(models);
 		
