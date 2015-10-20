@@ -3,6 +3,7 @@ package application;
 import models.Auteur;
 import models.Client;
 import models.Commande;
+import models.Model;
 import models.Oeuvre;
 import models.Produit;
 import models.Traitement;
@@ -27,6 +28,8 @@ public class Main_BEA_BAZ extends Application {
 	private static Produit detail;
 	
 	private static Auteur auteur;
+	
+	private static Model model;
 	
 	private static Oeuvre oeuvre;
 	private static int oeuvre_index;
@@ -126,6 +129,14 @@ public class Main_BEA_BAZ extends Application {
 
 	public static void setAuteur(Auteur auteur) {
 		Main_BEA_BAZ.auteur = auteur;
+	}
+
+	public static Model getModel() {
+		return model;
+	}
+
+	public static void setModel(Model model) {
+		Main_BEA_BAZ.model = model;
 	}
     
 	

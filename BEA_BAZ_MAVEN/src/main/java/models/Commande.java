@@ -41,6 +41,8 @@ public class Commande  extends Commun{
 
 	private ObjectId client;
 	
+	private Model modele;
+	
 	private ArrayList<String> oeuvres;
 	private ArrayList<Traitement> traitements_attendus;
 	private ArrayList<Traitement> tous_les_traitements;
@@ -178,7 +180,13 @@ public class Commande  extends Commun{
 	public void setDateFinProjet(Date dateFinProjet) {
 		this.dateFinProjet = dateFinProjet;
 	}
-	
-	
+
+	public Model getModele() {
+		return modele;
+	}
+
+	public void setModele(Model modele) {
+		this.modele = modele;
+	}
 
 }

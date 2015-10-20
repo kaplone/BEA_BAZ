@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import application.Main_BEA_BAZ;
 import models.Oeuvre;
 import models.TacheTraitement;
 import fr.opensagres.xdocreport.converter.ConverterRegistry;
@@ -32,7 +33,7 @@ public class FreeMarkerMaker {
     public static File  getLogo()
     {
         //return new File("/home/kaplone/Desktop/BEABASE/Béa base/P1140344.JPG" );
-        return new File("C:\\Users\\USER\\Desktop\\BEABAZ\\P1140344.JPG");
+        return Main_BEA_BAZ.getCommande().getModele().getCheminVersModel().getParent().resolve("P1140344.JPG").toFile();
     }
 
 	public static void odt2pdf(Oeuvre o) {
@@ -40,7 +41,13 @@ public class FreeMarkerMaker {
 		try {
 		      // 1) Load Docx file by filling Velocity template engine and cache it to the registry
 		      //InputStream in = new FileInputStream(new File("/home/kaplone/Desktop/BEABASE/Béa base/modele_rapport_v2_freemarker.odt"));
-		      InputStream in = new FileInputStream(new File("C:\\Users\\USER\\Desktop\\BEABAZ\\modele_rapport_v2_freemarker.odt"));
+		      //InputStream in = new FileInputStream(new File("C:\\Users\\USER\\Desktop\\BEABAZ\\modele_rapport_v2_freemarker.odt"));
+
+			  System.out.println(Main_BEA_BAZ.getCommande());  
+			  System.out.println(Main_BEA_BAZ.getCommande().getModele());  
+			  System.out.println(Main_BEA_BAZ.getCommande().getModele().getCheminVersModel().toString());  
+			
+		      InputStream in = new FileInputStream(Main_BEA_BAZ.getCommande().getModele().getCheminVersModel().toFile());
 		      IXDocReport report = XDocReportRegistry.getRegistry().loadReport(in,TemplateEngineKind.Freemarker);
 
 		      
@@ -76,11 +83,11 @@ public class FreeMarkerMaker {
 		      // 3) Generate report by merging Java model with the Docx
 		      
 		      //OutputStream out = new FileOutputStream(new File(String.format("/home/kaplone/Desktop/BEABASE/tests/%s_freemarker.odt", o.getCote_archives_6s())));
-		      OutputStream out = new FileOutputStream(new File(String.format("C:\\Users\\USER\\Desktop\\BEABAZ\\%s_freemarker.odt", o.getCote_archives_6s())));
+		      OutputStream out = new FileOutputStream(Main_BEA_BAZ.getCommande().getModele().getCheminVersModel().getParent().resolve(String.format("%s_freemarker.odt", o.getCote_archives_6s())).toFile());
 		      report.process(context, out);
 
 		      //OutputStream out2 = new FileOutputStream(new File(String.format("/home/kaplone/Desktop/BEABASE/tests/%s_freemarker.pdf", o.getCote_archives_6s())));
-		      OutputStream out2 = new FileOutputStream(new File(String.format("C:\\Users\\USER\\Desktop\\BEABAZ\\%s_freemarker.test.pdf", o.getCote_archives_6s())));
+		      OutputStream out2 = new FileOutputStream(Main_BEA_BAZ.getCommande().getModele().getCheminVersModel().getParent().resolve(String.format("%s_freemarker.pdf", o.getCote_archives_6s())).toFile());
               // 1) Create options ODT 2 PDF to select well converter form the registry
               Options options = Options.getFrom(DocumentKind.ODT).to(ConverterTypeTo.PDF);
 

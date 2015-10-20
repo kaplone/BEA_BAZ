@@ -20,7 +20,7 @@ import models.Auteur;
 import models.Client;
 import models.Commande;
 import models.Etat;
-import models.Modele;
+import models.Model;
 import models.Oeuvre;
 import models.Produit;
 import models.TacheTraitement;

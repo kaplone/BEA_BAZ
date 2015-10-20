@@ -58,7 +58,9 @@ public class Fiche_client_controller  implements Initializable{
 	@FXML
 	private Button versRapportButton;
 	@FXML
-	private Button versTraitementButton;
+	private Button versTraitementsButton;
+	@FXML
+	private Button versModelesButton;
 	
 	MongoCursor<Client> clientCursor;
 	MongoCursor<Commande> commandeCursor ;
@@ -90,7 +92,12 @@ public class Fiche_client_controller  implements Initializable{
 		currentStage.setScene(fiche_traitement_scene);
     }
     @FXML
-    public void onVersModelesButton(){}
+    public void onVersModelesButton(){
+    	Scene fiche_model_scene = new Scene((Parent) JfxUtils.loadFxml("/views/fiche_model.fxml"), 1275, 722);
+		fiche_model_scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+		
+		currentStage.setScene(fiche_model_scene);
+    }
     @FXML
     public void onVersAuteursButton(){
     	Scene fiche_auteur_scene = new Scene((Parent) JfxUtils.loadFxml("/views/fiche_auteur.fxml"), 1275, 722);
@@ -278,9 +285,7 @@ public class Fiche_client_controller  implements Initializable{
 		}
     	
     }
-
-    
-    	
+	
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {

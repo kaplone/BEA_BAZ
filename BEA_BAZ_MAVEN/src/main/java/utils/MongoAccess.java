@@ -15,7 +15,7 @@ import models.Auteur;
 import models.Client;
 import models.Commande;
 import models.Commun;
-import models.Modele;
+import models.Model;
 import models.Traitement;
 
 import com.mongodb.BasicDBObject;

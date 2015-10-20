@@ -17,6 +17,7 @@ import com.mongodb.DBPortPool.NoMoreConnection;
 import utils.MongoAccess;
 import models.Client;
 import models.Commande;
+import models.Model;
 import models.Oeuvre;
 import models.TacheTraitement;
 import models.Traitement;
@@ -96,6 +97,9 @@ public class Fiche_commande_controller  implements Initializable{
 	private DatePicker dateFinProjetPicker;
 	
 	@FXML
+	private ChoiceBox<Model> modelChoiceBox;
+	
+	@FXML
 	private VBox commandeExportVbox;
 	@FXML
 	private TableView tableOeuvre;
@@ -124,6 +128,7 @@ public class Fiche_commande_controller  implements Initializable{
 	private Commande commandeSelectionne;
 	
 	private Client client;
+	private Model model;
 	
 	
 	private boolean edit = false;
@@ -165,7 +170,6 @@ public class Fiche_commande_controller  implements Initializable{
         mise_a_jour_commande.setText("Mise à jour");
         mise_a_jour_commande.setVisible(true);
 		annuler.setVisible(true);
-		rapportsButton.setVisible(false);
 		commandeExportVbox.setVisible(false);
 		versRapportButton.setVisible(false);
 		versModeleButton.setVisible(false);
@@ -218,6 +222,9 @@ public class Fiche_commande_controller  implements Initializable{
 		commande.setDateFinProjet(dateFinProjetPicker.getValue());
 		commande.setRemarques(remarques_client.getText());
 		commande.setNom(nomCommandeTextField.getText());
+		commande.setModele(modelChoiceBox.getSelectionModel().getSelectedItem());
+		
+		Main_BEA_BAZ.setModel((Model) modelChoiceBox.getSelectionModel().getSelectedItem());
 		
         traitements_attendus.clear();
 		
@@ -395,12 +402,19 @@ public class Fiche_commande_controller  implements Initializable{
 		currentStage.setScene(fiche_oeuvre_scene);
     	
     }
+    
+    public void onModelChoiceBox(){
+    }
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		
 		commande = Main_BEA_BAZ.getCommande();
 		client = Main_BEA_BAZ.getClient();
+		model = commande.getModele();
+		if (model != null){
+			Main_BEA_BAZ.setModel(model);
+		}
 
 		versClientButton.setVisible(true);
 		versCommandeButton.setVisible(false);
@@ -414,7 +428,7 @@ public class Fiche_commande_controller  implements Initializable{
 		
 		traitements_attendus = new ArrayList<>();
 		traitements_selectionnes = new ArrayList<>();
-		
+	
 		MongoCursor<Traitement> mgCursor = MongoAccess.request("traitement").as(Traitement.class);
 		
 		while (mgCursor.hasNext()){
@@ -466,6 +480,30 @@ public class Fiche_commande_controller  implements Initializable{
 			catch (NullPointerException npe) {
 				
 			}
+		}
+		
+		ObservableList<Model> models = FXCollections.observableArrayList();
+		MongoCursor<Model> modelsCursor = MongoAccess.request("model").as(Model.class);
+		
+		int index = -1;
+		int i = 0;
+		
+		while (modelsCursor.hasNext()){
+			
+			Model model_  = modelsCursor.next();
+			models.addAll(model_);
+			if (model_.getNom().equals(model.getNom())){
+				index = i; 
+			}
+			i++;
+		}
+		
+        System.out.println(model.getNom());
+        
+		modelChoiceBox.setItems(models);
+		
+		if (model != null){
+			modelChoiceBox.getSelectionModel().select(index);
 		}
 		
 		

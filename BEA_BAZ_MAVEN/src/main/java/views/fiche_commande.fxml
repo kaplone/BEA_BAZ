@@ -143,12 +143,13 @@
                </children>
             </GridPane>
             <HBox alignment="CENTER_LEFT" prefHeight="50.0">
-               <children>
-                  <Button fx:id="rapportsButton" mnemonicParsing="false" onAction="#onRapportsButton" text="Rapports" />
-               </children>
                <VBox.margin>
                   <Insets left="10.0" />
                </VBox.margin>
+               <children>
+                  <Label text="Modèle pour l'export : " />
+                  <ChoiceBox fx:id="modelChoiceBox" onDragDetected="#onModelChoiceBox" prefHeight="25.0" prefWidth="503.0" />
+               </children>
             </HBox>
             <HBox fx:id="hbox" alignment="TOP_CENTER" prefHeight="50.0">
                <VBox.margin>
