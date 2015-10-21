@@ -15,6 +15,7 @@ import org.jongo.MongoCursor;
 import com.mongodb.DBPortPool.NoMoreConnection;
 
 import utils.MongoAccess;
+import models.Auteur;
 import models.Client;
 import models.Commande;
 import models.Model;
@@ -82,11 +83,15 @@ public class Fiche_commande_controller  implements Initializable{
 	@FXML
 	private Button versRapportButton;
 	@FXML
-	private Button versFichierButton;
+	private Button versFichiersButton;
 	@FXML
-	private Button versModeleButton;
+	private Button versModelesButton;
 	@FXML
-	private Button versTraitementButton;
+	private Button versTraitementsButton;
+	@FXML
+	private Button versProduitsButton;
+	@FXML
+	private Button versAuteursButton;
 	@FXML
 	private Button rapportsButton;
 	@FXML
@@ -98,6 +103,8 @@ public class Fiche_commande_controller  implements Initializable{
 	
 	@FXML
 	private ChoiceBox<Model> modelChoiceBox;
+	@FXML
+	private ChoiceBox<Auteur> auteursChoiceBox;
 	
 	@FXML
 	private VBox commandeExportVbox;
@@ -113,8 +120,10 @@ public class Fiche_commande_controller  implements Initializable{
 	
 	private ArrayList<ChoiceBox<Traitement>> traitements_selectionnes;
 	private ArrayList<Traitement> traitements_attendus;
+	
 	private MongoCursor<TraitementsAttendus> traitementsCursor;
 	private ObservableList<Traitement> observableTraitements;
+	private ObservableList<Auteur> observableAuteurs;
 
 	private List<Oeuvre> oeuvres;
 
@@ -129,7 +138,10 @@ public class Fiche_commande_controller  implements Initializable{
 	
 	private Client client;
 	private Model model;
-	
+    private Auteur auteur;
+    
+    private int index;
+    private int i;
 	
 	private boolean edit = false;
 	
@@ -157,6 +169,22 @@ public class Fiche_commande_controller  implements Initializable{
 		
 		currentStage.setScene(fiche_auteur_scene);
     }
+	@FXML
+    public void onVersTraitementsButton(){
+		Scene fiche_traitement_scene = new Scene((Parent) JfxUtils.loadFxml("/views/fiche_traitement.fxml"), 1275, 722);
+		fiche_traitement_scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+		
+		currentStage.setScene(fiche_traitement_scene);
+    }
+    @FXML
+    public void onVersModelesButton(){
+    	Scene fiche_model_scene = new Scene((Parent) JfxUtils.loadFxml("/views/fiche_model.fxml"), 1275, 722);
+		fiche_model_scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+		
+		currentStage.setScene(fiche_model_scene);
+    }
+    @FXML
+    public void onVersFichiersButton(){}
 	
 	@FXML
 	public void onEditerButton(){
@@ -172,9 +200,9 @@ public class Fiche_commande_controller  implements Initializable{
 		annuler.setVisible(true);
 		commandeExportVbox.setVisible(false);
 		versRapportButton.setVisible(false);
-		versModeleButton.setVisible(false);
-		versTraitementButton.setVisible(false);
-		versFichierButton.setVisible(false);
+		versModelesButton.setVisible(false);
+		versTraitementsButton.setVisible(false);
+		versFichiersButton.setVisible(false);
 		fiche_commande_label.setText("FICHE COMMANDE :");
 		nom_commande_label.setText(commande.getNom());
 		nomCommandeTextField.setDisable(false);
@@ -199,6 +227,10 @@ public class Fiche_commande_controller  implements Initializable{
 		
 		if (edit) {
 			afficherCommande();
+			afficherModeles();
+			afficherAuteurs();
+			afficherOeuvres();
+			
 		}
 		else {
 			onVersClientButton();
@@ -223,8 +255,10 @@ public class Fiche_commande_controller  implements Initializable{
 		commande.setRemarques(remarques_client.getText());
 		commande.setNom(nomCommandeTextField.getText());
 		commande.setModele(modelChoiceBox.getSelectionModel().getSelectedItem());
+		commande.setAuteur(auteursChoiceBox.getSelectionModel().getSelectedItem());
 		
 		Main_BEA_BAZ.setModel((Model) modelChoiceBox.getSelectionModel().getSelectedItem());
+		Main_BEA_BAZ.setAuteur((Auteur) auteursChoiceBox.getSelectionModel().getSelectedItem());
 		
         traitements_attendus.clear();
 		
@@ -243,16 +277,23 @@ public class Fiche_commande_controller  implements Initializable{
 		
 		commande.setTraitements_attendus(traitements_attendus);
 		
+		auteur = auteursChoiceBox.getSelectionModel().getSelectedItem();
+		
 		Main_BEA_BAZ.setCommande(commande);
+		Main_BEA_BAZ.setModel(model);
+		Main_BEA_BAZ.setAuteur(auteur);
 		
 		if (edit) {
 			Commande.update(commande);
-			afficherCommande();
 		}
 		else {
 		   Commande.save(commande);
-		   onVersClientButton();
 		}
+		
+		afficherCommande();
+	    afficherModeles();
+	    afficherAuteurs();
+	    afficherOeuvres();
 	}
 	
 	public void afficherCommande(){
@@ -343,6 +384,30 @@ public class Fiche_commande_controller  implements Initializable{
 		
 	}
 	
+	public void afficherAuteurs(){
+		
+		observableAuteurs = FXCollections.observableArrayList();
+        MongoCursor<Auteur> auteurCursor = MongoAccess.request("auteur").as(Auteur.class);
+        
+        int index = 0;
+        int i = 1;
+        
+        observableAuteurs.add(null);
+		
+		while (auteurCursor.hasNext()){
+			Auteur auteur_ = auteurCursor.next();
+			observableAuteurs.addAll(auteur_);
+			if (auteur != null && auteur.getNom().equals(auteur_.getNom())){
+				index = i;
+				System.out.println("i : " + i);
+			}
+			i++;
+		}
+		
+		auteursChoiceBox.setItems(observableAuteurs);
+		auteursChoiceBox.getSelectionModel().select(index);
+	}
+	
     public void afficherOeuvres(){
     	
     	Oeuvre o;
@@ -391,45 +456,10 @@ public class Fiche_commande_controller  implements Initializable{
 		
 	}
     
-    public void onOeuvreSelect(){
+    public void afficherTraitements(){
     	
-    	Main_BEA_BAZ.setOeuvre((Oeuvre) tableOeuvre.getSelectionModel().getSelectedItem());
-    	Main_BEA_BAZ.setOeuvre_index(tableOeuvre.getSelectionModel().getSelectedIndex());
-    	
-    	Scene fiche_oeuvre_scene = new Scene((Parent) JfxUtils.loadFxml("/views/fiche_oeuvre.fxml"), 1275, 722);
-		fiche_oeuvre_scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
-		
-		currentStage.setScene(fiche_oeuvre_scene);
-    	
-    }
-    
-    public void onModelChoiceBox(){
-    }
-
-	@Override
-	public void initialize(URL location, ResourceBundle resources) {
-		
-		commande = Main_BEA_BAZ.getCommande();
-		client = Main_BEA_BAZ.getClient();
-		model = commande.getModele();
-		if (model != null){
-			Main_BEA_BAZ.setModel(model);
-		}
-
-		versClientButton.setVisible(true);
-		versCommandeButton.setVisible(false);
-		versOeuvreButton.setVisible(false);
-		versRapportButton.setVisible(false);
-		
-		currentStage = Main_BEA_BAZ.getStage();
-		
-		liste_oeuvres = FXCollections.observableArrayList();
-		observableTraitements = FXCollections.observableArrayList();
-		
-		traitements_attendus = new ArrayList<>();
-		traitements_selectionnes = new ArrayList<>();
-	
-		MongoCursor<Traitement> mgCursor = MongoAccess.request("traitement").as(Traitement.class);
+    	observableTraitements.clear();
+        MongoCursor<Traitement> mgCursor = MongoAccess.request("traitement").as(Traitement.class);
 		
 		while (mgCursor.hasNext()){
 			observableTraitements.addAll(mgCursor.next());
@@ -441,6 +471,87 @@ public class Fiche_commande_controller  implements Initializable{
 			((ChoiceBox<Traitement>) cb).setItems(observableTraitements);
 			traitements_selectionnes.add(((ChoiceBox<Traitement>) cb));
 		}
+    }
+    
+    public void afficherModeles(){
+    	
+    	ObservableList<Model> models = FXCollections.observableArrayList();
+		MongoCursor<Model> modelsCursor = MongoAccess.request("model").as(Model.class);
+		
+		index = 0;
+		i = 0;
+		
+		while (modelsCursor.hasNext()){
+			
+			Model model_  = modelsCursor.next();
+			models.addAll(model_);
+			if (model != null && model_.getNom().equals(model.getNom())){
+				index = i; 
+			}
+			i++;
+		}  
+        
+		modelChoiceBox.setItems(models);
+		
+		if (model != null){
+			modelChoiceBox.getSelectionModel().select(index);
+		}
+    }
+    
+    public void onOeuvreSelect(){
+    	
+    	Main_BEA_BAZ.setOeuvre((Oeuvre) tableOeuvre.getSelectionModel().getSelectedItem());
+    	Main_BEA_BAZ.setOeuvre_index(tableOeuvre.getSelectionModel().getSelectedIndex());
+    	
+    	Scene fiche_oeuvre_scene = new Scene((Parent) JfxUtils.loadFxml("/views/fiche_oeuvre.fxml"), 1275, 722);
+		fiche_oeuvre_scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+		
+		currentStage.setScene(fiche_oeuvre_scene);
+    	
+    }
+
+	@Override
+	public void initialize(URL location, ResourceBundle resources) {
+		
+		commande = Main_BEA_BAZ.getCommande();
+		client = Main_BEA_BAZ.getClient();
+		model = commande.getModele();
+		auteur = commande.getAuteur();
+		
+		index = 0;
+	    i = 0;
+		
+		if (model != null){
+			Main_BEA_BAZ.setModel(model);
+		}
+		if (auteur != null){
+			Main_BEA_BAZ.setAuteur(auteur);
+		}
+
+		versClientButton.setVisible(true);
+		versCommandeButton.setVisible(false);
+		versOeuvreButton.setVisible(false);
+		versRapportButton.setVisible(false);
+		
+		versModelesButton.setVisible(true);
+		versTraitementsButton.setVisible(true);
+		versFichiersButton.setVisible(true);
+		versProduitsButton.setVisible(true);
+		versAuteursButton.setVisible(true);
+		
+		currentStage = Main_BEA_BAZ.getStage();
+		
+		liste_oeuvres = FXCollections.observableArrayList();
+		observableTraitements = FXCollections.observableArrayList();
+		observableAuteurs = FXCollections.observableArrayList();
+		
+		traitements_attendus = new ArrayList<>();
+		traitements_selectionnes = new ArrayList<>();
+	
+		afficherTraitements();
+		
+		afficherAuteurs();
+		
         
 		if (commande != null) {
 			
@@ -467,9 +578,13 @@ public class Fiche_commande_controller  implements Initializable{
 			rapportsButton.setVisible(false);
 			commandeExportVbox.setVisible(false);
 			versRapportButton.setVisible(false);
-			versModeleButton.setVisible(false);
-			versTraitementButton.setVisible(false);
-			versFichierButton.setVisible(false);
+			
+			versModelesButton.setVisible(false);
+			versTraitementsButton.setVisible(false);
+			versFichiersButton.setVisible(false);
+			versProduitsButton.setVisible(false);
+			versAuteursButton.setVisible(false);
+			
 			fiche_commande_label.setText("FICHE COMMANDE (nouvelle commande) :");
 			nom_commande_label.setText("");
 
@@ -482,32 +597,7 @@ public class Fiche_commande_controller  implements Initializable{
 			}
 		}
 		
-		ObservableList<Model> models = FXCollections.observableArrayList();
-		MongoCursor<Model> modelsCursor = MongoAccess.request("model").as(Model.class);
-		
-		int index = -1;
-		int i = 0;
-		
-		while (modelsCursor.hasNext()){
-			
-			Model model_  = modelsCursor.next();
-			models.addAll(model_);
-			if (model != null && model_.getNom().equals(model.getNom())){
-				index = i; 
-			}
-			i++;
-		}
-		
-		if (model != null){
-			System.out.println(model.getNom());
-		}
-        
-        
-		modelChoiceBox.setItems(models);
-		
-		if (model != null){
-			modelChoiceBox.getSelectionModel().select(index);
-		}
+		afficherModeles();
 		
 		
 

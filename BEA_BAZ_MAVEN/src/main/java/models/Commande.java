@@ -43,6 +43,8 @@ public class Commande  extends Commun{
 	
 	private Model modele;
 	
+	private Auteur auteur;
+	
 	private ArrayList<String> oeuvres;
 	private ArrayList<Traitement> traitements_attendus;
 	private ArrayList<Traitement> tous_les_traitements;
@@ -188,5 +190,14 @@ public class Commande  extends Commun{
 	public void setModele(Model modele) {
 		this.modele = modele;
 	}
+
+	public Auteur getAuteur() {
+		return auteur;
+	}
+
+	public void setAuteur(Auteur auteur) {
+		this.auteur = auteur;
+	}
+	
 
 }

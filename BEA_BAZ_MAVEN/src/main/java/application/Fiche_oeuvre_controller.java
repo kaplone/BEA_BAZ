@@ -26,6 +26,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TableColumn;
@@ -76,21 +77,18 @@ public class Fiche_oeuvre_controller  implements Initializable{
 	private Label nom_oeuvre_label;
 	@FXML
 	private TextArea remarques_oeuvre_textArea;
-	
 	@FXML
-	private TextField numero_origine_textField;
+	private ChoiceBox<Auteur> auteursChoiceBox;
 	@FXML
 	private TextField numero_archive_6s_textField;
 	@FXML
 	private TextField titre_textField;
 	@FXML
-	private TextField auteur_textField;
+	private ChoiceBox<Auteur> auteur_choiceBox;
 	@FXML
 	private TextField date_oeuvre_textField;
 	@FXML
 	private TextField dimensions_textField;
-	@FXML
-	private TextField conditionnement_textField;
 	@FXML
 	private TextArea inscriptions_textArea;
 	@FXML
@@ -115,10 +113,12 @@ public class Fiche_oeuvre_controller  implements Initializable{
 	MongoCursor<Traitement> traitementCursor ;
 	ObservableList<Traitement> traitementsSelectionne;
 	ObservableList<Traitement> liste_traitements;
+	private ObservableList<Auteur> observableAuteurs;
 	Traitement traitementSelectionne;
 	Commande commandeSelectionne;
 	
 	Stage currentStage;
+	private Auteur auteur;
 	
 	boolean directSelect = false;
 	
@@ -215,18 +215,41 @@ public class Fiche_oeuvre_controller  implements Initializable{
 		else {
 			tableOeuvre.scrollTo(Main_BEA_BAZ.getOeuvre_index());
 		}
-		
-		numero_origine_textField.setText(oeuvreSelectionne.getN_d_origine());
+
 		numero_archive_6s_textField.setText(oeuvreSelectionne.getCote_archives_6s());
 		titre_textField.setText(oeuvreSelectionne.getTitre_de_l_oeuvre());
 		MongoCursor<Auteur> auteurCursor = MongoAccess.request("auteur", oeuvreSelectionne.getAuteur()).as(Auteur.class);
 		Auteur auteur = auteurCursor.next();
-		auteur_textField.setText(auteur.getNom());
 		date_oeuvre_textField.setText(oeuvreSelectionne.getDate());
 		dimensions_textField.setText(oeuvreSelectionne.getDimensions());
-		conditionnement_textField.setText(oeuvreSelectionne.getFormat_de_conditionnement());
 		inscriptions_textArea.setText(oeuvreSelectionne.getInscriptions_au_verso());
 		observations_textArea.setText(oeuvreSelectionne.get_observations());
+		
+		afficherAuteurs();
+	}
+	
+    public void afficherAuteurs(){
+		
+		observableAuteurs = FXCollections.observableArrayList();
+        MongoCursor<Auteur> auteurCursor = MongoAccess.request("auteur").as(Auteur.class);
+        
+        int index = 0;
+        int i = 1;
+        
+        observableAuteurs.add(null);
+		
+		while (auteurCursor.hasNext()){
+			Auteur auteur_ = auteurCursor.next();
+			observableAuteurs.addAll(auteur_);
+			if (auteur != null && auteur.getNom().equals(auteur_.getNom())){
+				index = i;
+				System.out.println("i : " + i);
+			}
+			i++;
+		}
+		
+		auteursChoiceBox.setItems(observableAuteurs);
+		auteursChoiceBox.getSelectionModel().select(index);
 	}
 
 	
@@ -477,28 +500,21 @@ public class Fiche_oeuvre_controller  implements Initializable{
 		traitementSelectionne = Main_BEA_BAZ.getTraitement();
 		oeuvreSelectionne = Main_BEA_BAZ.getOeuvre();
 		commandeSelectionne = Main_BEA_BAZ.getCommande();
+		auteur = Main_BEA_BAZ.getAuteur();
 
-		numero_origine_textField.setEditable(false);
 		numero_archive_6s_textField.setEditable(false);
 		titre_textField.setEditable(false);
-		auteur_textField.setEditable(false);
 		date_oeuvre_textField.setEditable(false);
 		dimensions_textField.setEditable(false);
-		conditionnement_textField.setEditable(false);
 		inscriptions_textArea.setEditable(false);
 		observations_textArea.setEditable(false);
-		
-		System.out.println("oeuvreSelectionne (init) : " +oeuvreSelectionne);
-		
-		numero_origine_textField.setText(oeuvreSelectionne.getN_d_origine());
+
 		numero_archive_6s_textField.setText(oeuvreSelectionne.getCote_archives_6s());
 		titre_textField.setText(oeuvreSelectionne.getTitre_de_l_oeuvre());
 		MongoCursor<Auteur> auteurCursor = MongoAccess.request("auteur", oeuvreSelectionne.getAuteur()).as(Auteur.class);
 		Auteur auteur = auteurCursor.next();
-		auteur_textField.setText(auteur.getNom());
 		date_oeuvre_textField.setText(oeuvreSelectionne.getDate());
 		dimensions_textField.setText(oeuvreSelectionne.getDimensions());
-		conditionnement_textField.setText(oeuvreSelectionne.getFormat_de_conditionnement());
 		inscriptions_textArea.setText(oeuvreSelectionne.getInscriptions_au_verso());
 		observations_textArea.setText(oeuvreSelectionne.get_observations());
 

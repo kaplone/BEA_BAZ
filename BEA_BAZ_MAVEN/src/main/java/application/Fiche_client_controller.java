@@ -6,6 +6,7 @@ import java.util.ResourceBundle;
 import org.jongo.MongoCursor;
 
 import utils.MongoAccess;
+import models.Auteur;
 import models.Client;
 import models.Commande;
 import models.Traitement;
@@ -321,6 +322,8 @@ public class Fiche_client_controller  implements Initializable{
 		
 		commande = Main_BEA_BAZ.getCommande();
 		client = Main_BEA_BAZ.getClient();
+		
+		Main_BEA_BAZ.setAuteur(null);
 
 		nom_client_textField.setEditable(false);
 		nom_complet_client_textField.setEditable(false);

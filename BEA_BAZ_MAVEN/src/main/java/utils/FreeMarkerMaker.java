@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Path;
 
 import application.Main_BEA_BAZ;
 import models.Oeuvre;
@@ -43,8 +44,6 @@ public class FreeMarkerMaker {
 		      //InputStream in = new FileInputStream(new File("/home/kaplone/Desktop/BEABASE/Béa base/modele_rapport_v2_freemarker.odt"));
 		      //InputStream in = new FileInputStream(new File("C:\\Users\\USER\\Desktop\\BEABAZ\\modele_rapport_v2_freemarker.odt"));
 
-			  System.out.println(Main_BEA_BAZ.getCommande());  
-			  System.out.println(Main_BEA_BAZ.getCommande().getModele());  
 			  System.out.println(Main_BEA_BAZ.getCommande().getModele().getCheminVersModel().toString());  
 			
 		      InputStream in = new FileInputStream(Main_BEA_BAZ.getCommande().getModele().getCheminVersModel().toFile());
@@ -54,11 +53,10 @@ public class FreeMarkerMaker {
 		      FieldsMetadata metadata = report.createFieldsMetadata();
 		      metadata.addFieldAsImage( "image_oeuvre", "image_oeuvre");
 		      report.setFieldsMetadata(metadata);
+		      
+		      System.out.println("__01");
 
-		      //IContext context = report.createContext();
-		      //InputStream in = new FileInputStream(new File("/home/kaplone/Desktop/BEABASE/Béa base/modele_rapport_v2_freemarker.odt"));
 		      IContext context = report.createContext();
-		      //in = new FileInputStream(new File("C:\\Users\\USER\\Desktop\\BEABAZ\\modele_rapport_v2_freemarker.odt"));
 		      context.put("inventaire", o.getCote_archives_6s());
 		      context.put("titre", o.getTitre_de_l_oeuvre() != null ? o.getTitre_de_l_oeuvre() : "");
 		      context.put("dimensions", o.getDimensions() != null ? o.getDimensions() : "");
@@ -66,6 +64,8 @@ public class FreeMarkerMaker {
 		      context.put("inscriptions", o.getInscriptions_au_verso() != null ? o.getInscriptions_au_verso() : "");
 		      context.put("produits", o.getDimensions() != null ? o.getDimensions() : "");
 		      context.put("etat_final", o.getDimensions() != null ? o.getDimensions() : "");
+		      
+		      System.out.println("__02");
 		      
 		      context.put("bea", "Béatrice Alcade\n" +
                                  "Restauratrice du patrimoine\n" +
@@ -77,14 +77,26 @@ public class FreeMarkerMaker {
 		      
 		      context.put("commande", "RESTAURATION DE DOCUMENTS D'ARCHIVES FONDS CHARLY\n" + 
 		                              "524 caricatures réalisées à la gouache, à l'aquarelle et au feutre");
+		      
+		      System.out.println("__03");
 
 		      context.put("image_oeuvre", getLogo());
+		      
+		      
 
 		      // 3) Generate report by merging Java model with the Docx
 		      
 		      //OutputStream out = new FileOutputStream(new File(String.format("/home/kaplone/Desktop/BEABASE/tests/%s_freemarker.odt", o.getCote_archives_6s())));
+		      
+		      Path p = Main_BEA_BAZ.getCommande().getModele().getCheminVersModel().getParent().resolve(String.format("%s_freemarker.odt", o.getCote_archives_6s()));
+		      System.out.println(p);
+		      
 		      OutputStream out = new FileOutputStream(Main_BEA_BAZ.getCommande().getModele().getCheminVersModel().getParent().resolve(String.format("%s_freemarker.odt", o.getCote_archives_6s())).toFile());
+		      
+		      System.out.println("__04");
 		      report.process(context, out);
+		      
+		      System.out.println("__05");
 
 		      //OutputStream out2 = new FileOutputStream(new File(String.format("/home/kaplone/Desktop/BEABASE/tests/%s_freemarker.pdf", o.getCote_archives_6s())));
 		      OutputStream out2 = new FileOutputStream(Main_BEA_BAZ.getCommande().getModele().getCheminVersModel().getParent().resolve(String.format("%s_freemarker.pdf", o.getCote_archives_6s())).toFile());

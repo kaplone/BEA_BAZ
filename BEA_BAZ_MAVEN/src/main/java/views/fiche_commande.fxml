@@ -137,7 +137,13 @@
                   <Label text="Nom commande" GridPane.rowIndex="4" />
                   <HBox alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="4">
                      <children>
-                        <TextField fx:id="nomCommandeTextField" prefHeight="25.0" prefWidth="549.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                        <TextField fx:id="nomCommandeTextField" prefHeight="25.0" prefWidth="403.0" />
+                        <Label prefHeight="15.0" prefWidth="94.0" text="Auteur : ">
+                           <HBox.margin>
+                              <Insets left="30.0" />
+                           </HBox.margin>
+                        </Label>
+                        <ChoiceBox fx:id="auteursChoiceBox" prefHeight="25.0" prefWidth="387.0" />
                      </children>
                   </HBox>
                </children>
@@ -148,7 +154,7 @@
                </VBox.margin>
                <children>
                   <Label text="Modèle pour l'export : " />
-                  <ChoiceBox fx:id="modelChoiceBox" onDragDetected="#onModelChoiceBox" prefHeight="25.0" prefWidth="503.0" />
+                  <ChoiceBox fx:id="modelChoiceBox" prefHeight="25.0" prefWidth="503.0" />
                </children>
             </HBox>
             <HBox fx:id="hbox" alignment="TOP_CENTER" prefHeight="50.0">
@@ -221,17 +227,17 @@
                   <Insets right="10.0" />
                </HBox.margin>
             </Button>
-            <Button fx:id="versModeleButton" mnemonicParsing="false" onAction="#onVersModeleButton" text="Modèle">
+            <Button fx:id="versModelesButton" mnemonicParsing="false" onAction="#onVersModelesButton" text="Modèles">
                <HBox.margin>
                   <Insets left="50.0" right="10.0" />
                </HBox.margin>
             </Button>
-            <Button fx:id="versFichierButton" mnemonicParsing="false" onAction="#onVersFichierButton" text="Fichier">
+            <Button fx:id="versFichiersButton" mnemonicParsing="false" onAction="#onVersFichiersButton" text="Fichiers">
                <HBox.margin>
                   <Insets right="10.0" />
                </HBox.margin>
             </Button>
-            <Button fx:id="versTraitementButton" mnemonicParsing="false" onAction="#onVersTraitementButton" text="Traitement" />
+            <Button fx:id="versTraitementsButton" mnemonicParsing="false" onAction="#onVersTraitementsButton" text="Traitements" />
             <Button fx:id="versProduitsButton" mnemonicParsing="false" onAction="#onVersProduitsButton" text="Produits">
                <HBox.margin>
                   <Insets left="10.0" />

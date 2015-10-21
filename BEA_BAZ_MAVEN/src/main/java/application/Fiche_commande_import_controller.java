@@ -88,11 +88,15 @@ public class Fiche_commande_import_controller  implements Initializable{
 	@FXML
 	private Button versRapportButton;
 	@FXML
-	private Button versFichierButton;
+	private Button versFichiersButton;
 	@FXML
-	private Button versModeleButton;
+	private Button versModelesButton;
 	@FXML
-	private Button versTraitementButton;
+	private Button versTraitementsButton;
+	@FXML
+	private Button versAuteursButton;
+	@FXML
+	private Button versProduitsButton;
 	@FXML
 	private Button rapportsButton;
 	@FXML
@@ -175,6 +179,23 @@ public class Fiche_commande_import_controller  implements Initializable{
 		
 		currentStage.setScene(fiche_auteur_scene);
     }
+	@FXML
+    public void onVersTraitementsButton(){
+		Scene fiche_traitement_scene = new Scene((Parent) JfxUtils.loadFxml("/views/fiche_traitement.fxml"), 1275, 722);
+		fiche_traitement_scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+		
+		currentStage.setScene(fiche_traitement_scene);
+    }
+    @FXML
+    public void onVersModelesButton(){
+    	Scene fiche_model_scene = new Scene((Parent) JfxUtils.loadFxml("/views/fiche_model.fxml"), 1275, 722);
+		fiche_model_scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+		
+		currentStage.setScene(fiche_model_scene);
+    }
+    @FXML
+    public void onVersFichiersButton(){}
+	
 	
 	@FXML
 	public void onEditerButton(){
@@ -191,9 +212,13 @@ public class Fiche_commande_import_controller  implements Initializable{
 		rapportsButton.setVisible(false);
 		commandeExportVbox.setVisible(false);
 		versRapportButton.setVisible(false);
-		versModeleButton.setVisible(false);
-		versTraitementButton.setVisible(false);
-		versFichierButton.setVisible(false);
+		
+		versModelesButton.setVisible(false);
+		versTraitementsButton.setVisible(false);
+		versFichiersButton.setVisible(false);
+		versProduitsButton.setVisible(false);
+		versAuteursButton.setVisible(false);
+		
 		fiche_commande_label.setText("FICHE COMMANDE :");
 		nom_commande_label.setText(commande.getNom());
 		nomCommandeTextField.setDisable(false);
@@ -276,6 +301,12 @@ public class Fiche_commande_import_controller  implements Initializable{
 	}
 	
 	public void afficherCommande(){
+		
+		versModelesButton.setVisible(true);
+		versTraitementsButton.setVisible(true);
+		versFichiersButton.setVisible(true);
+		versProduitsButton.setVisible(true);
+		versAuteursButton.setVisible(true);
 		
 		importCommandeButton.setDisable(false);
 		dateCommandePicker.setEditable(false);
@@ -363,15 +394,7 @@ public class Fiche_commande_import_controller  implements Initializable{
     public void onVersRapportButton(){}
     @FXML
     public void onVersFichierButton(){}
-    @FXML
-    public void onVersTraitementButton(){
-		Scene fiche_traitement_scene = new Scene((Parent) JfxUtils.loadFxml("/views/fiche_traitement.fxml"), 1275, 722);
-		fiche_traitement_scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
-		
-		currentStage.setScene(fiche_traitement_scene);
-    }
-    @FXML
-    public void onVersModeleButton(){}
+    
 	@FXML
     public void onExporterToutButton(){}
 	@FXML
@@ -422,6 +445,12 @@ public class Fiche_commande_import_controller  implements Initializable{
 		versOeuvreButton.setVisible(false);
 		versRapportButton.setVisible(false);
 		
+		versModelesButton.setVisible(true);
+		versTraitementsButton.setVisible(true);
+		versFichiersButton.setVisible(true);
+		versProduitsButton.setVisible(true);
+		versAuteursButton.setVisible(true);
+		
 		grid.setVisible(false);
 		hbox_1.setVisible(false);
 		hbox_2.setVisible(false);
@@ -467,9 +496,13 @@ public class Fiche_commande_import_controller  implements Initializable{
 			rapportsButton.setVisible(false);
 			commandeExportVbox.setVisible(false);
 			versRapportButton.setVisible(false);
-			versModeleButton.setVisible(false);
-			versTraitementButton.setVisible(false);
-			versFichierButton.setVisible(false);
+			
+			versModelesButton.setVisible(false);
+			versTraitementsButton.setVisible(false);
+			versFichiersButton.setVisible(false);
+			versProduitsButton.setVisible(false);
+			versAuteursButton.setVisible(false);
+			
 			fiche_commande_label.setText("FICHE COMMANDE (nouvelle commande) :");
 			nom_commande_label.setText("");
 
