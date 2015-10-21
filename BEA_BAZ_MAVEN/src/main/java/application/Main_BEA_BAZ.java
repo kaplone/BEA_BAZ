@@ -5,6 +5,7 @@ import models.Client;
 import models.Commande;
 import models.Model;
 import models.Oeuvre;
+import models.OeuvreTraitee;
 import models.Produit;
 import models.Traitement;
 import application.JfxUtils;
@@ -31,7 +32,7 @@ public class Main_BEA_BAZ extends Application {
 	
 	private static Model model;
 	
-	private static Oeuvre oeuvre;
+	private static OeuvreTraitee oeuvre;
 	private static int oeuvre_index;
 	
 	
@@ -107,12 +108,12 @@ public class Main_BEA_BAZ extends Application {
 		Main_BEA_BAZ.traitementEdited = traitementEdited;
 	}
 
-	public static Oeuvre getOeuvre() {
+	public static OeuvreTraitee getOeuvre() {
 		return oeuvre;
 	}
 
-	public static void setOeuvre(Oeuvre oeuvre) {
-		Main_BEA_BAZ.oeuvre = oeuvre;
+	public static void setOeuvre(OeuvreTraitee oeuvreTraitee) {
+		Main_BEA_BAZ.oeuvre = oeuvreTraitee;
 	}
 
 	public static int getOeuvre_index() {

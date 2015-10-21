@@ -135,7 +135,7 @@ public class Fiche_client_controller  implements Initializable{
 		
 		clientSelectionne = listView_client.getSelectionModel().getSelectedItem();
 		Main_BEA_BAZ.setClient(clientSelectionne);
-		affichageInfos(clientSelectionne);
+		affichageInfos();
 		
 	}
 	
@@ -152,7 +152,7 @@ public class Fiche_client_controller  implements Initializable{
 		
 	}
 	
-    private void affichageInfos(Client clientSelectionne){
+    private void affichageInfos(){
 
     	
     	nom_client_textField.setText(clientSelectionne.getNom());
@@ -162,13 +162,11 @@ public class Fiche_client_controller  implements Initializable{
     	adresse_ville_textField.setText(clientSelectionne.getAdresse_ville());
     	remarques_client_textArea.setText(clientSelectionne.getRemarques());
     	
-    	client = Main_BEA_BAZ.getClient();
-    	
     	liste_commandes.clear();
     	
-    	if (client != null){
+    	if (clientSelectionne != null){
     		
-    		commandeCursor = MongoAccess.request("commande", client).as(Commande.class);
+    		commandeCursor = MongoAccess.request("commande", clientSelectionne).as(Commande.class);
     		
     		while (commandeCursor.hasNext()){
     			Commande enplus = commandeCursor.next();
@@ -214,7 +212,7 @@ public class Fiche_client_controller  implements Initializable{
     	nouveau_client.setText("Nouveau client");
     	rafraichirAffichage();
     	listView_client.getSelectionModel().select(clientSelectionne);
-    	affichageInfos(clientSelectionne);
+    	affichageInfos();
     }
     
     public void rafraichirAffichage(){
@@ -269,7 +267,7 @@ public class Fiche_client_controller  implements Initializable{
 		nouveau_client.setVisible(true);
 		rafraichirAffichage();
 		listView_client.getSelectionModel().select(clientSelectionne);
-    	affichageInfos(clientSelectionne);
+    	affichageInfos();
     	
     	edit = false;
     	
@@ -375,8 +373,10 @@ public class Fiche_client_controller  implements Initializable{
 			}
 			
 			listView_commandes.setItems(liste_commandes);
+			
+			clientSelectionne = client;
 
-			affichageInfos(client);
+			affichageInfos();
 			
 		}
         

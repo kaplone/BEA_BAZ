@@ -274,7 +274,6 @@ protected File chooseExport(){
 	@FXML
 	public void on_import_file_button(){
 		try {
-			Documents.init();
 			Documents.read(file, "produit");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

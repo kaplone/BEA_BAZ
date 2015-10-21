@@ -20,6 +20,7 @@ import utils.MongoAccess;
 import models.Client;
 import models.Commande;
 import models.Oeuvre;
+import models.OeuvreTraitee;
 import models.TacheTraitement;
 import models.Traitement;
 import models.TraitementsAttendus;
@@ -63,9 +64,9 @@ public class Fiche_commande_import_controller  implements Initializable{
 	@FXML
 	private TextField nomCommandeTextField;
 	@FXML
-	private TableColumn<Oeuvre, String> oeuvres_nom_colonne;
+	private TableColumn<OeuvreTraitee, String> oeuvres_nom_colonne;
 	@FXML
-	private TableColumn<Oeuvre, ImageView> oeuvres_fait_colonne;
+	private TableColumn<OeuvreTraitee, ImageView> oeuvres_fait_colonne;
 	
 	@FXML
 	private TextArea remarques_client;
@@ -129,7 +130,7 @@ public class Fiche_commande_import_controller  implements Initializable{
 	private GridPane traitementGrid;
 	
 	@FXML
-	private TableView tableOeuvre;
+	private TableView<OeuvreTraitee> tableOeuvre;
 	
 	
 	private ArrayList<ChoiceBox<Traitement>> traitements_selectionnes;
@@ -138,10 +139,10 @@ public class Fiche_commande_import_controller  implements Initializable{
 	private ObservableList<Traitement> observableTraitements;
 
 	
-	private MongoCursor<Oeuvre> oeuvresCursor;
-	private Oeuvre oeuvreSelectionne;
+	private MongoCursor<OeuvreTraitee> oeuvresTraiteesCursor;
+	private OeuvreTraitee oeuvreTraiteeSelectionne;
 	
-	private List<Oeuvre> oeuvres;
+	private List<OeuvreTraitee> oeuvresTraitees;
 	
 	private Stage currentStage;
 	
@@ -263,7 +264,7 @@ public class Fiche_commande_import_controller  implements Initializable{
 		traitements_attendus.clear();
 		
 		
-		commande.setClient(client.get_id());
+		commande.setClient(client);
 		commande.setDateCommande(dateCommandePicker.getValue());
 		commande.setDateDebutProjet(dateDebutProjetPicker.getValue());
 		commande.setDateFinProjet(dateFinProjetPicker.getValue());
@@ -378,7 +379,6 @@ public class Fiche_commande_import_controller  implements Initializable{
 	@FXML
 	public void on_import_file_button(){
 		try {
-			Documents.init();
 			Documents.read(file, commandeSelectionne);
 			afficherOeuvres();
 		} catch (IOException e) {
@@ -402,22 +402,20 @@ public class Fiche_commande_import_controller  implements Initializable{
 	
 	public void afficherOeuvres(){
 		
-		oeuvres = MongoAccess.distinct("tacheTraitement", "oeuvre", "commande._id", commandeSelectionne.get_id()).as(Oeuvre.class);
+		//oeuvresTraitees = MongoAccess.distinct("tacheTraitement", "oeuvreTraitee", "commande._id", commandeSelectionne.get_id()).as(OeuvreTraitee.class);
 		
-		oeuvres_nom_colonne.setCellValueFactory(new PropertyValueFactory<Oeuvre, String>("nom"));
 		
-		ObservableList<Oeuvre> obs_oeuvres = FXCollections.observableArrayList(oeuvres);
+		oeuvresTraiteesCursor = MongoAccess.request("oeuvreTraitee", commandeSelectionne).as(OeuvreTraitee.class);
 		
-//		
-//		
-//        oeuvresCursor = MongoAccess.request("oeuvre", commandeSelectionne).as(Oeuvre.class);
-//		
-//		while (oeuvresCursor.hasNext()){
-//			liste_oeuvres.add(oeuvresCursor.next());
-//		}
-//		
-//		oeuvres_nom_colonne.setCellValueFactory(new PropertyValueFactory<Oeuvre, String>("nom"));
+		while (oeuvresTraiteesCursor.hasNext()){
+			oeuvresTraitees.add(oeuvresTraiteesCursor.next());
+			System.out.println(oeuvresTraitees);
+		}
 		
+		oeuvres_nom_colonne.setCellValueFactory(new PropertyValueFactory<OeuvreTraitee, String>("nom"));
+		
+		ObservableList<OeuvreTraitee> obs_oeuvres = FXCollections.observableArrayList(oeuvresTraitees);
+
 		tableOeuvre.setItems(obs_oeuvres);
 		
 	}
@@ -463,6 +461,7 @@ public class Fiche_commande_import_controller  implements Initializable{
 //		
 //		traitements_attendus = new ArrayList<>();
 		traitements_selectionnes = new ArrayList<>();
+		oeuvresTraitees = new ArrayList<>();
 //		
 //		MongoCursor<Traitement> mgCursor = MongoAccess.request("traitement").as(Traitement.class);
 //		

@@ -17,6 +17,7 @@ import enums.Progression;
 public class Oeuvre extends Commun{
 	
 	private String n_d_origine,
+	               cote_archives,
 	               cote_archives_6s,
 	               ville,
 	               quartier,
@@ -29,15 +30,6 @@ public class Oeuvre extends Commun{
 	               format_de_conditionnement;
 	
 	private ObjectId auteur;
-	                 //client,
-	                 //commande;
-
-
-	private ArrayList<ObjectId> etats,
-                                jobs,
-                                traitements,
-                                fichiers,
-                                rapports;
 	
 	private String etat_current;
 	
@@ -46,7 +38,7 @@ public class Oeuvre extends Commun{
 	
 	@Override
 	public String toString(){
-		return this.cote_archives_6s;
+		return this.cote_archives;
 	}
 	
 	@Override
@@ -83,6 +75,10 @@ public class Oeuvre extends Commun{
 
 	public void setCote_archives_6s(String cote_archives_6s) {
 		this.cote_archives_6s = cote_archives_6s;
+	}
+
+	public void setEtat(ImageView etat) {
+		this.etat = etat;
 	}
 
 	public String getVille() {
@@ -163,54 +159,6 @@ public class Oeuvre extends Commun{
 
 	public void setAuteur(ObjectId auteur) {
 		this.auteur = auteur;
-	}
-
-//	public ObjectId getClient() {
-//		return client;
-//	}
-//
-//	public void setClient(ObjectId client) {
-//		this.client = client;
-//	}
-
-	public ArrayList<ObjectId> getEtats() {
-		return etats;
-	}
-
-	public void setEtats(ArrayList<ObjectId> etats) {
-		this.etats = etats;
-	}
-
-	public ArrayList<ObjectId> getJobs() {
-		return jobs;
-	}
-
-	public void setJobs(ArrayList<ObjectId> jobs) {
-		this.jobs = jobs;
-	}
-
-	public ArrayList<ObjectId> getTraitements() {
-		return traitements;
-	}
-
-	public void setTraitements(ArrayList<ObjectId> traitements) {
-		this.traitements = traitements;
-	}
-
-	public ArrayList<ObjectId> getFichiers() {
-		return fichiers;
-	}
-
-	public void setFichiers(ArrayList<ObjectId> fichiers) {
-		this.fichiers = fichiers;
-	}
-
-	public ArrayList<ObjectId> getRapports() {
-		return rapports;
-	}
-
-	public void setRapports(ArrayList<ObjectId> rapports) {
-		this.rapports = rapports;
 	}
 
 	public String getEtat_current() {

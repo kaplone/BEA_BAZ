@@ -5,12 +5,16 @@ import java.util.ArrayList;
 import org.bson.types.ObjectId;
 import org.jongo.marshall.jackson.oid.MongoObjectId;
 
+import enums.EtatFinal;
+
 public class Etat {
 	
 	private ArrayList<String> alterations;
 	
 	private ObjectId oeuvre_id,
 	                 commande_id;
+	
+	private EtatFinal etatFinal;
 
 	public ArrayList<String> getAlterations() {
 		return alterations;
@@ -35,6 +39,15 @@ public class Etat {
 	public void setCommande_id(ObjectId commande_id) {
 		this.commande_id = commande_id;
 	}
+
+	public EtatFinal getEtatFinal() {
+		return etatFinal;
+	}
+
+	public void setEtatFinal(EtatFinal etatFinal) {
+		this.etatFinal = etatFinal;
+	}
+	
 	
 	
 

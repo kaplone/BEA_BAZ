@@ -166,7 +166,6 @@ public class Fiche_traitement_controller  implements Initializable{
 	@FXML
 	public void on_import_file_button(){
 		try {
-			Documents.init();
 			Documents.read(file, "traitement");
 			afficherTraitements();
 		} catch (IOException e) {

@@ -39,13 +39,13 @@ public class Commande  extends Commun{
 
 	private Date dateFinProjet;
 
-	private ObjectId client;
+	private Client client;
 	
 	private Model modele;
 	
 	private Auteur auteur;
 	
-	private ArrayList<String> oeuvres;
+	private ArrayList<ObjectId> oeuvresTraitees;
 	private ArrayList<Traitement> traitements_attendus;
 	private ArrayList<Traitement> tous_les_traitements;
 	
@@ -114,21 +114,21 @@ public class Commande  extends Commun{
 		Date res = Date.from(instant);
 		this.dateFinProjet = res;
 	}
-
-	public ObjectId getClient() {
+	
+	public Client getClient() {
 		return client;
 	}
 
-	public void setClient(ObjectId client) {
+	public void setClient(Client client) {
 		this.client = client;
 	}
 
-	public ArrayList<String> getOeuvres() {
-		return oeuvres;
+	public ArrayList<ObjectId> getOeuvresTraitees() {
+		return oeuvresTraitees;
 	}
 
-	public void setOeuvres(ArrayList<String> oeuvres) {
-		this.oeuvres = oeuvres;
+	public void setOeuvresTraitees(ArrayList<ObjectId> oeuvresTraitees) {
+		this.oeuvresTraitees = oeuvresTraitees;
 	}
 
 	public ArrayList<Traitement> getTraitements_attendus() {

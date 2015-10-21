@@ -1,18 +1,13 @@
 package application;
 
 import java.net.URL;
-import java.time.Instant;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
-import org.bson.types.ObjectId;
 import org.jongo.MongoCursor;
-
-import com.mongodb.DBPortPool.NoMoreConnection;
 
 import utils.MongoAccess;
 import models.Auteur;
@@ -20,13 +15,11 @@ import models.Client;
 import models.Commande;
 import models.Model;
 import models.Oeuvre;
-import models.TacheTraitement;
+import models.OeuvreTraitee;
 import models.Traitement;
 import models.TraitementsAttendus;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
@@ -36,16 +29,13 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
@@ -93,8 +83,6 @@ public class Fiche_commande_controller  implements Initializable{
 	@FXML
 	private Button versAuteursButton;
 	@FXML
-	private Button rapportsButton;
-	@FXML
 	private DatePicker dateCommandePicker;
 	@FXML
 	private DatePicker dateDebutProjetPicker;
@@ -109,11 +97,11 @@ public class Fiche_commande_controller  implements Initializable{
 	@FXML
 	private VBox commandeExportVbox;
 	@FXML
-	private TableView tableOeuvre;
+	private TableView<OeuvreTraitee> tableOeuvre;
 	@FXML
-	private TableColumn<Oeuvre, String> oeuvres_nom_colonne;
+	private TableColumn<OeuvreTraitee, String> oeuvres_nom_colonne;
 	@FXML
-	private TableColumn<Oeuvre, ImageView> oeuvres_fait_colonne;
+	private TableColumn<OeuvreTraitee, ImageView> oeuvres_fait_colonne;
 	
 	@FXML
 	private GridPane traitementGrid;
@@ -125,11 +113,8 @@ public class Fiche_commande_controller  implements Initializable{
 	private ObservableList<Traitement> observableTraitements;
 	private ObservableList<Auteur> observableAuteurs;
 
-	private List<Oeuvre> oeuvres;
-
-	
-	private MongoCursor<Oeuvre> oeuvresCursor;
-	private Oeuvre oeuvreSelectionne;
+	private List<OeuvreTraitee> oeuvresTraitees;
+	private MongoCursor<OeuvreTraitee> oeuvresTraiteesCursor;
 	
 	private Stage currentStage;
 	
@@ -248,7 +233,7 @@ public class Fiche_commande_controller  implements Initializable{
 			commande = Main_BEA_BAZ.getCommande(); 
 		}		
 		
-		commande.setClient(client.get_id());
+		commande.setClient(client);
 		commande.setDateCommande(dateCommandePicker.getValue());
 		commande.setDateDebutProjet(dateDebutProjetPicker.getValue());
 		commande.setDateFinProjet(dateFinProjetPicker.getValue());
@@ -410,48 +395,18 @@ public class Fiche_commande_controller  implements Initializable{
 	
     public void afficherOeuvres(){
     	
-    	Oeuvre o;
+    	System.out.println("commandeSelectionne : " + commandeSelectionne);
     	
-        //oeuvresCursor = MongoAccess.request("oeuvre", commandeSelectionne).as(Oeuvre.class);
-    	if (commandeSelectionne != null){
-			oeuvres = MongoAccess.distinct("tacheTraitement", "oeuvre", "commande._id", commandeSelectionne.get_id()).as(Oeuvre.class);
-			
-
-			//liste_oeuvres.add(o);
+        oeuvresTraiteesCursor = MongoAccess.request("oeuvreTraitee", commandeSelectionne).as(OeuvreTraitee.class);
+		
+		while (oeuvresTraiteesCursor.hasNext()){
+			oeuvresTraitees.add(oeuvresTraiteesCursor.next());
 		}
 		
-		oeuvres_nom_colonne.setCellValueFactory(new PropertyValueFactory<Oeuvre, String>("nom"));
-		oeuvres_fait_colonne.setCellValueFactory(new PropertyValueFactory<Oeuvre, ImageView>("etat"));
+		oeuvres_nom_colonne.setCellValueFactory(new PropertyValueFactory<OeuvreTraitee, String>("nom"));
 		
-		
-//        type.setCellValueFactory(new Callback<CellDataFeatures<CellFields, ImageView>, ObservableValue<ImageView>>() {
-//	    	
-//	    	
-//	        public ObservableValue<ImageView> call(CellDataFeatures<CellFields, ImageView> p) {
-//	        	
-//	        	
-//	        	ObjectProperty<ImageView> imageview = new SimpleObjectProperty<ImageView>();
-//	        	image = p.getValue().getFieldImage();
-//	        	
-//	        	imageview.set(new ImageView(image));
-//	        	imageview.get().setEffect(dropShadow);
-//               imageview.get().setFitHeight(24);
-//               imageview.get().setFitWidth(24);
-//	            return imageview;
-//	        }
-//	     });
-//	    
-//	    nom.setCellValueFactory(
-//	        new PropertyValueFactory<CellFields,String>("fieldNameFull")
-//	    );
-//	    taille.setCellValueFactory(
-//		    new PropertyValueFactory<CellFields,Integer>("fieldSize")
-//		);
-//
-//	    table.setItems(resArray);
-		
-		ObservableList<Oeuvre> obs_oeuvres = FXCollections.observableArrayList(oeuvres);
-		
+		ObservableList<OeuvreTraitee> obs_oeuvres = FXCollections.observableArrayList(oeuvresTraitees);
+
 		tableOeuvre.setItems(obs_oeuvres);
 		
 	}
@@ -500,8 +455,14 @@ public class Fiche_commande_controller  implements Initializable{
     
     public void onOeuvreSelect(){
     	
-    	Main_BEA_BAZ.setOeuvre((Oeuvre) tableOeuvre.getSelectionModel().getSelectedItem());
+    	Main_BEA_BAZ.setOeuvre((OeuvreTraitee) tableOeuvre.getSelectionModel().getSelectedItem());
     	Main_BEA_BAZ.setOeuvre_index(tableOeuvre.getSelectionModel().getSelectedIndex());
+    	
+    	OeuvreTraitee oeuvreSelectionne = (OeuvreTraitee) tableOeuvre.getSelectionModel().getSelectedItem();
+    	
+    	System.out.println("********* " + oeuvreSelectionne);
+		System.out.println("********* " + oeuvreSelectionne.getCote_archives_6s());
+		System.out.println("********* " + oeuvreSelectionne.getTitre_de_l_oeuvre());
     	
     	Scene fiche_oeuvre_scene = new Scene((Parent) JfxUtils.loadFxml("/views/fiche_oeuvre.fxml"), 1275, 722);
 		fiche_oeuvre_scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
@@ -515,8 +476,18 @@ public class Fiche_commande_controller  implements Initializable{
 		
 		commande = Main_BEA_BAZ.getCommande();
 		client = Main_BEA_BAZ.getClient();
-		model = commande.getModele();
-		auteur = commande.getAuteur();
+		
+        if (commande != null) {
+			
+        	model = commande.getModele();
+    		auteur = commande.getAuteur();
+			
+		}
+		else {
+			model = null;
+			auteur = null;
+		}
+		
 		
 		index = 0;
 	    i = 0;
@@ -547,6 +518,8 @@ public class Fiche_commande_controller  implements Initializable{
 		
 		traitements_attendus = new ArrayList<>();
 		traitements_selectionnes = new ArrayList<>();
+		
+		oeuvresTraitees = new ArrayList<>();
 	
 		afficherTraitements();
 		
@@ -575,7 +548,6 @@ public class Fiche_commande_controller  implements Initializable{
 	        mise_a_jour_commande.setText("Créer");
 	        mise_a_jour_commande.setVisible(true);
 			annuler.setVisible(true);
-			rapportsButton.setVisible(false);
 			commandeExportVbox.setVisible(false);
 			versRapportButton.setVisible(false);
 			

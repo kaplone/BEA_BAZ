@@ -3,6 +3,7 @@ package application;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -14,6 +15,7 @@ import utils.MongoAccess;
 import models.Auteur;
 import models.Commande;
 import models.Oeuvre;
+import models.OeuvreTraitee;
 import models.Produit;
 import models.TacheTraitement;
 import models.Traitement;
@@ -97,19 +99,21 @@ public class Fiche_oeuvre_controller  implements Initializable{
 	private GridPane grid;
 	
 	@FXML
-	private TableView tableOeuvre;
+	private TableView<OeuvreTraitee> tableOeuvre;
 	@FXML
-	private TableColumn<Oeuvre, String> oeuvres_nom_colonne;
+	private TableColumn<OeuvreTraitee, String> oeuvres_nom_colonne;
 	@FXML
-	private TableColumn<Oeuvre, ImageView> oeuvres_fait_colonne;
+	private TableColumn<OeuvreTraitee, ImageView> oeuvres_fait_colonne;
 	
-	private List<Oeuvre> oeuvres;
+	private List<OeuvreTraitee> oeuvres;
+	private List<OeuvreTraitee> oeuvresTraitees;
 	
 	private boolean edit = false;
 	
-	MongoCursor<Oeuvre> oeuvresCursor;
+	MongoCursor<OeuvreTraitee> oeuvresCursor;
 	Oeuvre oeuvreSelectionne;
-	ObservableList<Oeuvre> liste_oeuvres;
+	OeuvreTraitee oeuvreTraiteeSelectionne;
+	ObservableList<OeuvreTraitee> liste_oeuvres;
 	MongoCursor<Traitement> traitementCursor ;
 	ObservableList<Traitement> traitementsSelectionne;
 	ObservableList<Traitement> liste_traitements;
@@ -121,6 +125,8 @@ public class Fiche_oeuvre_controller  implements Initializable{
 	private Auteur auteur;
 	
 	boolean directSelect = false;
+	
+	private MongoCursor<OeuvreTraitee> oeuvresTraiteesCursor;
 	
 	@FXML
 	public void onVersProduitsButton(){
@@ -200,9 +206,13 @@ public class Fiche_oeuvre_controller  implements Initializable{
 	
 	public void reloadOeuvre(){
         
-		oeuvreSelectionne = (Oeuvre)tableOeuvre.getSelectionModel().getSelectedItem();
+		oeuvreSelectionne = ((OeuvreTraitee) tableOeuvre.getSelectionModel().getSelectedItem()).getOeuvre();
 		
-		Main_BEA_BAZ.setOeuvre(oeuvreSelectionne);
+		System.out.println(oeuvreSelectionne);
+		System.out.println(oeuvreSelectionne.getCote_archives_6s());
+		System.out.println(oeuvreSelectionne.getTitre_de_l_oeuvre());
+		
+		Main_BEA_BAZ.setOeuvre(oeuvreTraiteeSelectionne);
 		Main_BEA_BAZ.setOeuvre_index(tableOeuvre.getSelectionModel().getSelectedIndex());
 		
 		System.out.println("on reload :  " + tableOeuvre.getSelectionModel().getSelectedIndex());
@@ -215,11 +225,13 @@ public class Fiche_oeuvre_controller  implements Initializable{
 		else {
 			tableOeuvre.scrollTo(Main_BEA_BAZ.getOeuvre_index());
 		}
+		
+		
 
 		numero_archive_6s_textField.setText(oeuvreSelectionne.getCote_archives_6s());
 		titre_textField.setText(oeuvreSelectionne.getTitre_de_l_oeuvre());
-		MongoCursor<Auteur> auteurCursor = MongoAccess.request("auteur", oeuvreSelectionne.getAuteur()).as(Auteur.class);
-		Auteur auteur = auteurCursor.next();
+//		MongoCursor<Auteur> auteurCursor = MongoAccess.request("auteur", oeuvreSelectionne.getAuteur()).as(Auteur.class);
+//		Auteur auteur = auteurCursor.next();
 		date_oeuvre_textField.setText(oeuvreSelectionne.getDate());
 		dimensions_textField.setText(oeuvreSelectionne.getDimensions());
 		inscriptions_textArea.setText(oeuvreSelectionne.getInscriptions_au_verso());
@@ -474,15 +486,27 @@ public class Fiche_oeuvre_controller  implements Initializable{
     
     public void afficherOeuvres(){
     	
-        oeuvres = MongoAccess.distinct("tacheTraitement", "oeuvre", "commande._id", commandeSelectionne.get_id()).as(Oeuvre.class);
+//        oeuvres = MongoAccess.distinct("tacheTraitement", "oeuvre", "commande._id", commandeSelectionne.get_id()).as(Oeuvre.class);
+//		
+//		oeuvres_nom_colonne.setCellValueFactory(new PropertyValueFactory<Oeuvre, String>("nom"));
+//		
+//		ObservableList<Oeuvre> obs_oeuvres = FXCollections.observableArrayList(oeuvres);
+//		
+//		oeuvres_nom_colonne.setCellValueFactory(new PropertyValueFactory<Oeuvre, String>("nom"));
+//		//oeuvres_fait_colonne.setCellValueFactory(new PropertyValueFactory<Oeuvre, ImageView>("etat"));
+//		
+//		tableOeuvre.setItems(obs_oeuvres);
+    	
+        oeuvresTraiteesCursor = MongoAccess.request("oeuvreTraitee", commandeSelectionne).as(OeuvreTraitee.class);
 		
-		oeuvres_nom_colonne.setCellValueFactory(new PropertyValueFactory<Oeuvre, String>("nom"));
+		while (oeuvresTraiteesCursor.hasNext()){
+			oeuvresTraitees.add(oeuvresTraiteesCursor.next());
+		}
 		
-		ObservableList<Oeuvre> obs_oeuvres = FXCollections.observableArrayList(oeuvres);
+		oeuvres_nom_colonne.setCellValueFactory(new PropertyValueFactory<OeuvreTraitee, String>("nom"));
 		
-		oeuvres_nom_colonne.setCellValueFactory(new PropertyValueFactory<Oeuvre, String>("nom"));
-		//oeuvres_fait_colonne.setCellValueFactory(new PropertyValueFactory<Oeuvre, ImageView>("etat"));
-		
+		ObservableList<OeuvreTraitee> obs_oeuvres = FXCollections.observableArrayList(oeuvresTraitees);
+
 		tableOeuvre.setItems(obs_oeuvres);
 		
 		tableOeuvre.getSelectionModel().clearAndSelect(Main_BEA_BAZ.getOeuvre_index());
@@ -498,7 +522,7 @@ public class Fiche_oeuvre_controller  implements Initializable{
 		Main_BEA_BAZ.setTraitementEdited(null);
 
 		traitementSelectionne = Main_BEA_BAZ.getTraitement();
-		oeuvreSelectionne = Main_BEA_BAZ.getOeuvre();
+		oeuvreSelectionne = Main_BEA_BAZ.getOeuvre().getOeuvre();
 		commandeSelectionne = Main_BEA_BAZ.getCommande();
 		auteur = Main_BEA_BAZ.getAuteur();
 
@@ -508,11 +532,15 @@ public class Fiche_oeuvre_controller  implements Initializable{
 		dimensions_textField.setEditable(false);
 		inscriptions_textArea.setEditable(false);
 		observations_textArea.setEditable(false);
+		
+		System.out.println(oeuvreSelectionne);
+		System.out.println(oeuvreSelectionne.getCote_archives_6s());
+		System.out.println(oeuvreSelectionne.getTitre_de_l_oeuvre());
 
 		numero_archive_6s_textField.setText(oeuvreSelectionne.getCote_archives_6s());
 		titre_textField.setText(oeuvreSelectionne.getTitre_de_l_oeuvre());
-		MongoCursor<Auteur> auteurCursor = MongoAccess.request("auteur", oeuvreSelectionne.getAuteur()).as(Auteur.class);
-		Auteur auteur = auteurCursor.next();
+//		MongoCursor<Auteur> auteurCursor = MongoAccess.request("auteur", oeuvreSelectionne.getAuteur()).as(Auteur.class);
+//		Auteur auteur = auteurCursor.next();
 		date_oeuvre_textField.setText(oeuvreSelectionne.getDate());
 		dimensions_textField.setText(oeuvreSelectionne.getDimensions());
 		inscriptions_textArea.setText(oeuvreSelectionne.getInscriptions_au_verso());
@@ -531,6 +559,8 @@ public class Fiche_oeuvre_controller  implements Initializable{
 		
 		liste_traitements = FXCollections.observableArrayList();
 		liste_oeuvres = FXCollections.observableArrayList();
+		
+		oeuvresTraitees = new ArrayList<OeuvreTraitee>();
 
 		
 		currentStage = Main_BEA_BAZ.getStage();

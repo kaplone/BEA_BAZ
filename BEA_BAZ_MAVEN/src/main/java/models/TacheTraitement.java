@@ -2,6 +2,8 @@ package models;
 
 import java.util.Date;
 
+import org.bson.types.ObjectId;
+
 import javafx.scene.image.ImageView;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -15,13 +17,13 @@ public class TacheTraitement extends Commun{
 	
 	private Progression fait;
 	private Date date;
-	private Oeuvre oeuvre;
-	private Commande commande;
+	private ObjectId oeuvreTraiteeId;
+	private ObjectId commandeId;
 	private Complement complement;
 	private Produit produit;
 	private Traitement traitement;
 	private Etat etat;
-    private String progression;
+    private Progression progressionTacheTraitement;
 	
 	@JsonIgnore
 	private ImageView icone_progression;
@@ -39,17 +41,25 @@ public class TacheTraitement extends Commun{
 	public void setDate(Date date) {
 		this.date = date;
 	}
-	public Oeuvre getOeuvre() {
-		return oeuvre;
+    
+	public ObjectId getOeuvreTraiteeId() {
+		return oeuvreTraiteeId;
 	}
-	public void setOeuvre(Oeuvre oeuvre) {
-		this.oeuvre = oeuvre;
+	public void setOeuvreTraiteeId(ObjectId oeuvreTraiteeId) {
+		this.oeuvreTraiteeId = oeuvreTraiteeId;
 	}
-	public Commande getCommande() {
-		return commande;
+	
+	public Etat getEtat() {
+		return etat;
 	}
-	public void setCommande(Commande commande) {
-		this.commande = commande;
+	public void setEtat(Etat etat) {
+		this.etat = etat;
+	}
+	public ObjectId getCommandeId() {
+		return commandeId;
+	}
+	public void setCommandeId(ObjectId commandeId) {
+		this.commandeId = commandeId;
 	}
 	public Complement getComplement() {
 		return complement;
@@ -69,21 +79,16 @@ public class TacheTraitement extends Commun{
 	public void setTraitement(Traitement traitement) {
 		this.traitement = traitement;
 	}
-	public String getProgression() {
-		return progression;
+	
+	public Progression getProgressionTacheTraitement() {
+		return progressionTacheTraitement;
 	}
-	public void setProgression(String progression) {
-		this.progression = progression;
+	public void setProgressionTacheTraitement(Progression progressionTacheTraitement) {
+		this.progressionTacheTraitement = progressionTacheTraitement;
 	}
 	public ImageView getIcone_progression() {
-		System.out.println(progression);
+		System.out.println(progressionTacheTraitement);
 		
-		return Progression.valueOf(progression).getUsedImage();
+		return progressionTacheTraitement.getUsedImage();
 	}
-	public void setIcone_progression(ImageView etat) {
-		this.icone_progression = etat;
-	}
-	
-	
-	
 }
