@@ -359,7 +359,7 @@ public class Fiche_traitement_controller  implements Initializable{
     @FXML
     public void onAjoutProduit(){
     	
-    	Main_BEA_BAZ.setTraitementEdited(listView_traitements.getSelectionModel().getSelectedItem());
+    	//Main_BEA_BAZ.setTacheTraitementEdited(listView_traitements.getSelectionModel().getSelectedItem());
     	
     	Scene fiche_produit_scene = new Scene((Parent) JfxUtils.loadFxml("/views/fiche_produit.fxml"), 1275, 722);
 		fiche_produit_scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
@@ -379,7 +379,7 @@ public class Fiche_traitement_controller  implements Initializable{
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		
-		Main_BEA_BAZ.setTraitementEdited(null);
+		Main_BEA_BAZ.setTacheTraitementEdited(null);
 		
 		detail = Main_BEA_BAZ.getDetail();
 		traitementSelectionne = Main_BEA_BAZ.getTraitement();

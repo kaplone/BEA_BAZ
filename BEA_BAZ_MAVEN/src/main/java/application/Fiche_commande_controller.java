@@ -397,17 +397,22 @@ public class Fiche_commande_controller  implements Initializable{
     	
     	System.out.println("commandeSelectionne : " + commandeSelectionne);
     	
-        oeuvresTraiteesCursor = MongoAccess.request("oeuvreTraitee", commandeSelectionne).as(OeuvreTraitee.class);
-		
-		while (oeuvresTraiteesCursor.hasNext()){
-			oeuvresTraitees.add(oeuvresTraiteesCursor.next());
-		}
-		
-		oeuvres_nom_colonne.setCellValueFactory(new PropertyValueFactory<OeuvreTraitee, String>("nom"));
-		
-		ObservableList<OeuvreTraitee> obs_oeuvres = FXCollections.observableArrayList(oeuvresTraitees);
-
-		tableOeuvre.setItems(obs_oeuvres);
+    	try {
+	        oeuvresTraiteesCursor = MongoAccess.request("oeuvreTraitee", commandeSelectionne).as(OeuvreTraitee.class);
+			
+			while (oeuvresTraiteesCursor.hasNext()){
+				oeuvresTraitees.add(oeuvresTraiteesCursor.next());
+			}
+			
+			oeuvres_nom_colonne.setCellValueFactory(new PropertyValueFactory<OeuvreTraitee, String>("nom"));
+			
+			ObservableList<OeuvreTraitee> obs_oeuvres = FXCollections.observableArrayList(oeuvresTraitees);
+	
+			tableOeuvre.setItems(obs_oeuvres);
+    	}
+    	catch (NullPointerException npe) {
+    		
+    	}
 		
 	}
     

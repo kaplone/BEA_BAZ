@@ -7,6 +7,7 @@ import models.Model;
 import models.Oeuvre;
 import models.OeuvreTraitee;
 import models.Produit;
+import models.TacheTraitement;
 import models.Traitement;
 import application.JfxUtils;
 import javafx.application.Application;
@@ -24,7 +25,9 @@ public class Main_BEA_BAZ extends Application {
 	private static Client client;
 	
 	private static Traitement traitement;
-	private static Traitement traitementEdited;
+	private static TacheTraitement tacheTraitementEdited;
+	
+	private static TacheTraitement tacheTraitement;
 	
 	private static Produit detail;
 	
@@ -99,13 +102,14 @@ public class Main_BEA_BAZ extends Application {
 	public static void setDetail(Produit detail) {
 		Main_BEA_BAZ.detail = detail;
 	}
-
-	public static Traitement getTraitementEdited() {
-		return traitementEdited;
+    
+	public static TacheTraitement getTacheTraitementEdited() {
+		return tacheTraitementEdited;
 	}
 
-	public static void setTraitementEdited(Traitement traitementEdited) {
-		Main_BEA_BAZ.traitementEdited = traitementEdited;
+	public static void setTacheTraitementEdited(
+			TacheTraitement tacheTraitementEdited) {
+		Main_BEA_BAZ.tacheTraitementEdited = tacheTraitementEdited;
 	}
 
 	public static OeuvreTraitee getOeuvre() {
@@ -138,6 +142,14 @@ public class Main_BEA_BAZ extends Application {
 
 	public static void setModel(Model model) {
 		Main_BEA_BAZ.model = model;
+	}
+
+	public static TacheTraitement getTacheTraitement() {
+		return tacheTraitement;
+	}
+
+	public static void setTacheTraitement(TacheTraitement tacheTraitement) {
+		Main_BEA_BAZ.tacheTraitement = tacheTraitement;
 	}
     
 	

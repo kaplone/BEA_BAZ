@@ -28,12 +28,16 @@
                         <Insets bottom="20.0" />
                      </VBox.margin>
                   </TableView>
-                  <Label text="Traitements supplémentaires" />
-                  <ListView fx:id="traitements_supplementaires_treeView" onKeyTyped="#onTraitementSelect" onMouseClicked="#onTraitementSelect" prefHeight="83.0" prefWidth="288.0">
-                     <VBox.margin>
+                  <Label text="Traitements supplémentaires">
+                     <padding>
                         <Insets bottom="10.0" top="10.0" />
-                     </VBox.margin>
-                  </ListView>
+                     </padding></Label>
+                  <TableView fx:id="traitements_supplementaires_tableView" prefHeight="200.0" prefWidth="200.0">
+                    <columns>
+                      <TableColumn fx:id="traitements_supplementaires_tableColumn" prefWidth="238.0" text="Traitements" />
+                      <TableColumn fx:id="traitements_supp_faits_tableColumn" prefWidth="49.0" text="Fait" />
+                    </columns>
+                  </TableView>
                   <Button fx:id="nouveau_traitement1" mnemonicParsing="false" onAction="#onNouveauTraitementButton" text="Nouveau traitement">
                      <VBox.margin>
                         <Insets bottom="10.0" top="10.0" />
@@ -49,7 +53,7 @@
                         <Insets bottom="10.0" top="10.0" />
                      </padding>
                   </Label>
-                  <ListView fx:id="listView_fichiers" onKeyTyped="#onTraitementSelect" onMouseClicked="#onTraitementSelect" prefHeight="126.0" prefWidth="288.0">
+                  <ListView fx:id="fichiers_listView" onKeyTyped="#onTraitementSelect" onMouseClicked="#onTraitementSelect" prefHeight="126.0" prefWidth="288.0">
                      <VBox.margin>
                         <Insets bottom="10.0" top="10.0" />
                      </VBox.margin>

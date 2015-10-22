@@ -12,6 +12,7 @@ import utils.MongoAccess;
 import models.Client;
 import models.Commande;
 import models.Produit;
+import models.TacheTraitement;
 import models.Traitement;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -85,7 +86,7 @@ public class Fiche_produit_controller  implements Initializable{
 
 	MongoCursor<Produit> produitCursor ;
 	Produit produitSelectionne;
-	Traitement traitementSelectionne;
+	TacheTraitement traitementSelectionne;
 	
 	Stage currentStage;
 
@@ -326,11 +327,11 @@ public class Fiche_produit_controller  implements Initializable{
     	
     	if (traitementSelectionne.getProduits().size() != 0 && ! traitementSelectionne.getProduits().stream().map(a -> a.getNom_complet()).collect(Collectors.toList()).contains(produitSelectionne.getNom_complet())){
     		traitementSelectionne.getProduits().add(produitSelectionne);
-    		Traitement.update(traitementSelectionne);
+    		TacheTraitement.update(traitementSelectionne);
     	}
     	else if (traitementSelectionne.getProduits().size() == 0){
     		traitementSelectionne.getProduits().add(produitSelectionne);
-    		Traitement.update(traitementSelectionne);
+    		TacheTraitement.update(traitementSelectionne);
     	}
     }
 
@@ -338,7 +339,7 @@ public class Fiche_produit_controller  implements Initializable{
 	public void initialize(URL location, ResourceBundle resources) {
 
 		produitSelectionne = Main_BEA_BAZ.getDetail();
-		traitementSelectionne = Main_BEA_BAZ.getTraitementEdited();
+		traitementSelectionne = Main_BEA_BAZ.getTacheTraitementEdited();
 
 		nom_produit_textField.setEditable(false);
 		remarques_produit_textArea.setEditable(false);

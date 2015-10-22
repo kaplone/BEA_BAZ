@@ -47,7 +47,19 @@ import javafx.stage.Stage;
 public class Fiche_oeuvre_controller  implements Initializable{
 
 	@FXML
-	private ListView<Traitement> traitements_supplementaires_listView;
+	private TableView<TacheTraitement> traitements_attendus_tableView;
+	@FXML
+	private TableColumn<TacheTraitement, String> traitements_attendus_tableColumn;
+	@FXML
+	private TableColumn<TacheTraitement, ImageView> traitements_faits_tableColumn;
+	
+	@FXML
+	private TableView<TacheTraitement> traitements_supplementaires_tableView;
+	@FXML
+	private TableColumn<TacheTraitement, String> traitements_supplementaires_tableColumn;
+	@FXML
+	private TableColumn<TacheTraitement, ImageView> traitements_supp_faits_tableColumn;
+	
 	@FXML
 	private ListView<Produit> listView_produits;
 
@@ -114,11 +126,11 @@ public class Fiche_oeuvre_controller  implements Initializable{
 	Oeuvre oeuvreSelectionne;
 	OeuvreTraitee oeuvreTraiteeSelectionne;
 	ObservableList<OeuvreTraitee> liste_oeuvres;
-	MongoCursor<Traitement> traitementCursor ;
-	ObservableList<Traitement> traitementsSelectionne;
-	ObservableList<Traitement> liste_traitements;
+	MongoCursor<TacheTraitement> traitementCursor ;
+	ObservableList<TacheTraitement> traitementsAttendus;
+	ObservableList<TacheTraitement> traitementsSupplementaires;
 	private ObservableList<Auteur> observableAuteurs;
-	Traitement traitementSelectionne;
+	TacheTraitement traitementSelectionne;
 	Commande commandeSelectionne;
 	
 	Stage currentStage;
@@ -149,8 +161,8 @@ public class Fiche_oeuvre_controller  implements Initializable{
 	@FXML
 	public void onTraitementSelect(){
 		
-		traitementSelectionne = traitements_supplementaires_listView.getSelectionModel().getSelectedItem();
-		Main_BEA_BAZ.setTraitement(traitementSelectionne);
+		traitementSelectionne = traitements_supplementaires_tableView.getSelectionModel().getSelectedItem();
+		Main_BEA_BAZ.setTacheTraitement(traitementSelectionne);
 		//affichageInfos();	
 	}
 	
@@ -464,12 +476,12 @@ public class Fiche_oeuvre_controller  implements Initializable{
     @FXML
     public void onExporter_rapport_button(){
     	
-    	FreeMarkerMaker.odt2pdf(oeuvreSelectionne);
+    	FreeMarkerMaker.odt2pdf(oeuvreSelectionne, oeuvreTraiteeSelectionne);
     };
     @FXML
     public void onAjoutProduit(){
     	
-    	Main_BEA_BAZ.setTraitementEdited(traitements_supplementaires_listView.getSelectionModel().getSelectedItem());
+    	Main_BEA_BAZ.setTacheTraitementEdited(traitements_supplementaires_tableView.getSelectionModel().getSelectedItem());
     	
     	Scene fiche_produit_scene = new Scene((Parent) JfxUtils.loadFxml("/views/fiche_produit.fxml"), 1275, 722);
 		fiche_produit_scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
@@ -519,12 +531,14 @@ public class Fiche_oeuvre_controller  implements Initializable{
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		
-		Main_BEA_BAZ.setTraitementEdited(null);
+		Main_BEA_BAZ.setTacheTraitementEdited(null);
 
-		traitementSelectionne = Main_BEA_BAZ.getTraitement();
+		traitementSelectionne = Main_BEA_BAZ.getTacheTraitement();
 		oeuvreSelectionne = Main_BEA_BAZ.getOeuvre().getOeuvre();
+		oeuvreTraiteeSelectionne = Main_BEA_BAZ.getOeuvre();
 		commandeSelectionne = Main_BEA_BAZ.getCommande();
 		auteur = Main_BEA_BAZ.getAuteur();
+		
 
 		numero_archive_6s_textField.setEditable(false);
 		titre_textField.setEditable(false);
@@ -557,7 +571,8 @@ public class Fiche_oeuvre_controller  implements Initializable{
 		versFichierButton.setVisible(false);
 		
 		
-		liste_traitements = FXCollections.observableArrayList();
+		traitementsAttendus = FXCollections.observableArrayList();
+		traitementsSupplementaires = FXCollections.observableArrayList();
 		liste_oeuvres = FXCollections.observableArrayList();
 		
 		oeuvresTraitees = new ArrayList<OeuvreTraitee>();
@@ -565,13 +580,30 @@ public class Fiche_oeuvre_controller  implements Initializable{
 		
 		currentStage = Main_BEA_BAZ.getStage();
 		
-//		traitementCursor = MongoAccess.request("traitement").as(Traitement.class);
-//		
-//		while (traitementCursor.hasNext()){
-//			liste_traitements.add(traitementCursor.next());
-//		}
-//		
-//		traitements_supplementaires_listView.setItems(liste_traitements);
+		System.out.println("oeuvreTraiteeSelectionne.get_id() : " + oeuvreTraiteeSelectionne.get_id());
+		
+		traitementCursor = MongoAccess.request("tacheTraitement", "oeuvreTraiteeId", oeuvreTraiteeSelectionne.get_id()).as(TacheTraitement.class);
+		
+		while (traitementCursor.hasNext()){
+			
+			TacheTraitement tt = traitementCursor.next();
+			
+			System.out.println("tt.getNom() : " + tt.getNom());
+			
+			if(tt.isSupp()){
+				traitementsSupplementaires.add(tt);
+			}
+			else {
+				traitementsAttendus.add(tt);
+			}
+			
+		}
+		
+		traitements_attendus_tableColumn.setCellValueFactory(new PropertyValueFactory<TacheTraitement, String>("nom"));
+
+		traitements_attendus_tableView.setItems(traitementsAttendus);
+		
+		traitements_supplementaires_tableView.setItems(traitementsSupplementaires);
 		
 		afficherOeuvres();
 		reloadOeuvre();

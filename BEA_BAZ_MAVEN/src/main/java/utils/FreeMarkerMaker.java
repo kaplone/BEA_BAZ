@@ -7,9 +7,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Path;
+import java.util.ArrayList;
 
 import application.Main_BEA_BAZ;
 import models.Oeuvre;
+import models.OeuvreTraitee;
 import models.TacheTraitement;
 import fr.opensagres.xdocreport.converter.ConverterRegistry;
 import fr.opensagres.xdocreport.converter.ConverterTypeTo;
@@ -37,7 +39,7 @@ public class FreeMarkerMaker {
         return Main_BEA_BAZ.getCommande().getModele().getCheminVersModel().getParent().resolve("P1140344.JPG").toFile();
     }
 
-	public static void odt2pdf(Oeuvre o) {
+	public static void odt2pdf(Oeuvre o, OeuvreTraitee ot) {
 
 		try {
 		      // 1) Load Docx file by filling Velocity template engine and cache it to the registry
@@ -64,6 +66,13 @@ public class FreeMarkerMaker {
 		      context.put("inscriptions", o.getInscriptions_au_verso() != null ? o.getInscriptions_au_verso() : "");
 		      context.put("produits", o.getDimensions() != null ? o.getDimensions() : "");
 		      context.put("etat_final", o.getDimensions() != null ? o.getDimensions() : "");
+		      //context.put("traitements", ot.getTraitementsEnCours() != null ? ot.getTraitementsEnCours() : "");
+		      
+		      ArrayList<String> arl = new ArrayList();
+		      arl.add("un");
+		      arl.add("deux");
+		      arl.add("trois");
+		      context.put("traitements", arl);
 		      
 		      System.out.println("__02");
 		      

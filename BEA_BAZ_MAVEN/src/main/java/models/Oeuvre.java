@@ -7,6 +7,8 @@ import javafx.scene.image.ImageView;
 import org.bson.types.ObjectId;
 import org.jongo.marshall.jackson.oid.MongoObjectId;
 
+import utils.MongoAccess;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -53,13 +55,16 @@ public class Oeuvre extends Commun{
 		
 	}
 	
-//	public ObjectId getCommande() {
-//		return commande;
-//	}
-//
-//	public void setCommande(ObjectId commande) {
-//		this.commande = commande;
-//	}
+	public static void update(Oeuvre c){
+
+		MongoAccess.update("oeuvre", c);
+	}
+	
+    public static void save(Oeuvre c){
+		
+		MongoAccess.save("oeuvre", c);
+		
+	}
 
 	public String getN_d_origine() {
 		return n_d_origine;

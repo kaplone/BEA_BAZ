@@ -1,9 +1,11 @@
 package models;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 import org.bson.types.ObjectId;
 
+import utils.MongoAccess;
 import javafx.scene.image.ImageView;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -20,10 +22,23 @@ public class TacheTraitement extends Commun{
 	private ObjectId oeuvreTraiteeId;
 	private ObjectId commandeId;
 	private Complement complement;
-	private Produit produit;
+	private ArrayList<Produit> produits;
 	private Traitement traitement;
 	private Etat etat;
     private Progression progressionTacheTraitement;
+    
+    private boolean supp; 
+    
+    public static void update(TacheTraitement c){
+
+		MongoAccess.update("tacheTraitement", c);
+	}
+	
+    public static void save(TacheTraitement c){
+		
+		MongoAccess.save("tacheTraitement", c);
+		
+	}
 	
 	@JsonIgnore
 	private ImageView icone_progression;
@@ -67,11 +82,15 @@ public class TacheTraitement extends Commun{
 	public void setComplement(Complement complement) {
 		this.complement = complement;
 	}
-	public Produit getProduit() {
-		return produit;
+    
+	public ArrayList<Produit> getProduits() {
+		return produits;
 	}
-	public void setProduit(Produit produit) {
-		this.produit = produit;
+	public void setProduits(ArrayList<Produit> produits) {
+		this.produits = produits;
+	}
+	public void setIcone_progression(ImageView icone_progression) {
+		this.icone_progression = icone_progression;
 	}
 	public Traitement getTraitement() {
 		return traitement;
@@ -91,4 +110,13 @@ public class TacheTraitement extends Commun{
 		
 		return progressionTacheTraitement.getUsedImage();
 	}
+
+	public boolean isSupp() {
+		return supp;
+	}
+
+	public void setSupp(boolean supp) {
+		this.supp = supp;
+	}
+	
 }

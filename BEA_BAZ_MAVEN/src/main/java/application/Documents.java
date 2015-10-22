@@ -48,20 +48,12 @@ import com.mongodb.util.JSON;
 
 public class Documents {
 	
-	private static Client client;
-	private static ObjectId client_id;
-	private static Auteur auteur;
-	private static ObjectId auteur_id;
 	private static Commande commande;
 	private static ObjectId commande_id;
-	private static Etat etat;
-	private static ObjectId etat_id;
 
 	public static void read(File file_, String table_) throws IOException {
 		
         FileInputStream file = new FileInputStream(file_);
-		
-		int nb_colonnes = 0;
 		
 		int index = 0;
 		
@@ -430,10 +422,32 @@ public class Documents {
 	            
 	            
         	}
+        	
         	ot = new OeuvreTraitee();
             ot.setOeuvre(o);
             ot.setCommande(commande_);
             ot.setProgressionOeuvreTraitee(Progression.TODO_);
+            
+            utils.MongoAccess.save("oeuvreTraitee", ot);
+            
+            System.out.println("ot.get_id() (juste apres le save() : "+ ot.get_id());
+            
+            ArrayList<TacheTraitement> traitementsEnCours = new ArrayList<>();
+            
+            for (Traitement t : commande_.getTraitements_attendus()) {
+            	
+            	TacheTraitement tt = new TacheTraitement();
+            	tt.setTraitement(t);
+            	tt.setOeuvreTraiteeId(ot.get_id());
+            	tt.setFait(Progression.TODO_);
+            	tt.setProduits(new ArrayList<Produit>());
+            	tt.setNom(t.getNom());
+            	
+            	traitementsEnCours.add(tt);
+            	
+				
+			}
+			ot.setTraitementsAttendus(traitementsEnCours);
             
             utils.MongoAccess.save("oeuvreTraitee", ot);
             

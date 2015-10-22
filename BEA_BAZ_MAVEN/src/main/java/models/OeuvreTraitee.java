@@ -17,6 +17,9 @@ public class OeuvreTraitee extends Oeuvre {
 	@JsonIgnore
 	private ObservableList<TacheTraitement> traitementsEnCours;
 	
+	private ArrayList<TacheTraitement> traitementsAttendus;
+	private ArrayList<TacheTraitement> traitementssupplementaires;
+	
 	private Commande commande;
 	
 	private Etat etat;
@@ -26,7 +29,7 @@ public class OeuvreTraitee extends Oeuvre {
 	
 	
 	private Progression progressionOeuvreTraitee;
-	
+
 
 	@Override
 	public String getNom(){
@@ -107,6 +110,20 @@ public class OeuvreTraitee extends Oeuvre {
 	}
 	public void setProgressionOeuvreTraitee(Progression progressionOeuvreTraitee) {
 		this.progressionOeuvreTraitee = progressionOeuvreTraitee;
+	}
+	public ArrayList<TacheTraitement> getTraitementsAttendus() {
+		return traitementsAttendus;
+	}
+	public void setTraitementsAttendus(
+			ArrayList<TacheTraitement> traitementsAttendus) {
+		this.traitementsAttendus = traitementsAttendus;
+	}
+	public ArrayList<TacheTraitement> getTraitementssupplementaires() {
+		return traitementssupplementaires;
+	}
+	public void setTraitementssupplementaires(
+			ArrayList<TacheTraitement> traitementssupplementaires) {
+		this.traitementssupplementaires = traitementssupplementaires;
 	}    
     
 }
