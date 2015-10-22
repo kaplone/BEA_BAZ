@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.image.*?>
 <?import javafx.scene.shape.*?>
 <?import javafx.scene.text.*?>
 <?import javafx.geometry.*?>
@@ -17,12 +18,27 @@
                   <Insets bottom="10.0" top="10.0" />
                </VBox.margin>
             </Label>
-            <ListView fx:id="listView_produits" onKeyTyped="#onDetailSelect" onMouseClicked="#onDetailSelect" prefHeight="550.0" prefWidth="288.0">
+            <ListView fx:id="listView_produits" onKeyTyped="#onDetailSelect" onMouseClicked="#onDetailSelect" prefHeight="152.0" prefWidth="288.0">
                <VBox.margin>
                   <Insets bottom="10.0" top="10.0" />
                </VBox.margin>
             </ListView>
             <Button fx:id="nouveau_produit_button" mnemonicParsing="false" onAction="#onAjoutProduit" text="Nouveau produit">
+               <VBox.margin>
+                  <Insets bottom="10.0" top="10.0" />
+               </VBox.margin>
+            </Button>
+            <Label text="Compléments">
+               <VBox.margin>
+                  <Insets bottom="10.0" top="10.0" />
+               </VBox.margin>
+            </Label>
+            <ListView prefHeight="308.0" prefWidth="288.0">
+               <VBox.margin>
+                  <Insets bottom="10.0" top="10.0" />
+               </VBox.margin>
+            </ListView>
+            <Button mnemonicParsing="false" text="Nouveau complément">
                <VBox.margin>
                   <Insets bottom="10.0" top="10.0" />
                </VBox.margin>
@@ -54,7 +70,7 @@
                   </Label>
                </children>
             </Pane>
-            <GridPane prefHeight="400.0" prefWidth="869.0" VBox.vgrow="NEVER">
+            <GridPane prefHeight="460.0" prefWidth="691.0" VBox.vgrow="NEVER">
               <columnConstraints>
                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="429.0" minWidth="10.0" prefWidth="147.0" />
                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="764.0" minWidth="10.0" prefWidth="544.0" />
@@ -67,7 +83,7 @@
                 <RowConstraints maxHeight="359.0" minHeight="30.0" prefHeight="296.0" vgrow="SOMETIMES" />
               </rowConstraints>
                <VBox.margin>
-                  <Insets left="10.0" right="10.0" top="50.0" />
+                  <Insets left="10.0" right="10.0" top="80.0" />
                </VBox.margin>
                <children>
                   <Label text="Nom affiché : " GridPane.valignment="CENTER" GridPane.vgrow="NEVER" />
@@ -89,32 +105,45 @@
                   <Label fx:id="commande_label" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                </children>
             </GridPane>
-            <HBox prefHeight="55.0" prefWidth="711.0">
+            <HBox alignment="CENTER_LEFT" prefHeight="55.0" prefWidth="711.0">
                <children>
-                  <Label alignment="CENTER_RIGHT" prefHeight="39.0" prefWidth="103.0" text="Fait : ">
+                  <RadioButton fx:id="fait_radio" mnemonicParsing="false" onAction="#onFait_radio" prefHeight="37.0" prefWidth="53.0" text="Fait">
                      <HBox.margin>
-                        <Insets right="20.0" />
-                     </HBox.margin>
-                  </Label>
-                  <RadioButton fx:id="fait_radio" mnemonicParsing="false" onAction="#onFait_radio" prefHeight="37.0" prefWidth="105.0" text="Fait">
-                     <HBox.margin>
-                        <Insets left="10.0" right="10.0" />
+                        <Insets left="50.0" />
                      </HBox.margin>
                      <toggleGroup>
                         <ToggleGroup fx:id="fait" />
                      </toggleGroup>
                   </RadioButton>
-                  <RadioButton fx:id="todo_radio" mnemonicParsing="false" onAction="#onTodo_radio" prefHeight="37.0" prefWidth="105.0" selected="true" text="Todo" toggleGroup="$fait">
+                  <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../../resources/images/coche_ok.png" />
+                     </image>
+                  </ImageView>
+                  <RadioButton fx:id="todo_radio" mnemonicParsing="false" onAction="#onTodo_radio" prefHeight="37.0" prefWidth="74.0" selected="true" text="A faire" toggleGroup="$fait">
                      <HBox.margin>
-                        <Insets left="10.0" right="10.0" />
+                        <Insets left="100.0" />
                      </HBox.margin>
                   </RadioButton>
-                  <RadioButton fx:id="so_radio" mnemonicParsing="false" onAction="#onSo_radio" prefHeight="37.0" prefWidth="105.0" text="Sans objet" toggleGroup="$fait">
+                  <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../../resources/images/coche_todo.png" />
+                     </image>
+                  </ImageView>
+                  <RadioButton fx:id="so_radio" mnemonicParsing="false" onAction="#onSo_radio" prefHeight="37.0" prefWidth="97.0" text="Sans objet" toggleGroup="$fait">
                      <HBox.margin>
-                        <Insets left="10.0" right="10.0" />
+                        <Insets left="100.0" />
                      </HBox.margin>
                   </RadioButton>
+                  <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../../resources/images/coche_null.png" />
+                     </image>
+                  </ImageView>
                </children>
+               <VBox.margin>
+                  <Insets top="30.0" />
+               </VBox.margin>
             </HBox>
             <HBox fx:id="hbox" alignment="TOP_CENTER" prefHeight="50.0" prefWidth="200.0">
                <VBox.margin>
@@ -189,21 +218,17 @@
             <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
          </BorderPane.margin>
          <children>
-            <Label text="Compléments">
+            <Label text="Traitements associés">
                <VBox.margin>
                   <Insets bottom="10.0" top="10.0" />
                </VBox.margin>
             </Label>
-            <ListView prefHeight="604.0" prefWidth="216.0">
-               <VBox.margin>
-                  <Insets bottom="10.0" top="10.0" />
-               </VBox.margin>
-            </ListView>
-            <Button mnemonicParsing="false" text="Nouveau complément">
-               <VBox.margin>
-                  <Insets bottom="10.0" top="10.0" />
-               </VBox.margin>
-            </Button>
+            <TableView fx:id="traitements_associes_tableView" prefHeight="614.0" prefWidth="216.0">
+              <columns>
+                <TableColumn fx:id="traitements_associes_tableColumn" prefWidth="154.0" text="Traitement" />
+                <TableColumn fx:id="traitements_associes_faits_tableColumn" minWidth="6.0" prefWidth="61.0" text="Fait" />
+              </columns>
+            </TableView>
          </children>
       </VBox>
    </left>

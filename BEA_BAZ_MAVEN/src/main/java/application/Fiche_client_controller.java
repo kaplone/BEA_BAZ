@@ -363,24 +363,25 @@ public class Fiche_client_controller  implements Initializable{
 		listView_client.getSelectionModel().select(indexClient);
 		
 		
-		if (client != null){
-			
-			commandeCursor = MongoAccess.request("commande", client).as(Commande.class);
-			
-			while (commandeCursor.hasNext()){
-				Commande enplus = commandeCursor.next();
-				liste_commandes.add(enplus);
-			}
-			
-			listView_commandes.setItems(liste_commandes);
-			
-			clientSelectionne = client;
-
-			affichageInfos();
-			
+		if (client == null){
+			listView_client.getSelectionModel().select(0);
+			client = listView_client.getSelectionModel().getSelectedItem();
 		}
         
+		commandeCursor = MongoAccess.request("commande", client).as(Commande.class);
 		
+		while (commandeCursor.hasNext()){
+			Commande enplus = commandeCursor.next();
+			liste_commandes.add(enplus);
+		}
+		
+		listView_commandes.setItems(liste_commandes);
+		
+		clientSelectionne = client;
+		
+		Main_BEA_BAZ.setClient(clientSelectionne);
+
+		affichageInfos();
 		
 	
 	}

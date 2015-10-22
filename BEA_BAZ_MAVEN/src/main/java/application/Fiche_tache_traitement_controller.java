@@ -3,11 +3,13 @@ package application;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 import org.jongo.MongoCursor;
 
 import enums.Progression;
+import fr.opensagres.xdocreport.template.velocity.internal.Foreach;
 import utils.MongoAccess;
 import models.Commande;
 import models.OeuvreTraitee;
@@ -26,8 +28,12 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.RadioButton;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -39,9 +45,13 @@ public class Fiche_tache_traitement_controller  implements Initializable{
 	@FXML
 	private ObservableList<Produit> liste_details;
 	@FXML
-	private TextField file_path_textField;
+	private TableView<TacheTraitement> traitements_associes_tableView;
 	@FXML
-	private ListView<TacheTraitement> listView_traitements;
+	private TableColumn<TacheTraitement, String> traitements_associes_tableColumn;
+	@FXML
+	private TableColumn<TacheTraitement, ImageView> traitements_associes_faits_tableColumn;
+	@FXML
+	private TextField file_path_textField;
 	@FXML
 	private ListView<Produit> listView_produits;
 	@FXML
@@ -94,6 +104,8 @@ public class Fiche_tache_traitement_controller  implements Initializable{
 	TacheTraitement traitementSelectionne;
 	Produit detailSelectionne;
 	
+	ArrayList<TacheTraitement> liste_tachesTraitements;
+	
 	Progression progres;
 	
 	Stage currentStage;
@@ -142,7 +154,7 @@ public class Fiche_tache_traitement_controller  implements Initializable{
 	@FXML
 	public void onTraitementSelect(){
 		
-		traitementSelectionne = listView_traitements.getSelectionModel().getSelectedItem();
+		traitementSelectionne = traitements_associes_tableView.getSelectionModel().getSelectedItem();
 		Main_BEA_BAZ.setTacheTraitementEdited(traitementSelectionne);
 		affichageInfos();	
 	}
@@ -247,7 +259,7 @@ public class Fiche_tache_traitement_controller  implements Initializable{
     	remarques_traitement_textArea.setPromptText("");
     	nouveau_traitement.setText("Nouveau traitement");
     	rafraichirAffichage();
-    	listView_traitements.getSelectionModel().select(traitementSelectionne);
+    	traitements_associes_tableView.getSelectionModel().select(traitementSelectionne);
     	affichageInfos();
     	
     }
@@ -294,7 +306,7 @@ public class Fiche_tache_traitement_controller  implements Initializable{
 		remarques_traitement_textArea.setEditable(false);
 		nouveau_traitement.setVisible(true);
 		rafraichirAffichage();
-		listView_traitements.getSelectionModel().select(traitementSelectionne);
+		traitements_associes_tableView.getSelectionModel().select(traitementSelectionne);
     	affichageInfos();
     	
     	edit = false;
@@ -370,7 +382,7 @@ public class Fiche_tache_traitement_controller  implements Initializable{
     			TacheTraitement enplus = traitementCursor.next();
     			liste_traitements.add(enplus);
     		}	
-    		listView_traitements.setItems(liste_traitements);	
+    		traitements_associes_tableView.setItems(liste_traitements);	
     		
     		rafraichirAffichage();
     	}
@@ -408,19 +420,63 @@ public class Fiche_tache_traitement_controller  implements Initializable{
     	
     	traitementSelectionne.setFait_(Progression.FAIT_);
     	MongoAccess.update("tacheTraitement", traitementSelectionne);
+    	afficherTraitementsAssocies();
+    	checkIfCompleted();
     }
     public void onTodo_radio(){
     	
     	traitementSelectionne.setFait_(Progression.TODO_);
     	MongoAccess.update("tacheTraitement", traitementSelectionne);
+    	afficherTraitementsAssocies();
+    	checkIfCompleted();
     }
     public void onSo_radio(){
     	
     	traitementSelectionne.setFait_(Progression.NULL_);
     	MongoAccess.update("tacheTraitement", traitementSelectionne);
+    	afficherTraitementsAssocies();
+    	checkIfCompleted();
+    }
+    
+    public void checkIfCompleted(){
+
+    	progres = Progression.FAIT_;
+    	
+    	for (TacheTraitement ttt : traitements_associes_tableView.getItems()){
+    		
+    		System.out.println("ttt : " + ttt.getFait_());
+    		
+    		if (ttt.getFait_().equals(Progression.TODO_)){
+    			progres = Progression.TODO_;
+    			break;
+    		}
+    		
+    	}
+    	
+    	System.out.println("progres : " + progres);
+
+    	ot.setProgressionOeuvreTraitee(progres);
+    	MongoAccess.update("oeuvreTraitee", ot);
     }
 
+    public void afficherTraitementsAssocies(){
     	
+    	liste_tachesTraitements.clear();
+    	
+        traitementCursor = MongoAccess.request("tacheTraitement", "oeuvreTraiteeId", ot.get_id()).as(TacheTraitement.class);
+		
+		while (traitementCursor.hasNext()){
+			liste_tachesTraitements.add(traitementCursor.next());
+		}
+		
+		traitements_associes_tableColumn.setCellValueFactory(new PropertyValueFactory<TacheTraitement, String>("nom"));
+		traitements_associes_faits_tableColumn.setCellValueFactory(new PropertyValueFactory<TacheTraitement, ImageView>("icone_progression"));
+		//oeuvres_fait_colonne.setCellValueFactory(new PropertyValueFactory<OeuvreTraitee, String>("fait"));
+		
+		ObservableList<TacheTraitement> obs_tt = FXCollections.observableArrayList(liste_tachesTraitements);
+
+		traitements_associes_tableView.setItems(obs_tt);
+    }
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -451,7 +507,7 @@ public class Fiche_tache_traitement_controller  implements Initializable{
                      break;
 		}
 		
-		
+		liste_tachesTraitements = new ArrayList<>();
 		
 		ot = MongoAccess.request("oeuvreTraitee", traitementSelectionne.getOeuvreTraiteeId()).as(OeuvreTraitee.class).next();
 		commande = ot.getCommande();
@@ -468,15 +524,11 @@ public class Fiche_tache_traitement_controller  implements Initializable{
 		
 		
 		
-//		traitementCursor = MongoAccess.request("traitement").as(Traitement.class);
-//		
-//		while (traitementCursor.hasNext()){
-//			liste_traitements.add(traitementCursor.next());
-//		}
-//		
-//		listView_traitements.setItems(liste_traitements);
-//		
-//		
+		traitementCursor = MongoAccess.request("tacheTraitement").as(TacheTraitement.class);
+		
+		afficherTraitementsAssocies();
+		
+		
 //		if (traitementSelectionne != null){
 //			
 //			detailCursor = MongoAccess.request("produit", traitementSelectionne).as(Produit.class);

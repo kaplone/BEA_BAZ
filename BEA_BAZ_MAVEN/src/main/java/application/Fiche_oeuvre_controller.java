@@ -210,7 +210,7 @@ public class Fiche_oeuvre_controller  implements Initializable{
 	
 	public void reloadOeuvre(){
         
-		oeuvreSelectionne = ((OeuvreTraitee) tableOeuvre.getSelectionModel().getSelectedItem()).getOeuvre();
+		oeuvreTraiteeSelectionne = (OeuvreTraitee) tableOeuvre.getSelectionModel().getSelectedItem();
 		
 		Main_BEA_BAZ.setOeuvre(oeuvreTraiteeSelectionne);
 		Main_BEA_BAZ.setOeuvre_index(tableOeuvre.getSelectionModel().getSelectedIndex());
@@ -237,6 +237,9 @@ public class Fiche_oeuvre_controller  implements Initializable{
 	}
 	
 	public void afficherTraitements(){
+		
+		traitementsSupplementaires.clear();
+		traitementsAttendus.clear();
 		
         traitementCursor = MongoAccess.request("tacheTraitement", "oeuvreTraiteeId", oeuvreTraiteeSelectionne.get_id()).as(TacheTraitement.class);
 		
@@ -578,10 +581,10 @@ public class Fiche_oeuvre_controller  implements Initializable{
 		dimensions_textField.setEditable(false);
 		inscriptions_textArea.setEditable(false);
 		observations_textArea.setEditable(false);
-		
-		System.out.println(oeuvreSelectionne);
-		System.out.println(oeuvreSelectionne.getCote_archives_6s());
-		System.out.println(oeuvreSelectionne.getTitre_de_l_oeuvre());
+//		
+//		System.out.println(oeuvreSelectionne);
+//		System.out.println(oeuvreSelectionne.getCote_archives_6s());
+//		System.out.println(oeuvreSelectionne.getTitre_de_l_oeuvre());
 
 		numero_archive_6s_textField.setText(oeuvreSelectionne.getCote_archives_6s());
 		titre_textField.setText(oeuvreSelectionne.getTitre_de_l_oeuvre());
@@ -608,12 +611,9 @@ public class Fiche_oeuvre_controller  implements Initializable{
 
 		
 		currentStage = Main_BEA_BAZ.getStage();
-		
-		System.out.println("oeuvreTraiteeSelectionne.get_id() : " + oeuvreTraiteeSelectionne.get_id());
 
 		afficherOeuvres();
 		reloadOeuvre();
 
 	}
-
 }

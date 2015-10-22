@@ -16,9 +16,6 @@ public class OeuvreTraitee extends Oeuvre {
 	
 	private Oeuvre oeuvre;
 	
-	@JsonIgnore
-	private ObservableList<TacheTraitement> traitementsEnCours;
-	
 	private ArrayList<TacheTraitement> traitementsAttendus;
 	private ArrayList<TacheTraitement> traitementsSupplementaires;
 	
@@ -69,13 +66,7 @@ public class OeuvreTraitee extends Oeuvre {
 	public void setOeuvre(Oeuvre oeuvre) {
 		this.oeuvre = oeuvre;
 	}
-	public ObservableList<TacheTraitement> getTraitementsEnCours() {
-		return traitementsEnCours;
-	}
-	public void setTraitementsEnCours(
-			ObservableList<TacheTraitement> traitementsEnCours) {
-		this.traitementsEnCours = traitementsEnCours;
-	}
+
 	public Commande getCommande() {
 		return commande;
 	}
@@ -103,6 +94,7 @@ public class OeuvreTraitee extends Oeuvre {
 	public Progression getProgressionOeuvreTraitee() {
 		return progressionOeuvreTraitee;
 	}
+	
 	public void setProgressionOeuvreTraitee(Progression progressionOeuvreTraitee) {
 		this.progressionOeuvreTraitee = progressionOeuvreTraitee;
 	}
@@ -130,8 +122,5 @@ public class OeuvreTraitee extends Oeuvre {
         usedImage.setImage(image);
 		
 		return usedImage;
-	} 
-	
-	
-    
+	}    
 }
