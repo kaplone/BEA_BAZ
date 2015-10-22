@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.Pane?>
 
-<BorderPane prefHeight="722.0" prefWidth="1275.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.Fiche_traitement_controller">
+<BorderPane prefHeight="722.0" prefWidth="1275.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.Fiche_tache_traitement_controller">
    <right>
       <VBox alignment="TOP_CENTER" prefHeight="649.0" prefWidth="288.0" BorderPane.alignment="CENTER">
          <children>
@@ -56,12 +56,14 @@
             </Pane>
             <GridPane prefHeight="400.0" prefWidth="869.0" VBox.vgrow="NEVER">
               <columnConstraints>
-                <ColumnConstraints hgrow="SOMETIMES" maxWidth="429.0" minWidth="10.0" prefWidth="100.0" />
-                <ColumnConstraints hgrow="SOMETIMES" maxWidth="764.0" minWidth="10.0" prefWidth="589.0" />
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="429.0" minWidth="10.0" prefWidth="147.0" />
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="764.0" minWidth="10.0" prefWidth="544.0" />
               </columnConstraints>
               <rowConstraints>
                 <RowConstraints maxHeight="30.0" minHeight="30.0" prefHeight="30.0" valignment="CENTER" vgrow="NEVER" />
-                  <RowConstraints maxHeight="179.0" minHeight="7.0" prefHeight="41.0" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="30.0" minHeight="30.0" prefHeight="30.0" valignment="CENTER" vgrow="NEVER" />
+                  <RowConstraints maxHeight="30.0" minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="30.0" minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
                 <RowConstraints maxHeight="359.0" minHeight="30.0" prefHeight="296.0" vgrow="SOMETIMES" />
               </rowConstraints>
                <VBox.margin>
@@ -69,18 +71,22 @@
                </VBox.margin>
                <children>
                   <Label text="Nom affiché : " GridPane.valignment="CENTER" GridPane.vgrow="NEVER" />
-                  <Label text="Remarques : " GridPane.halignment="LEFT" GridPane.rowIndex="2" GridPane.valignment="TOP">
+                  <Label text="Remarques : " GridPane.halignment="LEFT" GridPane.rowIndex="4" GridPane.valignment="TOP">
                      <GridPane.margin>
                         <Insets bottom="10.0" right="10.0" top="10.0" />
                      </GridPane.margin>
                   </Label>
-                  <TextArea fx:id="remarques_traitement_textArea" prefHeight="145.0" prefWidth="559.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                  <TextArea fx:id="remarques_traitement_textArea" prefHeight="145.0" prefWidth="559.0" GridPane.columnIndex="1" GridPane.rowIndex="4">
                      <GridPane.margin>
                         <Insets top="10.0" />
                      </GridPane.margin></TextArea>
-                  <TextField fx:id="nom_traitement_textField" maxHeight="25.0" minHeight="25.0" prefHeight="25.0" GridPane.columnIndex="1" GridPane.rowIndex="0" GridPane.valignment="CENTER" GridPane.vgrow="NEVER" />
-                  <Label text="Nom complet : " GridPane.rowIndex="1" />
-                  <TextField fx:id="nom_complet_traitement_textField" maxHeight="25.0" minHeight="25.0" prefHeight="25.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                  <TextField fx:id="nom_traitement_textField" maxHeight="25.0" minHeight="25.0" prefHeight="25.0" GridPane.columnIndex="1" GridPane.valignment="CENTER" GridPane.vgrow="NEVER" />
+                  <Label text="Oeuvre traitée : " GridPane.rowIndex="1" />
+                  <Label text="Traitement de base : " GridPane.rowIndex="2" />
+                  <Label text="Commande : " GridPane.rowIndex="3" />
+                  <Label fx:id="ot_label" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                  <Label fx:id="t_label" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                  <Label fx:id="commande_label" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                </children>
             </GridPane>
             <HBox prefHeight="55.0" prefWidth="711.0">
@@ -90,7 +96,7 @@
                         <Insets right="20.0" />
                      </HBox.margin>
                   </Label>
-                  <RadioButton mnemonicParsing="false" prefHeight="37.0" prefWidth="105.0" text="Fait">
+                  <RadioButton fx:id="fait_radio" mnemonicParsing="false" onAction="#onFait_radio" prefHeight="37.0" prefWidth="105.0" text="Fait">
                      <HBox.margin>
                         <Insets left="10.0" right="10.0" />
                      </HBox.margin>
@@ -98,12 +104,12 @@
                         <ToggleGroup fx:id="fait" />
                      </toggleGroup>
                   </RadioButton>
-                  <RadioButton mnemonicParsing="false" prefHeight="37.0" prefWidth="105.0" selected="true" text="Todo" toggleGroup="$fait">
+                  <RadioButton fx:id="todo_radio" mnemonicParsing="false" onAction="#onTodo_radio" prefHeight="37.0" prefWidth="105.0" selected="true" text="Todo" toggleGroup="$fait">
                      <HBox.margin>
                         <Insets left="10.0" right="10.0" />
                      </HBox.margin>
                   </RadioButton>
-                  <RadioButton mnemonicParsing="false" prefHeight="37.0" prefWidth="105.0" text="Sans objet" toggleGroup="$fait">
+                  <RadioButton fx:id="so_radio" mnemonicParsing="false" onAction="#onSo_radio" prefHeight="37.0" prefWidth="105.0" text="Sans objet" toggleGroup="$fait">
                      <HBox.margin>
                         <Insets left="10.0" right="10.0" />
                      </HBox.margin>
@@ -138,12 +144,12 @@
                   <Insets right="10.0" />
                </HBox.margin>
             </Button>
-            <Button fx:id="versCommandeButton" mnemonicParsing="false" text="--&gt; Commande">
+            <Button fx:id="versCommandeButton" mnemonicParsing="false" onAction="#onVersCommandeButton" text="--&gt; Commande">
                <HBox.margin>
                   <Insets right="10.0" />
                </HBox.margin>
             </Button>
-            <Button fx:id="versOeuvreButton" mnemonicParsing="false" text="--&gt; Oeuvre">
+            <Button fx:id="versOeuvreButton" mnemonicParsing="false" onAction="#onVersOeuvreButton" text="--&gt; Oeuvre">
                <HBox.margin>
                   <Insets right="10.0" />
                </HBox.margin>

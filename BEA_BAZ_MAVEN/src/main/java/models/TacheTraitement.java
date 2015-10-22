@@ -6,6 +6,7 @@ import java.util.Date;
 import org.bson.types.ObjectId;
 
 import utils.MongoAccess;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -17,7 +18,11 @@ import enums.Progression;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class TacheTraitement extends Commun{
 	
-	private Progression fait;
+	private Progression fait_;
+	
+//	@JsonIgnore
+//	private ImageView icone_progression;
+	
 	private Date date;
 	private ObjectId oeuvreTraiteeId;
 	private ObjectId commandeId;
@@ -25,7 +30,6 @@ public class TacheTraitement extends Commun{
 	private ArrayList<Produit> produits;
 	private Traitement traitement;
 	private Etat etat;
-    private Progression progressionTacheTraitement;
     
     private boolean supp; 
     
@@ -39,16 +43,10 @@ public class TacheTraitement extends Commun{
 		MongoAccess.save("tacheTraitement", c);
 		
 	}
-	
-	@JsonIgnore
-	private ImageView icone_progression;
-	
-    
-	public Progression getFait() {
-		return fait;
-	}
-	public void setFait(Progression fait) {
-		this.fait = fait;
+
+	public String getFait() {
+		return fait_.toString();
+		
 	}
 	public Date getDate() {
 		return date;
@@ -89,9 +87,6 @@ public class TacheTraitement extends Commun{
 	public void setProduits(ArrayList<Produit> produits) {
 		this.produits = produits;
 	}
-	public void setIcone_progression(ImageView icone_progression) {
-		this.icone_progression = icone_progression;
-	}
 	public Traitement getTraitement() {
 		return traitement;
 	}
@@ -99,16 +94,17 @@ public class TacheTraitement extends Commun{
 		this.traitement = traitement;
 	}
 	
-	public Progression getProgressionTacheTraitement() {
-		return progressionTacheTraitement;
-	}
-	public void setProgressionTacheTraitement(Progression progressionTacheTraitement) {
-		this.progressionTacheTraitement = progressionTacheTraitement;
-	}
 	public ImageView getIcone_progression() {
-		System.out.println(progressionTacheTraitement);
 		
-		return progressionTacheTraitement.getUsedImage();
+		
+        Image image = new Image(fait_.getUsedImage().toURI().toString());
+        
+        ImageView usedImage = new ImageView();
+        usedImage.setFitHeight(15);
+        usedImage.setPreserveRatio(true);
+        usedImage.setImage(image);
+		
+		return usedImage;
 	}
 
 	public boolean isSupp() {
@@ -117,6 +113,18 @@ public class TacheTraitement extends Commun{
 
 	public void setSupp(boolean supp) {
 		this.supp = supp;
+	}
+	
+	public String getNom_complet(){
+		
+		return traitement.getNom_complet();
+	}
+	
+	public Progression getFait_(){
+		return fait_;
+	}
+	public void setFait_(Progression p){
+		fait_ = p;
 	}
 	
 }

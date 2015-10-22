@@ -7,15 +7,17 @@ import javafx.scene.image.ImageView;
 
 public enum Progression {
 	
-	FAIT_ ("/home/kaplone/git/BEA_BAZ/BEA_BAZ_MAVEN/src/main/resources/images/coche_ok.png"),
-	TODO_ ("/home/kaplone/git/BEA_BAZ/BEA_BAZ_MAVEN/src/main/resources/images/coche_todo.png"),
-	NULL_ ("/home/kaplone/git/BEA_BAZ/BEA_BAZ_MAVEN/src/main/resources/images/coche_null.png");
+	FAIT_ ("src/main/resources/images/coche_ok.png"),
+	TODO_ ("src/main/resources/images/coche_todo.png"),
+	//TODO_ ("/home/kaplone/git/BEA_BAZ/BEA_BAZ_MAVEN/src/main/resources/images/coche_todo.png"),
+	NULL_ ("src/main/resources/images/coche_null.png");
 	
     private ImageView usedImage;
+    private File f;
 	
 	Progression(String i) {
 		
-		File f = new File(i);
+		f = new File(i);
         Image image = new Image(f.toURI().toString());
         
         usedImage = new ImageView();
@@ -24,9 +26,10 @@ public enum Progression {
         usedImage.setImage(image);
 	}
 	
-	public ImageView getUsedImage() {
+	public File getUsedImage() {
 
-		return usedImage;
+		//return usedImage;
+		return f;
 	}
 
 }

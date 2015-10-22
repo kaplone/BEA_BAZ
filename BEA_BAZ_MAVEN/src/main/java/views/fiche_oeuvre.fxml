@@ -19,7 +19,7 @@
                         <Insets bottom="10.0" top="10.0" />
                      </padding>
                   </Label>
-                  <TableView fx:id="traitements_attendus_tableView" prefHeight="200.0" prefWidth="200.0">
+                  <TableView fx:id="traitements_attendus_tableView" onKeyReleased="#onTraitementAttenduSelect" onMouseClicked="#onTraitementAttenduSelect" prefHeight="200.0" prefWidth="200.0">
                     <columns>
                       <TableColumn fx:id="traitements_attendus_tableColumn" prefWidth="239.0" text="Traitement" />
                       <TableColumn fx:id="faits_attendus_tableColumn" prefWidth="46.0" text="Fait" />
@@ -32,7 +32,7 @@
                      <padding>
                         <Insets bottom="10.0" top="10.0" />
                      </padding></Label>
-                  <TableView fx:id="traitements_supplementaires_tableView" prefHeight="200.0" prefWidth="200.0">
+                  <TableView fx:id="traitements_supplementaires_tableView" onKeyReleased="#onTraitementSuppSelect" onMouseClicked="#onTraitementSuppSelect" prefHeight="200.0" prefWidth="200.0">
                     <columns>
                       <TableColumn fx:id="traitements_supplementaires_tableColumn" prefWidth="238.0" text="Traitements" />
                       <TableColumn fx:id="traitements_supp_faits_tableColumn" prefWidth="49.0" text="Fait" />

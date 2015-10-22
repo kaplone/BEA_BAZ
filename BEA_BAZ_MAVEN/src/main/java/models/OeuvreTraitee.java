@@ -9,6 +9,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import enums.Progression;
 import utils.MongoAccess;
 import javafx.collections.ObservableList;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 
 public class OeuvreTraitee extends Oeuvre {
 	
@@ -18,7 +20,7 @@ public class OeuvreTraitee extends Oeuvre {
 	private ObservableList<TacheTraitement> traitementsEnCours;
 	
 	private ArrayList<TacheTraitement> traitementsAttendus;
-	private ArrayList<TacheTraitement> traitementssupplementaires;
+	private ArrayList<TacheTraitement> traitementsSupplementaires;
 	
 	private Commande commande;
 	
@@ -29,6 +31,9 @@ public class OeuvreTraitee extends Oeuvre {
 	
 	
 	private Progression progressionOeuvreTraitee;
+//	@JsonIgnore
+//	private ImageView icone_progression;
+	
 
 
 	@Override
@@ -47,16 +52,6 @@ public class OeuvreTraitee extends Oeuvre {
 	public String toString(){
 		return oeuvre.getCote_archives_6s();
 	}
-//	public String getDimensions(){
-//		return oeuvre.getDimensions();
-//	}
-//	public String getInscriptions_au_verso(){
-//		return oeuvre.getInscriptions_au_verso();
-//	}
-//	public String get_observations(){
-//		return oeuvre.get_observations();
-//	}
-	
 	
 	public static void update(OeuvreTraitee c){
 
@@ -118,12 +113,25 @@ public class OeuvreTraitee extends Oeuvre {
 			ArrayList<TacheTraitement> traitementsAttendus) {
 		this.traitementsAttendus = traitementsAttendus;
 	}
-	public ArrayList<TacheTraitement> getTraitementssupplementaires() {
-		return traitementssupplementaires;
+	public ArrayList<TacheTraitement> getTraitementsSupplementaires() {
+		return traitementsSupplementaires;
 	}
-	public void setTraitementssupplementaires(
+	public void setTraitementsSupplementaires(
 			ArrayList<TacheTraitement> traitementssupplementaires) {
-		this.traitementssupplementaires = traitementssupplementaires;
-	}    
+		this.traitementsSupplementaires = traitementssupplementaires;
+	}
+	public ImageView getIcone_progression() {
+		
+        Image image = new Image(progressionOeuvreTraitee.getUsedImage().toURI().toString());
+        
+        ImageView usedImage = new ImageView();
+        usedImage.setFitHeight(15);
+        usedImage.setPreserveRatio(true);
+        usedImage.setImage(image);
+		
+		return usedImage;
+	} 
+	
+	
     
 }

@@ -1,7 +1,5 @@
 package application;
 
-import java.io.File;
-import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,11 +16,8 @@ import models.Oeuvre;
 import models.OeuvreTraitee;
 import models.Produit;
 import models.TacheTraitement;
-import models.Traitement;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
@@ -38,10 +33,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
-import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 public class Fiche_oeuvre_controller  implements Initializable{
@@ -51,7 +44,8 @@ public class Fiche_oeuvre_controller  implements Initializable{
 	@FXML
 	private TableColumn<TacheTraitement, String> traitements_attendus_tableColumn;
 	@FXML
-	private TableColumn<TacheTraitement, ImageView> traitements_faits_tableColumn;
+	private TableColumn<TacheTraitement, ImageView> faits_attendus_tableColumn;
+	//private TableColumn<TacheTraitement, String> faits_attendus_tableColumn;
 	
 	@FXML
 	private TableView<TacheTraitement> traitements_supplementaires_tableView;
@@ -59,6 +53,7 @@ public class Fiche_oeuvre_controller  implements Initializable{
 	private TableColumn<TacheTraitement, String> traitements_supplementaires_tableColumn;
 	@FXML
 	private TableColumn<TacheTraitement, ImageView> traitements_supp_faits_tableColumn;
+	//private TableColumn<TacheTraitement, String> traitements_supp_faits_tableColumn;
 	
 	@FXML
 	private ListView<Produit> listView_produits;
@@ -116,24 +111,21 @@ public class Fiche_oeuvre_controller  implements Initializable{
 	private TableColumn<OeuvreTraitee, String> oeuvres_nom_colonne;
 	@FXML
 	private TableColumn<OeuvreTraitee, ImageView> oeuvres_fait_colonne;
-	
-	private List<OeuvreTraitee> oeuvres;
+	//private TableColumn<OeuvreTraitee, String> oeuvres_fait_colonne;
+
 	private List<OeuvreTraitee> oeuvresTraitees;
 	
 	private boolean edit = false;
-	
-	MongoCursor<OeuvreTraitee> oeuvresCursor;
-	Oeuvre oeuvreSelectionne;
-	OeuvreTraitee oeuvreTraiteeSelectionne;
-	ObservableList<OeuvreTraitee> liste_oeuvres;
-	MongoCursor<TacheTraitement> traitementCursor ;
-	ObservableList<TacheTraitement> traitementsAttendus;
-	ObservableList<TacheTraitement> traitementsSupplementaires;
+	private Oeuvre oeuvreSelectionne;
+	private OeuvreTraitee oeuvreTraiteeSelectionne;
+	private MongoCursor<TacheTraitement> traitementCursor ;
+	private ObservableList<TacheTraitement> traitementsAttendus;
+	private ObservableList<TacheTraitement> traitementsSupplementaires;
 	private ObservableList<Auteur> observableAuteurs;
-	TacheTraitement traitementSelectionne;
-	Commande commandeSelectionne;
+	private TacheTraitement traitementSelectionne;
+	private Commande commandeSelectionne;
 	
-	Stage currentStage;
+	private Stage currentStage;
 	private Auteur auteur;
 	
 	boolean directSelect = false;
@@ -220,14 +212,8 @@ public class Fiche_oeuvre_controller  implements Initializable{
         
 		oeuvreSelectionne = ((OeuvreTraitee) tableOeuvre.getSelectionModel().getSelectedItem()).getOeuvre();
 		
-		System.out.println(oeuvreSelectionne);
-		System.out.println(oeuvreSelectionne.getCote_archives_6s());
-		System.out.println(oeuvreSelectionne.getTitre_de_l_oeuvre());
-		
 		Main_BEA_BAZ.setOeuvre(oeuvreTraiteeSelectionne);
 		Main_BEA_BAZ.setOeuvre_index(tableOeuvre.getSelectionModel().getSelectedIndex());
-		
-		System.out.println("on reload :  " + tableOeuvre.getSelectionModel().getSelectedIndex());
 		
 		if (directSelect){
 		   tableOeuvre.scrollTo(Main_BEA_BAZ.getOeuvre_index() -9);
@@ -238,18 +224,46 @@ public class Fiche_oeuvre_controller  implements Initializable{
 			tableOeuvre.scrollTo(Main_BEA_BAZ.getOeuvre_index());
 		}
 		
-		
-
 		numero_archive_6s_textField.setText(oeuvreSelectionne.getCote_archives_6s());
 		titre_textField.setText(oeuvreSelectionne.getTitre_de_l_oeuvre());
-//		MongoCursor<Auteur> auteurCursor = MongoAccess.request("auteur", oeuvreSelectionne.getAuteur()).as(Auteur.class);
-//		Auteur auteur = auteurCursor.next();
+
 		date_oeuvre_textField.setText(oeuvreSelectionne.getDate());
 		dimensions_textField.setText(oeuvreSelectionne.getDimensions());
 		inscriptions_textArea.setText(oeuvreSelectionne.getInscriptions_au_verso());
 		observations_textArea.setText(oeuvreSelectionne.get_observations());
 		
 		afficherAuteurs();
+		afficherTraitements();
+	}
+	
+	public void afficherTraitements(){
+		
+        traitementCursor = MongoAccess.request("tacheTraitement", "oeuvreTraiteeId", oeuvreTraiteeSelectionne.get_id()).as(TacheTraitement.class);
+		
+		while (traitementCursor.hasNext()){
+			
+			TacheTraitement tt = traitementCursor.next();
+			
+			if(tt.isSupp()){
+				traitementsSupplementaires.add(tt);
+			}
+			else {
+				traitementsAttendus.add(tt);
+			}
+			
+		}
+		
+		traitements_attendus_tableColumn.setCellValueFactory(new PropertyValueFactory<TacheTraitement, String>("nom"));
+		faits_attendus_tableColumn.setCellValueFactory(new PropertyValueFactory<TacheTraitement, ImageView>("icone_progression"));
+		//faits_attendus_tableColumn.setCellValueFactory(new PropertyValueFactory<TacheTraitement, String>("fait"));
+		
+		traitements_supplementaires_tableColumn.setCellValueFactory(new PropertyValueFactory<TacheTraitement, String>("nom"));
+		//traitements_supp_faits_tableColumn.setCellValueFactory(new PropertyValueFactory<TacheTraitement, String>("fait"));
+		traitements_supp_faits_tableColumn.setCellValueFactory(new PropertyValueFactory<TacheTraitement, ImageView>("icone_progression"));
+
+		traitements_attendus_tableView.setItems(traitementsAttendus);
+		
+		traitements_supplementaires_tableView.setItems(traitementsSupplementaires);
 	}
 	
     public void afficherAuteurs(){
@@ -267,7 +281,6 @@ public class Fiche_oeuvre_controller  implements Initializable{
 			observableAuteurs.addAll(auteur_);
 			if (auteur != null && auteur.getNom().equals(auteur_.getNom())){
 				index = i;
-				System.out.println("i : " + i);
 			}
 			i++;
 		}
@@ -516,6 +529,8 @@ public class Fiche_oeuvre_controller  implements Initializable{
 		}
 		
 		oeuvres_nom_colonne.setCellValueFactory(new PropertyValueFactory<OeuvreTraitee, String>("nom"));
+		oeuvres_fait_colonne.setCellValueFactory(new PropertyValueFactory<OeuvreTraitee, ImageView>("icone_progression"));
+		//oeuvres_fait_colonne.setCellValueFactory(new PropertyValueFactory<OeuvreTraitee, String>("fait"));
 		
 		ObservableList<OeuvreTraitee> obs_oeuvres = FXCollections.observableArrayList(oeuvresTraitees);
 
@@ -525,6 +540,23 @@ public class Fiche_oeuvre_controller  implements Initializable{
 		tableOeuvre.getSelectionModel().focus(Main_BEA_BAZ.getOeuvre_index());
 		
 	}
+    
+    @FXML
+    public void onTraitementAttenduSelect(){
+    	
+    	TacheTraitement ttAtt = traitements_attendus_tableView.getSelectionModel().getSelectedItem();
+    	Main_BEA_BAZ.setTacheTraitementEdited(ttAtt);
+    	
+    	Scene fiche_tache_traitement_scene = new Scene((Parent) JfxUtils.loadFxml("/views/fiche_tache_traitement.fxml"), 1275, 722);
+		fiche_tache_traitement_scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+		
+		currentStage.setScene(fiche_tache_traitement_scene);
+    	
+    }
+    @FXML
+    public void onTraitementSuppSelect(){
+    	
+    }
 
     	
 
@@ -553,8 +585,6 @@ public class Fiche_oeuvre_controller  implements Initializable{
 
 		numero_archive_6s_textField.setText(oeuvreSelectionne.getCote_archives_6s());
 		titre_textField.setText(oeuvreSelectionne.getTitre_de_l_oeuvre());
-//		MongoCursor<Auteur> auteurCursor = MongoAccess.request("auteur", oeuvreSelectionne.getAuteur()).as(Auteur.class);
-//		Auteur auteur = auteurCursor.next();
 		date_oeuvre_textField.setText(oeuvreSelectionne.getDate());
 		dimensions_textField.setText(oeuvreSelectionne.getDimensions());
 		inscriptions_textArea.setText(oeuvreSelectionne.getInscriptions_au_verso());
@@ -573,7 +603,6 @@ public class Fiche_oeuvre_controller  implements Initializable{
 		
 		traitementsAttendus = FXCollections.observableArrayList();
 		traitementsSupplementaires = FXCollections.observableArrayList();
-		liste_oeuvres = FXCollections.observableArrayList();
 		
 		oeuvresTraitees = new ArrayList<OeuvreTraitee>();
 
@@ -581,30 +610,7 @@ public class Fiche_oeuvre_controller  implements Initializable{
 		currentStage = Main_BEA_BAZ.getStage();
 		
 		System.out.println("oeuvreTraiteeSelectionne.get_id() : " + oeuvreTraiteeSelectionne.get_id());
-		
-		traitementCursor = MongoAccess.request("tacheTraitement", "oeuvreTraiteeId", oeuvreTraiteeSelectionne.get_id()).as(TacheTraitement.class);
-		
-		while (traitementCursor.hasNext()){
-			
-			TacheTraitement tt = traitementCursor.next();
-			
-			System.out.println("tt.getNom() : " + tt.getNom());
-			
-			if(tt.isSupp()){
-				traitementsSupplementaires.add(tt);
-			}
-			else {
-				traitementsAttendus.add(tt);
-			}
-			
-		}
-		
-		traitements_attendus_tableColumn.setCellValueFactory(new PropertyValueFactory<TacheTraitement, String>("nom"));
 
-		traitements_attendus_tableView.setItems(traitementsAttendus);
-		
-		traitements_supplementaires_tableView.setItems(traitementsSupplementaires);
-		
 		afficherOeuvres();
 		reloadOeuvre();
 

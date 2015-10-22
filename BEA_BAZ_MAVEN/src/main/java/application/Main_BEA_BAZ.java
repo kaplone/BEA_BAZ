@@ -26,9 +26,8 @@ public class Main_BEA_BAZ extends Application {
 	
 	private static Traitement traitement;
 	private static TacheTraitement tacheTraitementEdited;
-	
 	private static TacheTraitement tacheTraitement;
-	
+
 	private static Produit detail;
 	
 	private static Auteur auteur;
@@ -151,7 +150,5 @@ public class Main_BEA_BAZ extends Application {
 	public static void setTacheTraitement(TacheTraitement tacheTraitement) {
 		Main_BEA_BAZ.tacheTraitement = tacheTraitement;
 	}
-    
-	
-	
+
 }

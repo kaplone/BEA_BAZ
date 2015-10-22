@@ -409,7 +409,6 @@ public class Fiche_commande_import_controller  implements Initializable{
 		
 		while (oeuvresTraiteesCursor.hasNext()){
 			oeuvresTraitees.add(oeuvresTraiteesCursor.next());
-			System.out.println(oeuvresTraitees);
 		}
 		
 		oeuvres_nom_colonne.setCellValueFactory(new PropertyValueFactory<OeuvreTraitee, String>("nom"));

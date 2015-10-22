@@ -173,16 +173,4 @@ public class Oeuvre extends Commun{
 	public void setEtat_current(String etat_current) {
 		this.etat_current = etat_current;
 	}
-
-	public ImageView getEtat() {
-		
-		if (etat_current != null) {			
-			return Progression.valueOf(etat_current).getUsedImage();
-		}
-		else {
-			etat_current = "TODO_";
-			return Progression.valueOf(etat_current).getUsedImage();
-		}
-		
-	}
 }

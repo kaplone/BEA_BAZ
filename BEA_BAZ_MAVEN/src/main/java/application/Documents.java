@@ -317,48 +317,46 @@ public class Documents {
                 
         	}
         	catch (IllegalStateException ise){
-//        		// l'oeuvre existe dans la base
-//        		if (utils.MongoAccess.request("oeuvre", "cote_archives", row.getCell(1).getNumericCellValue() + "").as(Oeuvre.class) != null){
-//        			
+        		// l'oeuvre existe dans la base
+        		if (utils.MongoAccess.request("oeuvre", "cote_archives_6s", row.getCell(1).getNumericCellValue() + "").as(Oeuvre.class) != null){
+        			
         			System.out.println("cas 3");
-//        			
-//        			o = utils.MongoAccess.request("oeuvre", "cote_archives", row.getCell(1).getNumericCellValue() + "").as(Oeuvre.class); 
-//        			update = true;
-//        		}
-//        		// l'oeuvre n'existe pas encore dans la base
-//        		else {
-//        			
-//        			System.out.println("cas 4");
-//        			
-//        			 o = new Oeuvre();
-//                     string_oeuvre = "";
-//                     string_oeuvre_liste.clear();
-//                     string_oeuvre_liste.add(String.format("\"%s\" : \"%s\"", "commande", commande_id));
-//                     string_oeuvre_liste.add(String.format("\"%s\" : \"%s\"", "auteur", auteur_id));
-//                     string_oeuvre_liste.add(String.format("\"%s\" : \"%s\"", "created_at", LocalDate.now()));
-//                     string_oeuvre_liste.add(String.format("\"%s\" : \"%s\"", "updated_at", null));
-//                     string_oeuvre_liste.add(String.format("\"%s\" : \"%s\"", "deleted_at", null));
-//                     string_oeuvre_liste.add(String.format("\"%s\" : \"%s\"", "etat_current", "TODO_"));
-//                     
-//                     update = false;
-//        		}
+        			
+        			o = utils.MongoAccess.request("oeuvre", "cote_archives_6s", row.getCell(1).getNumericCellValue() + "").as(Oeuvre.class); 
+        			update = true;
+        		}
+        		// l'oeuvre n'existe pas encore dans la base
+        		else {
+        			
+        			System.out.println("cas 4");
+        			
+        			 o = new Oeuvre();
+                     string_oeuvre = "";
+                     string_oeuvre_liste.clear();
+                     string_oeuvre_liste.add(String.format("\"%s\" : \"%s\"", "commande", commande_id));
+                     string_oeuvre_liste.add(String.format("\"%s\" : \"%s\"", "auteur", commande.getAuteur().get_id()));
+                     string_oeuvre_liste.add(String.format("\"%s\" : \"%s\"", "created_at", LocalDate.now()));
+                     string_oeuvre_liste.add(String.format("\"%s\" : \"%s\"", "updated_at", null));
+                     string_oeuvre_liste.add(String.format("\"%s\" : \"%s\"", "deleted_at", null));
+                     
+                     update = false;
+        		}
             }
         	catch (NullPointerException mpe){
         		
         		System.out.println("cas 5");
         		
-//        		// l'oeuvre n'existe pas encore dans la base
-//                o = new Oeuvre();
-//                string_oeuvre = "";
-//                string_oeuvre_liste.clear();
-//                string_oeuvre_liste.add(String.format("\"%s\" : \"%s\"", "commande", commande_id));
-//                string_oeuvre_liste.add(String.format("\"%s\" : \"%s\"", "auteur", auteur_id));
-//                string_oeuvre_liste.add(String.format("\"%s\" : \"%s\"", "created_at", LocalDate.now()));
-//                string_oeuvre_liste.add(String.format("\"%s\" : \"%s\"", "updated_at", null));
-//                string_oeuvre_liste.add(String.format("\"%s\" : \"%s\"", "deleted_at", null));
-//                string_oeuvre_liste.add(String.format("\"%s\" : \"%s\"", "etat_current", "TODO_"));
-//                
-//                update = false;
+        		// l'oeuvre n'existe pas encore dans la base
+                o = new Oeuvre();
+                string_oeuvre = "";
+                string_oeuvre_liste.clear();
+                string_oeuvre_liste.add(String.format("\"%s\" : \"%s\"", "commande", commande_id));
+                string_oeuvre_liste.add(String.format("\"%s\" : \"%s\"", "created_at", LocalDate.now()));
+                string_oeuvre_liste.add(String.format("\"%s\" : \"%s\"", "updated_at", null));
+                string_oeuvre_liste.add(String.format("\"%s\" : \"%s\"", "deleted_at", null));
+                string_oeuvre_liste.add(String.format("\"%s\" : \"%s\"", "etat_current", "TODO_"));
+                
+                update = false;
         		
         	}
         	
@@ -439,9 +437,12 @@ public class Documents {
             	TacheTraitement tt = new TacheTraitement();
             	tt.setTraitement(t);
             	tt.setOeuvreTraiteeId(ot.get_id());
-            	tt.setFait(Progression.TODO_);
+            	tt.setFait_(Progression.TODO_);
             	tt.setProduits(new ArrayList<Produit>());
             	tt.setNom(t.getNom());
+            	
+            	utils.MongoAccess.save("tacheTraitement", tt);
+            	
             	
             	traitementsEnCours.add(tt);
             	
@@ -473,7 +474,7 @@ public class Documents {
 			tt.setTraitement(t);
 			tt.setCreated_at(Date.from(Instant.now()));
 			tt.setOeuvreTraiteeId(oeuvre.get_id());
-			tt.setProgressionTacheTraitement(Progression.TODO_);
+			tt.setFait_(Progression.TODO_);
 			
 			MongoAccess.save("tacheTraitement", tt);
 			
