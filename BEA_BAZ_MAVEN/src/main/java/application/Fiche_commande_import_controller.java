@@ -164,6 +164,14 @@ public class Fiche_commande_import_controller  implements Initializable{
 		
 		currentStage.setScene(fiche_client_scene);	
 	}
+	@FXML
+	public void onVersCommandeButton(){
+		
+		Scene fiche_commande_scene = new Scene((Parent) JfxUtils.loadFxml("/views/fiche_commande.fxml"), 1275, 722);
+		fiche_commande_scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+		
+		currentStage.setScene(fiche_commande_scene);	
+	}
 	
 	@FXML
 	public void onVersProduitsButton(){
@@ -380,14 +388,12 @@ public class Fiche_commande_import_controller  implements Initializable{
 	public void on_import_file_button(){
 		try {
 			Documents.read(file, commandeSelectionne);
-			afficherOeuvres();
+			onVersCommandeButton();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
-    @FXML
-    public void onVersCommandeButton(){}
     @FXML
     public void onVersOeuvreButton(){}
     @FXML

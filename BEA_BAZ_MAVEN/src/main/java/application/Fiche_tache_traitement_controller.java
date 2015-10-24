@@ -455,34 +455,35 @@ public class Fiche_tache_traitement_controller  implements Initializable{
     		traitementSelectionne = Main_BEA_BAZ.getTacheTraitement();
     	}
     	
-    	liste_tachesTraitements.clear();
-    	
-        traitementCursor = MongoAccess.request("tacheTraitement", "oeuvreTraiteeId", ot.get_id()).as(TacheTraitement.class);
-        
-        int indexTraitementAssocie = 0;
-        int i = 0;
-		
-		while (traitementCursor.hasNext()){
-			
-			TacheTraitement tta = traitementCursor.next();
-			liste_tachesTraitements.add(tta);
-			
-			if (tta.getNom().equals(traitementSelectionne.getNom())){
-				indexTraitementAssocie = i;
-			}
-			i++;
-				
-		}
+//    	liste_tachesTraitements.clear();
+//    	
+//        traitementCursor = MongoAccess.request("tacheTraitement", "oeuvreTraiteeId", ot.get_id()).as(TacheTraitement.class);
+//        
+//        int indexTraitementAssocie = 0;
+//        int i = 0;
+//		
+//		while (traitementCursor.hasNext()){
+//			
+//			TacheTraitement tta = traitementCursor.next();
+//			liste_tachesTraitements.add(tta);
+//			
+//			if (tta.getNom().equals(traitementSelectionne.getNom())){
+//				indexTraitementAssocie = i;
+//			}
+//			i++;
+//				
+//		}
 		
 		traitements_associes_tableColumn.setCellValueFactory(new PropertyValueFactory<TacheTraitement, String>("nom"));
 		traitements_associes_faits_tableColumn.setCellValueFactory(new PropertyValueFactory<TacheTraitement, ImageView>("icone_progression"));
 		//oeuvres_fait_colonne.setCellValueFactory(new PropertyValueFactory<OeuvreTraitee, String>("fait"));
 		
-		ObservableList<TacheTraitement> obs_tt = FXCollections.observableArrayList(liste_tachesTraitements);
+		//ObservableList<TacheTraitement> obs_tt = FXCollections.observableArrayList(liste_tachesTraitements);
+		ObservableList<TacheTraitement> obs_tt = FXCollections.observableArrayList(ot.getTraitementsAttendus());
 
 		traitements_associes_tableView.setItems(obs_tt);
 		
-		traitements_associes_tableView.getSelectionModel().select(indexTraitementAssocie);
+		//traitements_associes_tableView.getSelectionModel().select(indexTraitementAssocie);
 		traitements_associes_tableView.isFocused();
     }
     

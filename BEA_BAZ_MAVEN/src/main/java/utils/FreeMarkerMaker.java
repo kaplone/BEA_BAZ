@@ -8,11 +8,15 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 import application.Main_BEA_BAZ;
 import models.Oeuvre;
 import models.OeuvreTraitee;
+import models.Produit;
 import models.TacheTraitement;
+import models.Traitement;
+import enums.Progression;
 import fr.opensagres.xdocreport.converter.ConverterRegistry;
 import fr.opensagres.xdocreport.converter.ConverterTypeTo;
 import fr.opensagres.xdocreport.converter.ConverterTypeVia;
@@ -64,15 +68,33 @@ public class FreeMarkerMaker {
 		      context.put("dimensions", o.getDimensions() != null ? o.getDimensions() : "");
 		      context.put("technique", o.getDimensions() != null ? o.getDimensions() : "");
 		      context.put("inscriptions", o.getInscriptions_au_verso() != null ? o.getInscriptions_au_verso() : "");
-		      context.put("produits", o.getDimensions() != null ? o.getDimensions() : "");
+		      
 		      context.put("etat_final", o.getDimensions() != null ? o.getDimensions() : "");
 		      //context.put("traitements", ot.getTraitementsEnCours() != null ? ot.getTraitementsEnCours() : "");
 		      
-		      ArrayList<String> arl = new ArrayList();
-		      arl.add("un");
-		      arl.add("deux");
-		      arl.add("trois");
-		      context.put("traitements", arl);
+//		      ArrayList<String> arl = new ArrayList();
+//		      arl.add("un");
+//		      arl.add("deux");
+//		      arl.add("trois");
+		      
+		      ArrayList<String> traitementsEffectues = new ArrayList<>();
+		      ArrayList<String> produitsAppliques = new ArrayList<>();
+		      
+		      for (TacheTraitement tt : ot.getTraitementsAttendus()){
+		    	  System.out.println(tt.getFait_());
+		    	  if(tt.getFait_() == Progression.FAIT_){
+		    		  traitementsEffectues.add(tt.getTraitement().getNom_complet() + tt.getComplement() != null ? " " + tt.getComplement().getNom_complet() : "");
+		    		  produitsAppliques.add(tt.getProduitUtilise().getNom_complet());
+		    		  
+		    	  }
+		      }
+		      
+		      System.out.println(traitementsEffectues);
+		      System.out.println(produitsAppliques.stream().collect(Collectors.joining(",")));
+		      
+		      context.put("produits", produitsAppliques.stream().collect(Collectors.joining(",")));
+		      
+		      context.put("traitements", traitementsEffectues);
 		      
 		      System.out.println("__02");
 		      
@@ -80,6 +102,7 @@ public class FreeMarkerMaker {
                                  "Restauratrice du patrimoine\n" +
                                  "28 place Jean Jaurès\n" +
                                  "34400 Lunel - 06 21 21 15 40");
+		      
 		      context.put("client", "ARCHIVES MUNICIPALES DE LA SEYNE-SUR-MER\n" +
 		    		                "Traverse Marius AUTRAN\n" +
 		    		                "83 500 La Seyne-sur-Mer");

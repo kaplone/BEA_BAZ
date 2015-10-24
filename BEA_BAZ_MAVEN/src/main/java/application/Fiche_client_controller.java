@@ -383,14 +383,15 @@ public class Fiche_client_controller  implements Initializable{
 		
 		listView_commandes.setItems(liste_commandes);
 		
-		if (clientSelectionne != null){
+		if (clientSelectionne == null){
 			
 			clientSelectionne = client;
-			
-			Main_BEA_BAZ.setClient(clientSelectionne);
-
-			affichageInfos();
 		}
+		
+		Main_BEA_BAZ.setClient(clientSelectionne);
+
+		affichageInfos();
+
 
 	}
 

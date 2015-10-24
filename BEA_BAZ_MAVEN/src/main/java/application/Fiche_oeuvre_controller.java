@@ -211,6 +211,7 @@ public class Fiche_oeuvre_controller  implements Initializable{
 	public void reloadOeuvre(){
         
 		oeuvreTraiteeSelectionne = (OeuvreTraitee) tableOeuvre.getSelectionModel().getSelectedItem();
+		oeuvreSelectionne = oeuvreTraiteeSelectionne.getOeuvre();
 		
 		Main_BEA_BAZ.setOeuvre(oeuvreTraiteeSelectionne);
 		Main_BEA_BAZ.setOeuvre_index(tableOeuvre.getSelectionModel().getSelectedIndex());
@@ -241,20 +242,25 @@ public class Fiche_oeuvre_controller  implements Initializable{
 		traitementsSupplementaires.clear();
 		traitementsAttendus.clear();
 		
-        traitementCursor = MongoAccess.request("tacheTraitement", "oeuvreTraiteeId", oeuvreTraiteeSelectionne.get_id()).as(TacheTraitement.class);
+		//TODO
+		// vérifier ici :
 		
-		while (traitementCursor.hasNext()){
-			
-			TacheTraitement tt = traitementCursor.next();
-			
-			if(tt.isSupp()){
-				traitementsSupplementaires.add(tt);
-			}
-			else {
-				traitementsAttendus.add(tt);
-			}
-			
-		}
+//        traitementCursor = MongoAccess.request("tacheTraitement", "oeuvreTraiteeId", oeuvreTraiteeSelectionne.get_id()).as(TacheTraitement.class);
+//		
+//		while (traitementCursor.hasNext()){
+//			
+//			TacheTraitement tt = traitementCursor.next();
+//			
+//			if(tt.isSupp()){
+//				traitementsSupplementaires.add(tt);
+//			}
+//			else {
+//				traitementsAttendus.add(tt);
+//			}
+//			
+//		}
+		
+		traitementsAttendus.addAll(oeuvreTraiteeSelectionne.getTraitementsAttendus());
 		
 		traitements_attendus_tableColumn.setCellValueFactory(new PropertyValueFactory<TacheTraitement, String>("nom"));
 		faits_attendus_tableColumn.setCellValueFactory(new PropertyValueFactory<TacheTraitement, ImageView>("icone_progression"));
