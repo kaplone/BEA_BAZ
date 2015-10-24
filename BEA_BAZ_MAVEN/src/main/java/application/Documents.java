@@ -438,7 +438,6 @@ public class Documents {
             	tt.setTraitement(t);
             	tt.setOeuvreTraiteeId(ot.get_id());
             	tt.setFait_(Progression.TODO_);
-            	tt.setProduits(new ArrayList<Produit>());
             	tt.setNom(t.getNom());
             	
             	utils.MongoAccess.save("tacheTraitement", tt);

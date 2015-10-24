@@ -5,8 +5,10 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import org.jongo.FindOne;
 import org.jongo.MongoCursor;
 
+import enums.Progression;
 import utils.MongoAccess;
 import models.Commande;
 import models.Produit;
@@ -14,9 +16,11 @@ import models.Traitement;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -24,6 +28,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -33,7 +39,7 @@ public class Fiche_traitement_controller  implements Initializable{
 	@FXML
 	private ObservableList<Traitement> liste_traitements;
 	@FXML
-	private ObservableList<Produit> liste_details;
+	private ObservableList<Produit> liste_produits;
 	@FXML
 	private TextField file_path_textField;
 	@FXML
@@ -70,12 +76,15 @@ public class Fiche_traitement_controller  implements Initializable{
 	@FXML
 	private TextArea remarques_traitement_textArea;
 	
+	@FXML
+	private HBox produitsLiesHbox;
+	
 	private boolean edit = false;
 	
 	MongoCursor<Traitement> traitementCursor;
 	MongoCursor<Produit> detailCursor ;
 	Traitement traitementSelectionne;
-	Produit detailSelectionne;
+	Produit produitSelectionne;
 	
 	Stage currentStage;
 
@@ -122,19 +131,72 @@ public class Fiche_traitement_controller  implements Initializable{
 		traitementSelectionne = listView_traitements.getSelectionModel().getSelectedItem();
 		Main_BEA_BAZ.setTraitement(traitementSelectionne);
 		affichageInfos();	
+		affichageProduits();
+		
+		
+		produitsLiesHbox.getChildren().clear();
+		for (Produit p : traitementSelectionne.getProduits()){
+			produitSelectionne = p;
+			affichageProduitsUtilises();
+		}
+	}
+	
+	public void affichageProduitsUtilises(){
+		
+		ImageView iv = new ImageView(new Image(Progression.NULL_.getUsedImage().toURI().toString()));
+		iv.setPreserveRatio(true);
+        iv.setSmooth(true);
+        iv.setCache(true);
+        iv.setFitWidth(15);
+		
+		
+		Button b = new Button(produitSelectionne.getNom());
+		Button b2 = new Button("", iv);
+		
+		b2.setOnAction((event) -> deleteProduitLie((Button)event.getSource()));
+
+		produitsLiesHbox.getChildren().add(b);
+		produitsLiesHbox.getChildren().add(b2);
+		HBox.setMargin(b2, new Insets(0,10,0,0));
 	}
 	
 	@FXML
-	public void onDetailSelect(){
+	public void onProduitSelect(){
 		
-		detailSelectionne = listView_produits.getSelectionModel().getSelectedItem();
+		produitSelectionne = listView_produits.getSelectionModel().getSelectedItem();
 		
-		if (detailSelectionne != null){
-			Main_BEA_BAZ.setDetail(detailSelectionne);
+		if (produitSelectionne != null){
+			Main_BEA_BAZ.setDetail(produitSelectionne);
 			
-			Scene fiche_detail_scene = new Scene((Parent) JfxUtils.loadFxml("/views/fiche_detail.fxml"), 1275, 722);
-			fiche_detail_scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
-			currentStage.setScene(fiche_detail_scene);	
+			traitementSelectionne.addProduit(produitSelectionne);
+			Traitement.update(traitementSelectionne);
+			
+			affichageProduitsUtilises();
+
+		}
+		
+		
+		
+	}
+	
+	public void deleteProduitLie(Button e){
+		
+		int index = produitsLiesHbox.getChildren().indexOf(e);
+		
+		System.out.println("nom produit : " + ((Button) produitsLiesHbox.getChildren().get(index -1)).getText());
+		
+		Produit produit = MongoAccess.request("produit", "nom",  ((Button) produitsLiesHbox.getChildren().get(index -1)).getText()).as(Produit.class);
+		
+		produitsLiesHbox.getChildren().remove(index -1, index +1);
+		
+		traitementSelectionne.deleteProduit(produit);
+		
+		Traitement.update(traitementSelectionne);
+		
+		produitsLiesHbox.getChildren().clear();
+		for (Produit p : traitementSelectionne.getProduits()){
+			produitSelectionne = p;
+			affichageProduitsUtilises();
 		}
 		
 	}
@@ -184,14 +246,23 @@ public class Fiche_traitement_controller  implements Initializable{
     	nom_complet_traitement_textField.setText(traitementSelectionne.getNom_complet());
     	remarques_traitement_textArea.setText(traitementSelectionne.getRemarques());
     	
-    	liste_details.clear();
+    		
+    }
+    
+    public void affichageProduits(){
+    	
+        liste_produits.clear();
     	
     	if (traitementSelectionne != null){
     		
-            liste_details.addAll(traitementSelectionne.getProduits());
-			
-			listView_produits.setItems(liste_details);		
-    	}	
+    		MongoCursor<Produit> produitsCursor = MongoAccess.request("produit").as(Produit.class);
+    		
+    		while (produitsCursor.hasNext()){
+    			liste_produits.add(produitsCursor.next());
+    		}
+    		
+			listView_produits.setItems(liste_produits);		
+    	}
     }
     
     public void onNouveauTraitementButton() {
@@ -232,7 +303,7 @@ public class Fiche_traitement_controller  implements Initializable{
     public void rafraichirAffichage(){
     	
     	liste_traitements = FXCollections.observableArrayList();
-		liste_details  = FXCollections.observableArrayList();
+		liste_produits  = FXCollections.observableArrayList();
 		
 		
 		
@@ -337,18 +408,15 @@ public class Fiche_traitement_controller  implements Initializable{
 		
         liste_traitements.clear();
     	
-    	if (traitementSelectionne != null){
-    		
-    		traitementCursor = MongoAccess.request("traitement").as(Traitement.class);
-    		
-    		while (traitementCursor.hasNext()){
-    			Traitement enplus = traitementCursor.next();
-    			liste_traitements.add(enplus);
-    		}	
-    		listView_traitements.setItems(liste_traitements);	
-    		
-    		rafraichirAffichage();
-    	}
+        traitementCursor = MongoAccess.request("traitement").as(Traitement.class);
+		
+		while (traitementCursor.hasNext()){
+			Traitement enplus = traitementCursor.next();
+			liste_traitements.add(enplus);
+		}	
+		listView_traitements.setItems(liste_traitements);	
+		
+		rafraichirAffichage();
 		
 		
     }
@@ -397,7 +465,7 @@ public class Fiche_traitement_controller  implements Initializable{
 		
 		
 		liste_traitements = FXCollections.observableArrayList();
-		liste_details  = FXCollections.observableArrayList();
+		liste_produits  = FXCollections.observableArrayList();
 		
 		currentStage = Main_BEA_BAZ.getStage();
 		
@@ -409,20 +477,22 @@ public class Fiche_traitement_controller  implements Initializable{
 		
 		listView_traitements.setItems(liste_traitements);
 		
+		affichageProduits();
 		
-		if (traitementSelectionne != null){
-			
-			detailCursor = MongoAccess.request("produit", traitementSelectionne).as(Produit.class);
-			
-			while (detailCursor.hasNext()){
-				Produit enplus = detailCursor.next();
-				liste_details.add(enplus);
-			}
-			
-			listView_produits.setItems(liste_details);
-		}
-        
 		
+//		if (traitementSelectionne != null){
+//			
+//			detailCursor = MongoAccess.request("produit", traitementSelectionne).as(Produit.class);
+//			
+//			while (detailCursor.hasNext()){
+//				Produit enplus = detailCursor.next();
+//				liste_produits.add(enplus);
+//			}
+//			
+//			listView_produits.setItems(liste_produits);
+//		}
+//        
+//		
 		
 	
 	}

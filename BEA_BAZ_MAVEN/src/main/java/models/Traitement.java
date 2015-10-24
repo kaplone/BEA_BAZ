@@ -38,6 +38,31 @@ public class Traitement extends Commun{
 		MongoAccess.insert("traitement", t);
 		
 	}
+    
+    public void addProduit(Produit p){
+    	
+    	if (! produits.contains(p)){
+    		produits.add(p);
+    	}
+    	
+    }
+    
+    public void deleteProduit(Produit p){
+    	
+    	Produit produit_ = null;
+    	
+    	for (Produit p_ : produits){
+    		if (p.getNom().equals(p_.getNom())){
+    			produit_ = p_;
+    			break;
+    		}
+    	}
+    	produits.remove(produit_);
+
+		
+
+    	
+    }
 
 	public String getNom_complet() {
 		return nom_complet;

@@ -27,8 +27,6 @@ public enum Progression {
 	}
 	
 	public File getUsedImage() {
-
-		//return usedImage;
 		return f;
 	}
 

@@ -27,7 +27,7 @@ public class TacheTraitement extends Commun{
 	private ObjectId oeuvreTraiteeId;
 	private ObjectId commandeId;
 	private Complement complement;
-	private ArrayList<Produit> produits;
+	private Produit produitUtilise;
 	private Traitement traitement;
 	private Etat etat;
     
@@ -82,10 +82,13 @@ public class TacheTraitement extends Commun{
 	}
     
 	public ArrayList<Produit> getProduits() {
-		return produits;
+		return getTraitement().getProduits();
 	}
-	public void setProduits(ArrayList<Produit> produits) {
-		this.produits = produits;
+	public Produit getProduitUtilise() {
+		return this.produitUtilise;
+	}
+	public void setProduitUtilise(Produit produit) {
+		this.produitUtilise = produit;
 	}
 	public Traitement getTraitement() {
 		return traitement;

@@ -145,6 +145,7 @@ public class Fiche_produit_controller  implements Initializable{
 	public void on_import_file_button(){
 		try {
 			Documents.read(file, "produit");
+			rafraichirAffichage();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
