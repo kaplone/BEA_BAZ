@@ -14,8 +14,6 @@ import java.util.stream.Collectors;
 import org.jongo.Find;
 import org.jongo.MongoCursor;
 
-import com.mongodb.DBPortPool.NoMoreConnection;
-
 import utils.MongoAccess;
 import models.Client;
 import models.Commande;
@@ -23,7 +21,6 @@ import models.Oeuvre;
 import models.OeuvreTraitee;
 import models.TacheTraitement;
 import models.Traitement;
-import models.TraitementsAttendus;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -135,7 +132,6 @@ public class Fiche_commande_import_controller  implements Initializable{
 	
 	private ArrayList<ChoiceBox<Traitement>> traitements_selectionnes;
 	private ArrayList<Traitement> traitements_attendus;
-	private MongoCursor<TraitementsAttendus> traitementsCursor;
 	private ObservableList<Traitement> observableTraitements;
 
 	

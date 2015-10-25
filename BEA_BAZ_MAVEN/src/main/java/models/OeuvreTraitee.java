@@ -16,8 +16,8 @@ public class OeuvreTraitee extends Oeuvre {
 	
 	private Oeuvre oeuvre;
 	
-	private ArrayList<TacheTraitement> traitementsAttendus;
-	private ArrayList<TacheTraitement> traitementsSupplementaires;
+	private ArrayList<ObjectId> traitementsAttendus;
+	private ArrayList<ObjectId> traitementsSupplementaires;
 	
 	private Commande commande;
 	
@@ -98,18 +98,18 @@ public class OeuvreTraitee extends Oeuvre {
 	public void setProgressionOeuvreTraitee(Progression progressionOeuvreTraitee) {
 		this.progressionOeuvreTraitee = progressionOeuvreTraitee;
 	}
-	public ArrayList<TacheTraitement> getTraitementsAttendus() {
+	public ArrayList<ObjectId> getTraitementsAttendus() {
 		return traitementsAttendus;
 	}
 	public void setTraitementsAttendus(
-			ArrayList<TacheTraitement> traitementsAttendus) {
+			ArrayList<ObjectId> traitementsAttendus) {
 		this.traitementsAttendus = traitementsAttendus;
 	}
-	public ArrayList<TacheTraitement> getTraitementsSupplementaires() {
+	public ArrayList<ObjectId> getTraitementsSupplementaires() {
 		return traitementsSupplementaires;
 	}
 	public void setTraitementsSupplementaires(
-			ArrayList<TacheTraitement> traitementssupplementaires) {
+			ArrayList<ObjectId> traitementssupplementaires) {
 		this.traitementsSupplementaires = traitementssupplementaires;
 	}
 	public ImageView getIcone_progression() {

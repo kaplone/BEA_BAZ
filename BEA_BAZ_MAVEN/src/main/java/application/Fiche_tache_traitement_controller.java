@@ -6,6 +6,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
+import org.bson.types.ObjectId;
 import org.jongo.MongoCursor;
 
 import enums.Progression;
@@ -84,10 +85,6 @@ public class Fiche_tache_traitement_controller  implements Initializable{
 	private Label t_label;
 	@FXML
 	private Label commande_label;
-//	@FXML
-//	private TextField nom_traitement_textField;
-//	@FXML
-//	private TextField nom_complet_traitement_textField;
 	@FXML
 	private TextArea remarques_traitement_textArea;
 	
@@ -479,7 +476,13 @@ public class Fiche_tache_traitement_controller  implements Initializable{
 		//oeuvres_fait_colonne.setCellValueFactory(new PropertyValueFactory<OeuvreTraitee, String>("fait"));
 		
 		//ObservableList<TacheTraitement> obs_tt = FXCollections.observableArrayList(liste_tachesTraitements);
-		ObservableList<TacheTraitement> obs_tt = FXCollections.observableArrayList(ot.getTraitementsAttendus());
+		
+		ObservableList<TacheTraitement> obs_tt = FXCollections.observableArrayList();
+		
+		for (ObjectId ta_id : ot.getTraitementsAttendus()){
+			obs_tt.add(MongoAccess.request("tacheTraitement", ta_id).as(TacheTraitement.class).next());
+		}
+		
 
 		traitements_associes_tableView.setItems(obs_tt);
 		

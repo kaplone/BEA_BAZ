@@ -430,7 +430,7 @@ public class Documents {
             
             System.out.println("ot.get_id() (juste apres le save() : "+ ot.get_id());
             
-            ArrayList<TacheTraitement> traitementsEnCours = new ArrayList<>();
+            ArrayList<ObjectId> traitementsEnCours = new ArrayList<>();
             
             for (Traitement t : commande_.getTraitements_attendus()) {
             	
@@ -443,7 +443,7 @@ public class Documents {
             	utils.MongoAccess.save("tacheTraitement", tt);
             	
             	
-            	traitementsEnCours.add(tt);
+            	traitementsEnCours.add(tt.get_id());
             	
 				
 			}

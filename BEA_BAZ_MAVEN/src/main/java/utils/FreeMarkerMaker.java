@@ -10,6 +10,8 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 
+import org.bson.types.ObjectId;
+
 import application.Main_BEA_BAZ;
 import models.Oeuvre;
 import models.OeuvreTraitee;
@@ -70,29 +72,31 @@ public class FreeMarkerMaker {
 		      context.put("inscriptions", o.getInscriptions_au_verso() != null ? o.getInscriptions_au_verso() : "");
 		      
 		      context.put("etat_final", o.getDimensions() != null ? o.getDimensions() : "");
-		      //context.put("traitements", ot.getTraitementsEnCours() != null ? ot.getTraitementsEnCours() : "");
-		      
-//		      ArrayList<String> arl = new ArrayList();
-//		      arl.add("un");
-//		      arl.add("deux");
-//		      arl.add("trois");
 		      
 		      ArrayList<String> traitementsEffectues = new ArrayList<>();
 		      ArrayList<String> produitsAppliques = new ArrayList<>();
 		      
-		      for (TacheTraitement tt : ot.getTraitementsAttendus()){
-		    	  System.out.println(tt.getFait_());
+		      for (ObjectId tt_id : ot.getTraitementsAttendus()){
+		    	  
+		    	  TacheTraitement tt = MongoAccess.request("tacheTraitement", tt_id).as(TacheTraitement.class).next();
+		    	  
 		    	  if(tt.getFait_() == Progression.FAIT_){
-		    		  traitementsEffectues.add(tt.getTraitement().getNom_complet() + tt.getComplement() != null ? " " + tt.getComplement().getNom_complet() : "");
-		    		  produitsAppliques.add(tt.getProduitUtilise().getNom_complet());
+		    		  
+		    		  System.out.println(tt);
+		    		  System.out.println(tt.getTraitement());
+		    		  System.out.println(tt.getTraitement().getNom_complet());
+		    		  System.out.println(tt.getComplement());
+		    		  System.out.println(tt.getComplement() == null ? " (pas de complément)" : " " + tt.getComplement().getNom_complet());
+		    		  System.out.println(tt.getTraitement().getNom_complet() + (tt.getComplement() == null ? " (pas de complément)" : " " + tt.getComplement().getNom_complet()));
+		    		  
+		    		  traitementsEffectues.add(tt.getTraitement().getNom_complet() + (tt.getComplement() == null ? "" : " " + tt.getComplement().getNom_complet()));
+		    		  
+		    		  produitsAppliques.add(tt.getProduitUtilise() == null ? "" : tt.getProduitUtilise().getNom_complet());
 		    		  
 		    	  }
 		      }
 		      
-		      System.out.println(traitementsEffectues);
-		      System.out.println(produitsAppliques.stream().collect(Collectors.joining(",")));
-		      
-		      context.put("produits", produitsAppliques.stream().collect(Collectors.joining(",")));
+		      context.put("produits", produitsAppliques.stream().collect(Collectors.joining(", ")));
 		      
 		      context.put("traitements", traitementsEffectues);
 		      

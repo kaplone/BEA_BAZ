@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import org.bson.types.ObjectId;
 import org.jongo.MongoCursor;
 
 import enums.Progression;
@@ -260,7 +261,14 @@ public class Fiche_oeuvre_controller  implements Initializable{
 //			
 //		}
 		
-		traitementsAttendus.addAll(oeuvreTraiteeSelectionne.getTraitementsAttendus());
+		for (ObjectId tt_id : oeuvreTraiteeSelectionne.getTraitementsAttendus()){
+			
+			traitementsAttendus.add(MongoAccess.request("tacheTraitement", tt_id).as(TacheTraitement.class).next());
+		}
+		
+		//finir la migration -> objectId
+		
+		
 		
 		traitements_attendus_tableColumn.setCellValueFactory(new PropertyValueFactory<TacheTraitement, String>("nom"));
 		faits_attendus_tableColumn.setCellValueFactory(new PropertyValueFactory<TacheTraitement, ImageView>("icone_progression"));

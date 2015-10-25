@@ -17,7 +17,6 @@ import models.Model;
 import models.Oeuvre;
 import models.OeuvreTraitee;
 import models.Traitement;
-import models.TraitementsAttendus;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -108,8 +107,7 @@ public class Fiche_commande_controller  implements Initializable{
 	
 	private ArrayList<ChoiceBox<Traitement>> traitements_selectionnes;
 	private ArrayList<Traitement> traitements_attendus;
-	
-	private MongoCursor<TraitementsAttendus> traitementsCursor;
+
 	private ObservableList<Traitement> observableTraitements;
 	private ObservableList<Auteur> observableAuteurs;
 
