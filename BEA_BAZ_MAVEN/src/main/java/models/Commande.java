@@ -1,5 +1,6 @@
 package models;
 
+import java.nio.file.Path;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -185,6 +186,17 @@ public class Commande  extends Commun{
 
 	public Model getModele() {
 		return modele;
+	}
+	
+	public Path getModeleVertical() {
+		
+		Path base = modele.getCheminVersModel().getParent();
+		String name = modele.getCheminVersModel().getFileName().toString();
+		
+		String nameVertical = name.split("\\.")[0] + "_vertical." + name.split("\\.")[1];
+		
+		
+		return base.resolve(nameVertical);
 	}
 
 	public void setModele(Model modele) {

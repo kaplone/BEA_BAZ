@@ -17,6 +17,8 @@ import java.util.TreeMap;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import models.Auteur;
 import models.Client;
 import models.Commande;
@@ -51,6 +53,8 @@ public class Documents {
 	
 	private static Commande commande;
 	private static ObjectId commande_id;
+	
+	private static StringProperty bindedLabel = new SimpleStringProperty(); 
 
 	public static void read(File file_, String table_) throws IOException {
 		
@@ -473,7 +477,8 @@ public class Documents {
 		
 		commande = Main_BEA_BAZ.getCommande();
 		
-		System.out.println(oeuvre.getNom());
+		System.out.println("nom : " +oeuvre.getNom());
+		Fiche_commande_import_controller.getBindLabel().set("Import en cours : " + oeuvre.getNom());
 		
 		//ArrayList<TacheTraitement> listeDesTaches = new ArrayList<>();
 		
@@ -541,5 +546,7 @@ public class Documents {
             e.printStackTrace();
         }
 	}
+	
+	
 
 }

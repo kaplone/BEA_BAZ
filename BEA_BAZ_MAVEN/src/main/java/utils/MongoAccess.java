@@ -38,7 +38,7 @@ public class MongoAccess {
 		try {
 			
 			//MongoClientURI uri  = new MongoClientURI("mongodb://bea:beabaz@ds055852.mongolab.com:55852/heroku_g9z5lnn2"); 
-			MongoClientURI uri  = new MongoClientURI("mongodb://127.0.0.1/test"); 
+			MongoClientURI uri  = new MongoClientURI("mongodb://127.0.0.1/test2"); 
 			MongoClient client = new MongoClient(uri);
 			db = client.getDB(uri.getDatabase());	
 			jongo = new Jongo(db);

@@ -22,8 +22,13 @@ import models.Oeuvre;
 import models.OeuvreTraitee;
 import models.TacheTraitement;
 import models.Traitement;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+import javafx.beans.value.ObservableStringValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Service;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -138,6 +143,9 @@ public class Fiche_commande_import_controller  implements Initializable{
 	@FXML
 	private TextField rep_path_textField;
 	
+	@FXML
+	private Label message_label;
+	
 	private ArrayList<ChoiceBox<Traitement>> traitements_selectionnes;
 	private ArrayList<Traitement> traitements_attendus;
 	private ObservableList<Traitement> observableTraitements;
@@ -158,6 +166,7 @@ public class Fiche_commande_import_controller  implements Initializable{
 	private File file;
 	private File dir;
 	
+	private static StringProperty bindLabel;
 	
 	private boolean edit = false;
 	
@@ -399,6 +408,27 @@ public class Fiche_commande_import_controller  implements Initializable{
 			e.printStackTrace();
 		}
 	}
+	
+//	Service<String> imageLoadingService = new Service<String>(){
+//
+//	  @Override
+//	  protected Task<String> createTask() {
+//		  
+//		  Task<String> imageLoadingTask = new Task<String>(){
+//
+//			  @Override
+//			  protected String call() throws Exception {
+//
+//			    return "";
+//			  }
+//			};
+//		return imageLoadingTask;
+//
+//	  }	
+//	};
+	
+	
+	
     @FXML
     public void onVersOeuvreButton(){}
     @FXML
@@ -455,10 +485,12 @@ public class Fiche_commande_import_controller  implements Initializable{
 	}
 	@FXML
 	public void on_import_rep_button(){
-		
+
 		Walk.walking(dir.toPath());
-		
+		onVersCommandeButton();	
 	}
+	
+	
 	
     protected File chooseRep(){
 		
@@ -478,6 +510,9 @@ public class Fiche_commande_import_controller  implements Initializable{
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
+		
+		bindLabel = new SimpleStringProperty("En attente d'import ...");
+		message_label.textProperty().bind(bindLabel);
 		
 		commande = Main_BEA_BAZ.getCommande();
 		commandeSelectionne = Main_BEA_BAZ.getCommande();
@@ -558,9 +593,11 @@ public class Fiche_commande_import_controller  implements Initializable{
 				
 			}
 		}
-		
-		
-
 	}
+	
+	public static StringProperty getBindLabel() {
+		return bindLabel;
+	}
+
 
 }

@@ -187,8 +187,17 @@ public class Fiche_client_controller  implements Initializable{
     	
     	mise_a_jour_client.setText("Enregistrer");
     	nom_client_textField.setText("");
+    	nom_complet_client_textField.setText("");
+    	adresse_voie_textField.setText("");
+    	adresse_cp_textField.setText("");
+    	adresse_ville_textField.setText("");
     	remarques_client_textArea.setText("");
-    	nom_client_textField.setPromptText("saisir le nom du nouveau client");
+    	
+    	nom_client_textField.setPromptText("saisir le nom affiché dans les menus de l'interface");
+    	nom_complet_client_textField.setPromptText("saisir le nom complet pour l'export");
+    	adresse_voie_textField.setPromptText("n° dans le voie et nom de la voie");
+    	adresse_cp_textField.setPromptText("code postal");
+    	adresse_ville_textField.setPromptText("ville");
     	remarques_client_textArea.setPromptText("éventuelles remarques");
     	nouveau_client.setVisible(false);
     	
@@ -199,6 +208,10 @@ public class Fiche_client_controller  implements Initializable{
     	editer.setVisible(false);
     	mise_a_jour_client.setVisible(true);
     	nom_client_textField.setEditable(true);
+    	nom_complet_client_textField.setEditable(true);
+    	adresse_voie_textField.setEditable(true);
+    	adresse_cp_textField.setEditable(true);
+    	adresse_ville_textField.setEditable(true);
 		remarques_client_textArea.setEditable(true);
     }
     
