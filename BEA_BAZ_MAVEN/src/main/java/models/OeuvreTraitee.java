@@ -23,6 +23,8 @@ public class OeuvreTraitee extends Oeuvre {
 	
 	private Etat etat;
 	
+	private ArrayList<String> alterations = new ArrayList<>();
+	
 	private ArrayList<ObjectId> fichiers,
                                 rapports;
 	
@@ -122,5 +124,15 @@ public class OeuvreTraitee extends Oeuvre {
         usedImage.setImage(image);
 		
 		return usedImage;
-	}    
+	}
+	public ArrayList<String> getAlterations() {
+		return alterations;
+	}
+	public void setAlterations(ArrayList<String> alterations) {
+		this.alterations = alterations;
+	}
+	public Etat getEtat() {
+		return etat;
+	} 
+	
 }

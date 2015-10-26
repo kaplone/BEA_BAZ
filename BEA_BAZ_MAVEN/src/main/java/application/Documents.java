@@ -8,6 +8,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -260,6 +261,7 @@ public class Documents {
 		boolean update = false;
 		
 		ArrayList<String> noms_titres = new ArrayList<>();
+		ArrayList<String> noms_titres_bruts = new ArrayList<>();
 		
 		FileInputStream file = new FileInputStream(file_);
 		
@@ -283,6 +285,8 @@ public class Documents {
         //Iterate through each rows one by one
         Iterator<Row> rowIterator = sheet.iterator();
         while (rowIterator.hasNext()){
+        	
+        	ArrayList<String> alterations = new ArrayList<>();
 
         	Row row = rowIterator.next();
         	
@@ -376,6 +380,7 @@ public class Documents {
 	                // c'est la liste des champs
 	                if (titres){
 	            		noms_titres.add(cell.getStringCellValue().equals("") ? String.format("field_%02d", nb_colonnes + 1) : Normalize.normalize(cell.getStringCellValue()));
+	            		noms_titres_bruts.add(cell.getStringCellValue().equals("") ? String.format("field_%02d", nb_colonnes + 1) : Normalize.normalizeLight(cell.getStringCellValue()));
 	            		nb_colonnes = noms_titres.size();
 	            	}
 	                // les valeurs suivantes servent à construire 
@@ -393,6 +398,10 @@ public class Documents {
 		                    case Cell.CELL_TYPE_STRING:
 		                        
 		                        if (index >=7 && index <= 22){
+		                        	
+		                        	if ("x".equals(cell.getStringCellValue())){
+		                        		alterations.add(noms_titres_bruts.get(index));
+		                        	}
 		                        	
 		                        }
 		                        else {
@@ -425,6 +434,8 @@ public class Documents {
             ot.setOeuvre(o);
             ot.setCommande(commande_);
             ot.setProgressionOeuvreTraitee(Progression.TODO_);
+            
+            ot.setAlterations(alterations);
             
             utils.MongoAccess.save("oeuvreTraitee", ot);
             

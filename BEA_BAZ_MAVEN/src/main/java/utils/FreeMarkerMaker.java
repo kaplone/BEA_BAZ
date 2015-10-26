@@ -8,11 +8,13 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.stream.Collectors;
 
 import org.bson.types.ObjectId;
 
 import application.Main_BEA_BAZ;
+import models.Fichier;
 import models.Oeuvre;
 import models.OeuvreTraitee;
 import models.Produit;
@@ -39,10 +41,11 @@ import fr.opensagres.xdocreport.template.annotations.ImageMetadata;
 public class FreeMarkerMaker {
 	
 	@FieldMetadata( images = { @ImageMetadata( name = "image_oeuvre" ) } )
-    public static File  getLogo()
+    public static File  getLogo(OeuvreTraitee ot)
     {
         //return new File("/home/kaplone/Desktop/BEABASE/Béa base/P1140344.JPG" );
-        return Main_BEA_BAZ.getCommande().getModele().getCheminVersModel().getParent().resolve("P1140344.JPG").toFile();
+        //return Main_BEA_BAZ.getCommande().getModele().getCheminVersModel().getParent().resolve("P1140344.JPG").toFile();
+        return MongoAccess.request("fichier", ot.getFichiers().get(ot.getFichiers().size() -2)).as(Fichier.class).next().getFichierLie();
     }
 
 	public static void odt2pdf(Oeuvre o, OeuvreTraitee ot) {
@@ -60,6 +63,8 @@ public class FreeMarkerMaker {
 		      
 		      FieldsMetadata metadata = report.createFieldsMetadata();
 		      metadata.addFieldAsImage( "image_oeuvre", "image_oeuvre");
+//		      metadata.addFieldAsList("fichiers.nom");
+//              metadata.addFieldAsList("fichiers.legende");
 		      report.setFieldsMetadata(metadata);
 		      
 		      System.out.println("__01");
@@ -68,10 +73,12 @@ public class FreeMarkerMaker {
 		      context.put("inventaire", o.getCote_archives_6s());
 		      context.put("titre", o.getTitre_de_l_oeuvre() != null ? o.getTitre_de_l_oeuvre() : "");
 		      context.put("dimensions", o.getDimensions() != null ? o.getDimensions() : "");
-		      context.put("technique", o.getDimensions() != null ? o.getDimensions() : "");
+		      context.put("technique", o.getTechnique() != null ? o.getTechnique() : "");
+		      context.put("matiere", o.getMatiere() != null ? o.getMatiere() : "");
 		      context.put("inscriptions", o.getInscriptions_au_verso() != null ? o.getInscriptions_au_verso() : "");
 		      
-		      context.put("etat_final", o.getDimensions() != null ? o.getDimensions() : "");
+		      context.put("etat_final", ot.getEtat() != null ? ot.getEtat().toString() : "");
+		      
 		      
 		      ArrayList<String> traitementsEffectues = new ArrayList<>();
 		      ArrayList<String> produitsAppliques = new ArrayList<>();
@@ -82,15 +89,7 @@ public class FreeMarkerMaker {
 		    	  
 		    	  if(tt.getFait_() == Progression.FAIT_){
 		    		  
-		    		  System.out.println(tt);
-		    		  System.out.println(tt.getTraitement());
-		    		  System.out.println(tt.getTraitement().getNom_complet());
-		    		  System.out.println(tt.getComplement());
-		    		  System.out.println(tt.getComplement() == null ? " (pas de complément)" : " " + tt.getComplement().getNom_complet());
-		    		  System.out.println(tt.getTraitement().getNom_complet() + (tt.getComplement() == null ? " (pas de complément)" : " " + tt.getComplement().getNom_complet()));
-		    		  
-		    		  traitementsEffectues.add(tt.getTraitement().getNom_complet() + (tt.getComplement() == null ? "" : " " + tt.getComplement().getNom_complet()));
-		    		  
+		    		  traitementsEffectues.add(tt.getTraitement().getNom_complet() + (tt.getComplement() == null ? "" : " " + tt.getComplement().getNom_complet()));  
 		    		  produitsAppliques.add(tt.getProduitUtilise() == null ? "" : tt.getProduitUtilise().getNom_complet());
 		    		  
 		    	  }
@@ -99,6 +98,40 @@ public class FreeMarkerMaker {
 		      context.put("produits", produitsAppliques.stream().collect(Collectors.joining(", ")));
 		      
 		      context.put("traitements", traitementsEffectues);
+		      
+		      context.put("alterations", ot.getAlterations());
+		      
+		      ArrayList<Fichier> listeFichiers = new ArrayList<>();
+		      
+		      for (ObjectId fichier_id : ot.getFichiers()){
+		    	  
+		    	  listeFichiers.add(MongoAccess.request("fichier", fichier_id).as(Fichier.class).next());
+		    	  
+		    	  listeFichiers.sort(new Comparator<Fichier>() {
+
+					@Override
+					public int compare(Fichier o1, Fichier o2) {
+					
+						return String.format("%s_%02d", o1.getNom().split("\\.")[1], Integer.parseInt(o1.getNom().split("\\.")[2]))
+					.compareTo(String.format("%s_%02d", o2.getNom().split("\\.")[1], Integer.parseInt(o2.getNom().split("\\.")[2])));
+					}
+				});
+		      }
+		      
+//		      ArrayList<String> listeFiles = new ArrayList<>();
+//		      ArrayList<String> listeLegendes = new ArrayList<>();
+//		      
+//		      for (Fichier f : listeFichiers){
+//		    	  
+//		    	  listeFiles.add(f.getNom());
+//		    	  listeLegendes.add(f.getLegende());
+//		    	  
+//		      }
+		      
+//		      context.put("fichiers", listeFiles);
+//		      context.put("legendes", listeLegendes);
+		      
+		      context.put("fichiers", listeFichiers);
 		      
 		      System.out.println("__02");
 		      
@@ -116,7 +149,7 @@ public class FreeMarkerMaker {
 		      
 		      System.out.println("__03");
 
-		      context.put("image_oeuvre", getLogo());
+		      context.put("image_oeuvre", getLogo(ot));
 		      
 		      
 

@@ -15,6 +15,7 @@ import org.jongo.Find;
 import org.jongo.MongoCursor;
 
 import utils.MongoAccess;
+import utils.Walk;
 import models.Client;
 import models.Commande;
 import models.Oeuvre;
@@ -45,6 +46,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
@@ -129,6 +131,12 @@ public class Fiche_commande_import_controller  implements Initializable{
 	@FXML
 	private TableView<OeuvreTraitee> tableOeuvre;
 	
+	@FXML
+	private Button import_rep_button;
+	@FXML
+	private Button select_rep_button;
+	@FXML
+	private TextField rep_path_textField;
 	
 	private ArrayList<ChoiceBox<Traitement>> traitements_selectionnes;
 	private ArrayList<Traitement> traitements_attendus;
@@ -148,6 +156,7 @@ public class Fiche_commande_import_controller  implements Initializable{
 	private Client client;
 	
 	private File file;
+	private File dir;
 	
 	
 	private boolean edit = false;
@@ -429,6 +438,41 @@ public class Fiche_commande_import_controller  implements Initializable{
 		remarques_client.setText(c.getRemarques());
 		nom_commande_label.setText(c.getNom());
 		nomCommandeTextField.setText(c.getNom());
+		
+	}
+	
+	@FXML
+	public void onImportImagesButton(){
+		
+		select_rep_button.setVisible(true);
+		rep_path_textField.setVisible(true);
+		import_rep_button.setVisible(true);
+	}
+	@FXML
+	public void on_select_rep_button(){
+		dir = chooseRep();
+		rep_path_textField.setText(dir.toString());
+	}
+	@FXML
+	public void on_import_rep_button(){
+		
+		Walk.walking(dir.toPath());
+		
+	}
+	
+    protected File chooseRep(){
+		
+		Stage newStage = new Stage();
+		
+		DirectoryChooser dirChooser = new DirectoryChooser();
+		dirChooser.setTitle("Dossier à importer");
+		File selectedDir = dirChooser.showDialog(newStage);
+		if (selectedDir != null) {
+			 return selectedDir;
+		}
+		else {
+			 return (File) null;
+		}
 		
 	}
 

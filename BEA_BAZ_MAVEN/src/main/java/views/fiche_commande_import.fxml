@@ -55,7 +55,7 @@
                   </Label>
                </children>
             </Pane>
-            <HBox prefHeight="60.0" prefWidth="900.0">
+            <HBox fx:id="importDonneesHBox" prefHeight="39.0" prefWidth="940.0">
                <children>
                   <Button fx:id="importCommandeButton" mnemonicParsing="false" text="Importer des données" />
                   <Button fx:id="select_file_button" mnemonicParsing="false" onAction="#on_select_file_button" text="Sélectionner un fichier">
@@ -76,6 +76,29 @@
                </children>
                <VBox.margin>
                   <Insets left="10.0" />
+               </VBox.margin>
+            </HBox>
+            <HBox prefHeight="39.0" prefWidth="940.0">
+               <children>
+                  <Button fx:id="importimagesButton" mnemonicParsing="false" onAction="#onImportImagesButton" text="Importer des images :" />
+                  <Button fx:id="select_rep_button" mnemonicParsing="false" onAction="#on_select_rep_button" text="Sélectionner un répertoire">
+                     <HBox.margin>
+                        <Insets left="10.0" />
+                     </HBox.margin>
+                  </Button>
+                  <TextField fx:id="rep_path_textField" prefHeight="25.0" prefWidth="469.0">
+                     <HBox.margin>
+                        <Insets left="10.0" />
+                     </HBox.margin>
+                  </TextField>
+                  <Button fx:id="import_rep_button" mnemonicParsing="false" onAction="#on_import_rep_button" text="Importer">
+                     <HBox.margin>
+                        <Insets left="10.0" />
+                     </HBox.margin>
+                  </Button>
+               </children>
+               <VBox.margin>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                </VBox.margin>
             </HBox>
             <GridPane fx:id="grid" prefHeight="319.0" prefWidth="900.0" VBox.vgrow="NEVER">

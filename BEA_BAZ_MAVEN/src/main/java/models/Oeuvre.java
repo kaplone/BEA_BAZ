@@ -29,7 +29,9 @@ public class Oeuvre extends Commun{
 	               _observations,
 	               field_25,
 	               inscriptions_au_verso,
-	               format_de_conditionnement;
+	               format_de_conditionnement,
+	               technique,
+	               matiere;
 	
 	private ObjectId auteur;
 	
@@ -173,4 +175,22 @@ public class Oeuvre extends Commun{
 	public void setEtat_current(String etat_current) {
 		this.etat_current = etat_current;
 	}
+
+	public String getTechnique() {
+		return technique;
+	}
+
+	public void setTechnique(String technique) {
+		this.technique = technique;
+	}
+
+	public String getMatiere() {
+		return matiere;
+	}
+
+	public void setMatiere(String matiere) {
+		this.matiere = matiere;
+	}
+
+	
 }

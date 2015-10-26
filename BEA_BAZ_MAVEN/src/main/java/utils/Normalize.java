@@ -19,6 +19,13 @@ public class Normalize {
 		        .replace("=", "_")
 		        .toLowerCase();
 	}
+	
+    public static String normalizeLight (String s ){
+		
+		return s.replace("\nOui/Non", "")
+				.replace('\n', ' ')
+				.toLowerCase();
+	}
 
 	public static Object normalizeField(String s) {
 		return s.replace('"', ' ');
