@@ -66,15 +66,19 @@ public class Fiche_oeuvre_controller  implements Initializable{
 	@FXML
 	private Button editer;
 	@FXML
-	private Button versCommandeButton;
+	private Button versOeuvreButton;
 	@FXML
-	private Button versTraitementButton;
+	private Button versTraitementsButton;
 	@FXML
-	private Button versModeleButton;
+	private Button versModelesButton;
 	@FXML
 	private Button versRapportButton;
 	@FXML
-	private Button versFichierButton;
+	private Button versFichiersButton;
+	@FXML
+	private Button versProduitsButton;
+	@FXML
+	private Button versAuteursButton;
 	@FXML
 	private Button mise_a_jour_oeuvre;
 	
@@ -144,6 +148,27 @@ public class Fiche_oeuvre_controller  implements Initializable{
 		
 		currentStage.setScene(fiche_produit_scene);	
 	}
+	@FXML
+    public void onVersTraitementsButton(){
+    	Scene fiche_traitement_scene = new Scene((Parent) JfxUtils.loadFxml("/views/fiche_traitement.fxml"), 1275, 722);
+		fiche_traitement_scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+		
+		currentStage.setScene(fiche_traitement_scene);
+    }
+    @FXML
+    public void onVersModelesButton(){
+    	Scene fiche_model_scene = new Scene((Parent) JfxUtils.loadFxml("/views/fiche_model.fxml"), 1275, 722);
+		fiche_model_scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+		
+		currentStage.setScene(fiche_model_scene);
+    }
+    @FXML
+    public void onVersAuteursButton(){
+    	Scene fiche_auteur_scene = new Scene((Parent) JfxUtils.loadFxml("/views/fiche_auteur.fxml"), 1275, 722);
+		fiche_auteur_scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+		
+		currentStage.setScene(fiche_auteur_scene);
+    }
 	
 	@FXML
 	public void onVersCommandeButton(){
@@ -489,24 +514,11 @@ public class Fiche_oeuvre_controller  implements Initializable{
 //		
 //		
 //    }
-    
-    @FXML
-    public void onVerstraitementButton(){}
+
     @FXML
     public void onVersOeuvreButton(){}
     @FXML
     public void onVersFichiersButton(){}
-    @FXML
-    public void onVersTraitementsButton(){}
-    @FXML
-    public void onVersModelesButton(){}
-    @FXML
-    public void onVersAuteursButton(){
-    	Scene fiche_auteur_scene = new Scene((Parent) JfxUtils.loadFxml("/views/fiche_auteur.fxml"), 1275, 722);
-		fiche_auteur_scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
-		
-		currentStage.setScene(fiche_auteur_scene);
-    }
     @FXML
     public void onExporter_rapport_button(){
     	
@@ -625,17 +637,12 @@ public class Fiche_oeuvre_controller  implements Initializable{
 		commandeSelectionne = Main_BEA_BAZ.getCommande();
 		auteur = Main_BEA_BAZ.getAuteur();
 		
-
 		numero_archive_6s_textField.setEditable(false);
 		titre_textField.setEditable(false);
 		date_oeuvre_textField.setEditable(false);
 		dimensions_textField.setEditable(false);
 		inscriptions_textArea.setEditable(false);
 		observations_textArea.setEditable(false);
-//		
-//		System.out.println(oeuvreSelectionne);
-//		System.out.println(oeuvreSelectionne.getCote_archives_6s());
-//		System.out.println(oeuvreSelectionne.getTitre_de_l_oeuvre());
 
 		numero_archive_6s_textField.setText(oeuvreSelectionne.getCote_archives_6s());
 		titre_textField.setText(oeuvreSelectionne.getTitre_de_l_oeuvre());
@@ -647,13 +654,10 @@ public class Fiche_oeuvre_controller  implements Initializable{
         editer.setVisible(true);
         mise_a_jour_oeuvre.setVisible(false);
 		annuler.setVisible(false);
-		
-		versCommandeButton.setVisible(false);
-		versTraitementButton.setVisible(false);
-		versModeleButton.setVisible(false);
+
+		versOeuvreButton.setVisible(false);
 		versRapportButton.setVisible(false);
-		versFichierButton.setVisible(false);
-		
+
 		
 		traitementsAttendus = FXCollections.observableArrayList();
 		traitementsSupplementaires = FXCollections.observableArrayList();
