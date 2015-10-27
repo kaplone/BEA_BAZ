@@ -2,6 +2,7 @@ package application;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -13,6 +14,7 @@ import utils.FreeMarkerMaker;
 import utils.MongoAccess;
 import models.Auteur;
 import models.Commande;
+import models.Fichier;
 import models.Oeuvre;
 import models.OeuvreTraitee;
 import models.Produit;
@@ -57,7 +59,7 @@ public class Fiche_oeuvre_controller  implements Initializable{
 	//private TableColumn<TacheTraitement, String> traitements_supp_faits_tableColumn;
 	
 	@FXML
-	private ListView<Produit> listView_produits;
+	private ListView<Fichier> fichiers_listView;
 
 	@FXML
 	private Button annuler;
@@ -74,7 +76,7 @@ public class Fiche_oeuvre_controller  implements Initializable{
 	@FXML
 	private Button versFichierButton;
 	@FXML
-	private Button mise_a_jour_traitement;
+	private Button mise_a_jour_oeuvre;
 	
 	@FXML
 	private Polygon precedent_fleche;
@@ -123,6 +125,7 @@ public class Fiche_oeuvre_controller  implements Initializable{
 	private ObservableList<TacheTraitement> traitementsAttendus;
 	private ObservableList<TacheTraitement> traitementsSupplementaires;
 	private ObservableList<Auteur> observableAuteurs;
+	private ObservableList<Fichier> observableFichiers;
 	private TacheTraitement traitementSelectionne;
 	private Commande commandeSelectionne;
 	
@@ -236,6 +239,7 @@ public class Fiche_oeuvre_controller  implements Initializable{
 		
 		afficherAuteurs();
 		afficherTraitements();
+		afficherFichiers();
 	}
 	
 	public void afficherTraitements(){
@@ -380,7 +384,7 @@ public class Fiche_oeuvre_controller  implements Initializable{
 //    }
 //    
     @FXML
-    public void onEditerTraitementButton(){
+    public void onEditerOeuvreButton(){
 //    	
 //
 //    	annuler.setVisible(true);
@@ -412,7 +416,7 @@ public class Fiche_oeuvre_controller  implements Initializable{
     }
 //    
     @FXML
-    public void onMiseAJourTraitementButton(){
+    public void onMiseAJourOeuvreButton(){
 //
 //    	if (traitementSelectionne == null) {
 //    		traitementSelectionne = new Traitement();
@@ -509,16 +513,6 @@ public class Fiche_oeuvre_controller  implements Initializable{
     	FreeMarkerMaker.odt2pdf(oeuvreSelectionne, oeuvreTraiteeSelectionne);
     };
     @FXML
-    public void onAjoutProduit(){
-    	
-    	Main_BEA_BAZ.setTacheTraitementEdited(traitements_supplementaires_tableView.getSelectionModel().getSelectedItem());
-    	
-    	Scene fiche_produit_scene = new Scene((Parent) JfxUtils.loadFxml("/views/fiche_produit.fxml"), 1275, 722);
-		fiche_produit_scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
-		
-		currentStage.setScene(fiche_produit_scene);
-    }
-    @FXML
     public void onVersClientButton(){
     	Scene fiche_client_scene = new Scene((Parent) JfxUtils.loadFxml("/views/fiche_client.fxml"), 1275, 722);
 		fiche_client_scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
@@ -558,6 +552,36 @@ public class Fiche_oeuvre_controller  implements Initializable{
 		
 	}
     
+    public void afficherFichiers(){
+    	
+    	observableFichiers.clear();
+    	
+    	try {
+    	
+	    	for (ObjectId fichier_id : oeuvreTraiteeSelectionne.getFichiers()){
+	    		
+	    		observableFichiers.add(MongoAccess.request("fichier", fichier_id).as(Fichier.class).next());
+	    	}
+	    	
+	    	observableFichiers.sort(new Comparator<Fichier>() {
+
+				@Override
+				public int compare(Fichier o1, Fichier o2) {
+				
+					return String.format("%s_%02d", o1.getNom().split("\\.")[1], Integer.parseInt(o1.getNom().split("\\.")[2]))
+				.compareTo(String.format("%s_%02d", o2.getNom().split("\\.")[1], Integer.parseInt(o2.getNom().split("\\.")[2])));
+				}
+			});
+	    	
+	    	fichiers_listView.setItems(observableFichiers);
+	    	
+	    	Main_BEA_BAZ.setObservableFichiers(observableFichiers);
+    	}
+    	catch (NullPointerException npe ){
+    		
+    	}
+    }
+    
     @FXML
     public void onTraitementAttenduSelect(){
     	
@@ -572,6 +596,19 @@ public class Fiche_oeuvre_controller  implements Initializable{
     }
     @FXML
     public void onTraitementSuppSelect(){
+    	
+    }
+    
+    @FXML
+    public void onFichierSelect(){
+    	
+    	Fichier fichier = fichiers_listView.getSelectionModel().getSelectedItem();
+    	Main_BEA_BAZ.setFichier(fichier);
+    	
+    	Scene fiche_fichier_scene = new Scene((Parent) JfxUtils.loadFxml("/views/fiche_fichier.fxml"), 1275, 722);
+		fiche_fichier_scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+		
+		currentStage.setScene(fiche_fichier_scene);
     	
     }
 
@@ -608,7 +645,7 @@ public class Fiche_oeuvre_controller  implements Initializable{
 		observations_textArea.setText(oeuvreSelectionne.get_observations());
 
         editer.setVisible(true);
-        mise_a_jour_traitement.setVisible(false);
+        mise_a_jour_oeuvre.setVisible(false);
 		annuler.setVisible(false);
 		
 		versCommandeButton.setVisible(false);
@@ -620,12 +657,14 @@ public class Fiche_oeuvre_controller  implements Initializable{
 		
 		traitementsAttendus = FXCollections.observableArrayList();
 		traitementsSupplementaires = FXCollections.observableArrayList();
+		observableFichiers = FXCollections.observableArrayList();
 		
 		oeuvresTraitees = new ArrayList<OeuvreTraitee>();
 
 		
 		currentStage = Main_BEA_BAZ.getStage();
-
+        
+		afficherFichiers();
 		afficherOeuvres();
 		reloadOeuvre();
 

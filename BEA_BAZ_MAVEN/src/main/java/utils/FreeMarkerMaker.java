@@ -53,7 +53,7 @@ public class FreeMarkerMaker {
         //return Main_BEA_BAZ.getCommande().getModele().getCheminVersModel().getParent().resolve("P1140344.JPG").toFile();
 
 		//return MongoAccess.request("fichier", ot.getFichiers().get(ot.getFichiers().size() -2)).as(Fichier.class).next().getFichierLie();
-        return af.get(af.size() -2).getFichierLie();
+        return new File(af.get(af.size() -2).getFichierLie());
     }
 
 	public static void odt2pdf(Oeuvre o, OeuvreTraitee ot) {

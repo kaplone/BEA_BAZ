@@ -1,18 +1,39 @@
 package models;
 
 import java.io.File;
+import java.nio.file.Paths;
+
+import utils.MongoAccess;
 
 public class Fichier extends Commun{
 	
-	private File fichierLie;
+	private String fichierLie;
 	
 	private String legende;
+	
+	public static void update(Fichier c){
 
-	public File getFichierLie() {
+		MongoAccess.update("fichier", c);
+	}
+	
+    public static void save(Fichier c){
+		
+		MongoAccess.save("fichier", c);
+		
+	}
+    
+    @Override
+    public String toString(){
+    	
+    	return Paths.get(this.fichierLie).getFileName().toString();
+    	
+    }
+
+	public String getFichierLie() {
 		return fichierLie;
 	}
 
-	public void setFichierLie(File fichierLie) {
+	public void setFichierLie(String fichierLie) {
 		this.fichierLie = fichierLie;
 	}
 
@@ -26,7 +47,7 @@ public class Fichier extends Commun{
 	
 	@Override
 	public String getNom(){
-		return fichierLie.toPath().getFileName().toString();
+		return Paths.get(this.fichierLie).getFileName().toString();
 	}
 	
 

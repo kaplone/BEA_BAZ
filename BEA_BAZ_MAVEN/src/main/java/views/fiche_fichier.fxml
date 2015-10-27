@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.image.*?>
 <?import javafx.scene.shape.*?>
 <?import javafx.scene.text.*?>
 <?import javafx.geometry.*?>
@@ -12,17 +13,17 @@
    <left>
       <VBox alignment="TOP_CENTER" prefHeight="649.0" prefWidth="218.0" BorderPane.alignment="CENTER">
          <children>
-            <Label alignment="CENTER" contentDisplay="CENTER" text="Modéles">
+            <Label alignment="CENTER" contentDisplay="CENTER" text="Fichiers liés">
                <VBox.margin>
                   <Insets bottom="10.0" top="10.0" />
                </VBox.margin>
             </Label>
-            <ListView fx:id="listView_model" onKeyTyped="#onModelSelect" onMouseClicked="#onModelSelect" prefHeight="645.0" prefWidth="138.0">
+            <ListView fx:id="fichiers_listView" onKeyReleased="#onFichierSelect" onMouseClicked="#onFichierSelect" prefHeight="645.0" prefWidth="138.0">
                <VBox.margin>
                   <Insets bottom="10.0" top="10.0" />
                </VBox.margin>
             </ListView>
-            <Button fx:id="nouveau_model" mnemonicParsing="false" onAction="#onNouveauModelButton" text="Nouveau Modèle">
+            <Button fx:id="nouveau_fichier_button" mnemonicParsing="false" onAction="#onNouveauFichierButton" text="Nouveau Fichier">
                <VBox.margin>
                   <Insets bottom="10.0" top="10.0" />
                </VBox.margin>
@@ -41,7 +42,7 @@
          <children>
             <Pane prefHeight="50.0" prefWidth="889.0">
                <children>
-                  <Label layoutX="35.0" layoutY="6.0" text="FICHE Modèle :">
+                  <Label layoutX="35.0" layoutY="6.0" text="FICHE FICHIER :">
                      <font>
                         <Font size="31.0" />
                      </font>
@@ -56,6 +57,7 @@
               </columnConstraints>
               <rowConstraints>
                 <RowConstraints maxHeight="30.0" minHeight="30.0" prefHeight="30.0" valignment="CENTER" vgrow="NEVER" />
+                  <RowConstraints maxHeight="30.0" minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
                   <RowConstraints maxHeight="30.0" minHeight="30.0" prefHeight="30.0" valignment="CENTER" vgrow="NEVER" />
                 <RowConstraints minHeight="30.0" prefHeight="100.0" vgrow="SOMETIMES" />
               </rowConstraints>
@@ -64,18 +66,33 @@
                </VBox.margin>
                <children>
                   <Label text="Nom affiché : " GridPane.valignment="CENTER" GridPane.vgrow="NEVER" />
-                  <Label text="Remarques : " GridPane.halignment="LEFT" GridPane.rowIndex="2" GridPane.valignment="TOP">
+                  <Label text="Remarques : " GridPane.halignment="LEFT" GridPane.rowIndex="3" GridPane.valignment="TOP">
                      <GridPane.margin>
                         <Insets bottom="10.0" right="10.0" top="10.0" />
                      </GridPane.margin>
                   </Label>
-                  <TextArea fx:id="remarques_model_textArea" prefHeight="145.0" prefWidth="559.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
-                     <GridPane.margin>
-                        <Insets top="10.0" />
-                     </GridPane.margin></TextArea>
-                  <TextField fx:id="nom_model_textField" maxHeight="25.0" minHeight="25.0" prefHeight="25.0" GridPane.columnIndex="1" GridPane.valignment="CENTER" GridPane.vgrow="NEVER" />
-                  <TextField fx:id="file_path_textField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                  <Button fx:id="cheminVersModelButton" mnemonicParsing="false" onAction="#onCheminVersModelButton" text="Rechercher un modèle" GridPane.rowIndex="1" />
+                  <HBox GridPane.columnIndex="1" GridPane.rowIndex="3">
+                     <children>
+                        <TextArea fx:id="remarques_fichier_textArea" prefHeight="306.0" prefWidth="395.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                           <GridPane.margin>
+                              <Insets top="10.0" />
+                           </GridPane.margin>
+                           <HBox.margin>
+                              <Insets top="10.0" />
+                           </HBox.margin>
+                        </TextArea>
+                        <ImageView fx:id="fichier_imageView" fitHeight="291.0" fitWidth="327.0" pickOnBounds="true" preserveRatio="true">
+                           <HBox.margin>
+                              <Insets left="10.0" top="10.0" />
+                           </HBox.margin>
+                        </ImageView>
+                     </children>
+                  </HBox>
+                  <TextField fx:id="nom_fichier_textField" maxHeight="25.0" minHeight="25.0" prefHeight="25.0" GridPane.columnIndex="1" GridPane.valignment="CENTER" GridPane.vgrow="NEVER" />
+                  <TextField fx:id="fichier_legende_textField" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                  <Label text="Légende : " GridPane.rowIndex="2" />
+                  <Label text="Chemin du fichier :" GridPane.rowIndex="1" />
+                  <Label fx:id="chemin_fichier_label" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                </children>
             </GridPane>
             <HBox fx:id="hbox" alignment="TOP_CENTER" prefHeight="50.0" prefWidth="200.0">
@@ -83,8 +100,8 @@
                   <Insets bottom="10.0" left="10.0" right="10.0" top="100.0" />
                </VBox.margin>
                <children>
-                  <Button fx:id="mise_a_jour_model" mnemonicParsing="false" onAction="#onMiseAJourModelButton" text="Mise à jour" />
-                  <Button fx:id="editer" mnemonicParsing="false" onAction="#onEditerModelButton" text="Editer" />
+                  <Button fx:id="mise_a_jour_fichier" mnemonicParsing="false" onAction="#onMiseAJourFichierButton" text="Mise à jour" />
+                  <Button fx:id="editer" mnemonicParsing="false" onAction="#onEditerFichierButton" text="Editer" />
                   <Button fx:id="annuler" mnemonicParsing="false" onAction="#onAnnulerEditButton" text="Annuler">
                      <HBox.margin>
                         <Insets left="50.0" />

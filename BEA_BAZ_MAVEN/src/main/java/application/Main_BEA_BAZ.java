@@ -3,6 +3,7 @@ package application;
 import models.Auteur;
 import models.Client;
 import models.Commande;
+import models.Fichier;
 import models.Model;
 import models.Oeuvre;
 import models.OeuvreTraitee;
@@ -11,6 +12,7 @@ import models.TacheTraitement;
 import models.Traitement;
 import application.JfxUtils;
 import javafx.application.Application;
+import javafx.collections.ObservableList;
 import javafx.stage.Stage;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -33,6 +35,9 @@ public class Main_BEA_BAZ extends Application {
 	private static Auteur auteur;
 	
 	private static Model model;
+	
+	private static Fichier fichier;
+	public static ObservableList<Fichier> observableFichiers;
 	
 	private static OeuvreTraitee oeuvre;
 	private static int oeuvre_index;
@@ -150,5 +155,24 @@ public class Main_BEA_BAZ extends Application {
 	public static void setTacheTraitement(TacheTraitement tacheTraitement) {
 		Main_BEA_BAZ.tacheTraitement = tacheTraitement;
 	}
+
+	public static Fichier getFichier() {
+		return fichier;
+	}
+
+	public static void setFichier(Fichier fichier) {
+		Main_BEA_BAZ.fichier = fichier;
+	}
+
+	public static ObservableList<Fichier> getObservableFichiers() {
+		return observableFichiers;
+	}
+
+	public static void setObservableFichiers(
+			ObservableList<Fichier> observableFichiers) {
+		Main_BEA_BAZ.observableFichiers = observableFichiers;
+	}
+	
+	
 
 }

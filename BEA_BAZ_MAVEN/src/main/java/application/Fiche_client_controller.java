@@ -153,18 +153,17 @@ public class Fiche_client_controller  implements Initializable{
 	}
 	
     private void affichageInfos(){
-
-    	
-    	nom_client_textField.setText(clientSelectionne.getNom());
-    	nom_complet_client_textField.setText(clientSelectionne.getNom_complet());
-    	adresse_voie_textField.setText(clientSelectionne.getAdresse_rue());
-    	adresse_cp_textField.setText(clientSelectionne.getAdresse_cp());
-    	adresse_ville_textField.setText(clientSelectionne.getAdresse_ville());
-    	remarques_client_textArea.setText(clientSelectionne.getRemarques());
     	
     	liste_commandes.clear();
     	
     	if (clientSelectionne != null){
+    		
+    		nom_client_textField.setText(clientSelectionne.getNom());
+    		nom_complet_client_textField.setText(clientSelectionne.getNom_complet());
+        	adresse_voie_textField.setText(clientSelectionne.getAdresse_rue());
+        	adresse_cp_textField.setText(clientSelectionne.getAdresse_cp());
+        	adresse_ville_textField.setText(clientSelectionne.getAdresse_ville());
+        	remarques_client_textArea.setText(clientSelectionne.getRemarques());
     		
     		commandeCursor = MongoAccess.request("commande", clientSelectionne).as(Commande.class);
     		

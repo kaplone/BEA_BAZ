@@ -100,7 +100,7 @@ public class Walk {
 			String rang = path.getFileName().toString().split("\\.")[2];
 			
 			Fichier fichier = new Fichier();
-			fichier.setFichierLie(path.toFile());
+			fichier.setFichierLie(path.toString());
 			
 			String legende = "";
 			

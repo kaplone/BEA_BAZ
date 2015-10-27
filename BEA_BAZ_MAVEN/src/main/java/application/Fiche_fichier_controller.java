@@ -9,7 +9,7 @@ import java.util.ResourceBundle;
 import org.jongo.MongoCursor;
 
 import utils.MongoAccess;
-import models.Model;
+import models.Fichier;
 import models.Client;
 import models.Commande;
 import models.Traitement;
@@ -23,30 +23,32 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 public class Fiche_fichier_controller  implements Initializable{
 	
+	private ObservableList<Fichier> liste_fichiers;
 	@FXML
-	private ObservableList<Model> liste_models;
-	@FXML
-	private ListView<Model> listView_model;
+	private ListView<Fichier> fichiers_listView;
 
 	@FXML
-	private TextField nom_model_textField;
+	private TextField nom_fichier_textField;
 	@FXML
-	private TextField file_path_textField;
+	private TextField fichier_legende_textField;
 	@FXML
-	private TextArea remarques_model_textArea;
+	private TextArea remarques_fichier_textArea;
 	@FXML
-	private Button nouveau_model;
+	private Button nouveau_fichier;
 	@FXML
-	private Button mise_a_jour_model;
+	private Button mise_a_jour_fichier;
 	@FXML
 	private Button annuler;
 	@FXML
@@ -69,13 +71,18 @@ public class Fiche_fichier_controller  implements Initializable{
 	private Button versFichiersButton;
 	@FXML
 	private Button versModelsButton;
+	@FXML
+	private ImageView fichier_imageView;
 	
-	MongoCursor<Model> modelCursor;
-	Model modelSelectionne;
+	@FXML
+	private Label chemin_fichier_label;
+	
+	MongoCursor<Fichier> fichierCursor;
+	Fichier fichierSelectionne;
 	
 	Stage currentStage;
 
-	Model model;
+	Fichier fichier;
 	
 	private File file;
 	
@@ -114,81 +121,83 @@ public class Fiche_fichier_controller  implements Initializable{
 	}
 	
 	@FXML
-	public void onModelSelect(){
+	public void onFichierSelect(){
 		
-		modelSelectionne = listView_model.getSelectionModel().getSelectedItem();
-		Main_BEA_BAZ.setModel(modelSelectionne);		
-		affichageInfos(modelSelectionne);
+		fichierSelectionne = fichiers_listView.getSelectionModel().getSelectedItem();
+		Main_BEA_BAZ.setFichier(fichierSelectionne);		
+		affichageInfos();
 		
 	}
 	
-    private void affichageInfos(Model modelSelectionne){
+    private void affichageInfos(){
 
     	
-    	nom_model_textField.setText(modelSelectionne.getNom());
-    	remarques_model_textArea.setText(modelSelectionne.getRemarques());
+    	nom_fichier_textField.setText(fichierSelectionne.getNom());
+    	remarques_fichier_textArea.setText(fichierSelectionne.getRemarques());
+    	fichier_legende_textField.setText(fichierSelectionne.getLegende());
+    	chemin_fichier_label.setText(fichierSelectionne.getFichierLie().toString());
+    	fichier_imageView.setImage(new Image(String.format("file:%s" ,fichierSelectionne.getFichierLie().toString())));
     	
-    	model = Main_BEA_BAZ.getModel();    	
-    	
+	
     }
     
-    public void onNouveauModelButton() {
+    public void onNouveauFichierButton() {
     	
-    	mise_a_jour_model.setText("Enregistrer");
-    	nom_model_textField.setText("");
-    	remarques_model_textArea.setText("");
-    	nom_model_textField.setPromptText("saisir le nom du nouvel model");
-    	remarques_model_textArea.setPromptText("éventuelles remarques");
-    	nouveau_model.setVisible(false);
+    	mise_a_jour_fichier.setText("Enregistrer");
+    	nom_fichier_textField.setText("");
+    	remarques_fichier_textArea.setText("");
+    	nom_fichier_textField.setPromptText("saisir le nom du nouvel model");
+    	remarques_fichier_textArea.setPromptText("éventuelles remarques");
+    	nouveau_fichier.setVisible(false);
     	
-    	modelSelectionne = new Model();
+    	fichierSelectionne = new Fichier();
     	
     	edit = false;
     	annuler.setVisible(true);
     	editer.setVisible(false);
-    	mise_a_jour_model.setVisible(true);
-    	nom_model_textField.setEditable(true);
-		remarques_model_textArea.setEditable(true);
+    	mise_a_jour_fichier.setVisible(true);
+    	nom_fichier_textField.setEditable(true);
+		remarques_fichier_textArea.setEditable(true);
     }
     
     public void onAnnulerButton() {
     	
-    	mise_a_jour_model.setText("Mise à jour");
-    	nom_model_textField.setText("");
-    	remarques_model_textArea.setText("");
-    	nom_model_textField.setPromptText("");
-    	remarques_model_textArea.setPromptText("");
-    	nouveau_model.setText("Nouvel model");
+    	mise_a_jour_fichier.setText("Mise à jour");
+    	nom_fichier_textField.setText("");
+    	remarques_fichier_textArea.setText("");
+    	nom_fichier_textField.setPromptText("");
+    	remarques_fichier_textArea.setPromptText("");
+    	nouveau_fichier.setText("Nouvel model");
     	rafraichirAffichage();
-    	listView_model.getSelectionModel().select(modelSelectionne);
-    	affichageInfos(modelSelectionne);
+    	fichiers_listView.getSelectionModel().select(fichierSelectionne);
+    	affichageInfos();
     }
     
     public void rafraichirAffichage(){
     	
-    	liste_models = FXCollections.observableArrayList();
+    	liste_fichiers = FXCollections.observableArrayList();
 		
 		
 		
-		modelCursor = MongoAccess.request("model").as(Model.class);
+		fichierCursor = MongoAccess.request("model").as(Fichier.class);
 		
-		while (modelCursor.hasNext()){
-			liste_models.add(modelCursor.next());
+		while (fichierCursor.hasNext()){
+			liste_fichiers.add(fichierCursor.next());
 		}
 		
-		listView_model.setItems(liste_models);
+		fichiers_listView.setItems(liste_fichiers);
     	
     }
     
     @FXML
-    public void onEditerModelButton(){
+    public void onEditerFichierButton(){
     	
 
     	annuler.setVisible(true);
     	editer.setVisible(false);
-    	mise_a_jour_model.setVisible(true);
-    	nom_model_textField.setEditable(true);
-		remarques_model_textArea.setEditable(true);
+    	mise_a_jour_fichier.setVisible(true);
+    	nom_fichier_textField.setEditable(true);
+		remarques_fichier_textArea.setEditable(true);
 		
 		edit = true;
 
@@ -200,46 +209,46 @@ public class Fiche_fichier_controller  implements Initializable{
     	
     	annuler.setVisible(false);
     	editer.setVisible(true);
-    	mise_a_jour_model.setVisible(false);
-    	nom_model_textField.setEditable(false);
-		remarques_model_textArea.setEditable(false);
-		nouveau_model.setVisible(true);
+    	mise_a_jour_fichier.setVisible(false);
+    	nom_fichier_textField.setEditable(false);
+		remarques_fichier_textArea.setEditable(false);
+		nouveau_fichier.setVisible(true);
 		rafraichirAffichage();
-		listView_model.getSelectionModel().select(modelSelectionne);
-    	affichageInfos(modelSelectionne);
+		fichiers_listView.getSelectionModel().select(fichierSelectionne);
+    	affichageInfos();
     	
     	edit = false;
     	
     }
     
     @FXML
-    public void onMiseAJourModelButton(){
+    public void onMiseAJourFichierButton(){
     	
-    	if (modelSelectionne == null){
-    		modelSelectionne = new Model();
+    	if (fichierSelectionne == null){
+    		fichierSelectionne = new Fichier();
     	}
     	
-    	modelSelectionne.setNom(nom_model_textField.getText());
-    	modelSelectionne.setRemarques(remarques_model_textArea.getText());
-    	modelSelectionne.setCheminVersModelSTR(file_path_textField.getText());
+    	fichierSelectionne.setNom(nom_fichier_textField.getText());
+    	fichierSelectionne.setRemarques(remarques_fichier_textArea.getText());
+    	//fichierSelectionne.setCheminVersModelSTR(fichier_legende_textField.getText());
     	
     	annuler.setVisible(false);
     	editer.setVisible(true);
-    	mise_a_jour_model.setVisible(false);
-    	nom_model_textField.setEditable(false);
-		remarques_model_textArea.setEditable(false);
+    	mise_a_jour_fichier.setVisible(false);
+    	nom_fichier_textField.setEditable(false);
+		remarques_fichier_textArea.setEditable(false);
 		
 		if (edit) {
-			Model.update(modelSelectionne);
+			Fichier.update(fichierSelectionne);
 			//afficherClient();
 			rafraichirAffichage();
 			onAnnulerEditButton();
 		}
 		else {
 			
-			System.out.println(modelSelectionne);
+			System.out.println(fichierSelectionne);
 			
-		   Model.save(modelSelectionne);
+		   Fichier.save(fichierSelectionne);
 		   //afficherClient();
 		   onAnnulerEditButton();
 		}
@@ -253,7 +262,7 @@ protected File chooseExport(){
 		FileChooser fileChooser = new FileChooser();
 		fileChooser.setTitle("Fichier à importer");
 		fileChooser.getExtensionFilters().addAll(
-		         new FileChooser.ExtensionFilter("feuille Open Office", "*.odt"));
+		         new FileChooser.ExtensionFilter("image jpg", "*.jpg"));
 		File selectedFile = fileChooser.showOpenDialog(newStage);
 		if (selectedFile != null) {
 			 return selectedFile;
@@ -268,8 +277,8 @@ protected File chooseExport(){
 	public void onCheminVersModelButton(){
 		
 		file = chooseExport();
-		file_path_textField.setText(file.toString());
-		nom_model_textField.setText(file.getName().split("\\.")[0]);
+		fichier_legende_textField.setText(file.toString());
+		nom_fichier_textField.setText(file.getName().split("\\.")[0]);
 	}
 	@FXML
 	public void on_import_file_button(){
@@ -284,21 +293,21 @@ protected File chooseExport(){
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 
-		model = Main_BEA_BAZ.getModel();
+		fichier = Main_BEA_BAZ.getFichier();
 		
-		if (model != null){
-			nom_model_textField.setEditable(false);
-			remarques_model_textArea.setEditable(false);
+		if (fichier != null){
+			nom_fichier_textField.setEditable(false);
+			remarques_fichier_textArea.setEditable(false);
 	        editer.setVisible(true);
-	        mise_a_jour_model.setVisible(false);
+	        mise_a_jour_fichier.setVisible(false);
 			annuler.setVisible(false);
 		}
 		else {
-			nom_model_textField.setEditable(true);
-			remarques_model_textArea.setEditable(true);
+			nom_fichier_textField.setEditable(true);
+			remarques_fichier_textArea.setEditable(true);
 	        editer.setVisible(false);
-	        mise_a_jour_model.setVisible(true);
-	        mise_a_jour_model.setText("Enregistrer");
+	        mise_a_jour_fichier.setVisible(true);
+	        mise_a_jour_fichier.setText("Enregistrer");
 			annuler.setVisible(false);
 		}
 		
@@ -308,19 +317,26 @@ protected File chooseExport(){
 		versRapportButton.setVisible(false);
 		
 		versModelsButton.setVisible(false);
-		
-		liste_models = FXCollections.observableArrayList();
-		
+
 		currentStage = Main_BEA_BAZ.getStage();
 		
-		modelCursor = MongoAccess.request("model").as(Model.class);
+		liste_fichiers = Main_BEA_BAZ.getObservableFichiers();
+		fichiers_listView.setItems(liste_fichiers);
 		
-		while (modelCursor.hasNext()){
-			liste_models.add(modelCursor.next());
+		int index = 0;
+		
+		for (Fichier f : liste_fichiers){
+			if (f.getNom().equals(fichier.getNom())){
+				break;
+			}
+			else {
+				index ++;
+			}
 		}
 		
-		listView_model.setItems(liste_models);
-
+		fichiers_listView.getSelectionModel().select(index);
+		fichierSelectionne = fichier;
+		affichageInfos();
 	}
 
 }
