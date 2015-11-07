@@ -116,7 +116,7 @@ public class OeuvreTraitee extends Oeuvre {
 	}
 	public ImageView getIcone_progression() {
 		
-        Image image = new Image(progressionOeuvreTraitee.getUsedImage().toURI().toString());
+        Image image = new Image(progressionOeuvreTraitee.getUsedImage());
         
         ImageView usedImage = new ImageView();
         usedImage.setFitHeight(15);

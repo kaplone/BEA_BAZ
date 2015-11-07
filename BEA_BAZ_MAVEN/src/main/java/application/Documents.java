@@ -247,15 +247,25 @@ public class Documents {
 	        
 	        default : break;
 	        	
-	}
+	    }
 	        	
         
         workbook.close();
         file.close();
 
-	}
+	    }
 		
 	}
+	
+	public static boolean isRowEmpty(Row row) {
+	    for (int c = row.getFirstCellNum(); c < row.getLastCellNum(); c++) {
+	        Cell cell = row.getCell(c);
+	        if (cell != null && cell.getCellType() != Cell.CELL_TYPE_BLANK)
+	            return false;
+	    }
+	    return true;
+	}
+	
 
 	public static void read(File file_, Commande commande_) throws IOException {
 		
@@ -284,7 +294,7 @@ public class Documents {
         XSSFWorkbook workbook = new XSSFWorkbook(file);
 
         //Get first/desired sheet from the workbook
-        XSSFSheet sheet = workbook.getSheetAt(1);
+        XSSFSheet sheet = workbook.getSheetAt(0);
 
         //Iterate through each rows one by one
         Iterator<Row> rowIterator = sheet.iterator();
@@ -293,6 +303,10 @@ public class Documents {
         	ArrayList<String> alterations = new ArrayList<>();
 
         	Row row = rowIterator.next();
+        	
+        	if (isRowEmpty(row)){
+        		continue;
+        	}
         	
         	boolean st;
 
@@ -390,7 +404,7 @@ public class Documents {
 	                // les valeurs suivantes servent à construire 
 	                // une json string
 	            	else {
-	
+	            		
 		                //Check the cell type and format accordingly
 		                switch (cell.getCellType())
 		                {
@@ -418,11 +432,13 @@ public class Documents {
 	            	}
 	            }
 	            
-	            titres = false; // après le premier passage ce ne sera plus un titre
-	            
 	            index = 0; // on initialise pour la prochaine ligne
-	
 	            
+	            if (titres) {
+	            	titres = false; // après le premier passage ce ne sera plus un titre
+	            	continue;
+	            }
+
 	            string_oeuvre = string_oeuvre_liste.stream().collect(Collectors.joining(", ", "{", "}"));
 	
 	            o = mapper.readValue(string_oeuvre, Oeuvre.class);

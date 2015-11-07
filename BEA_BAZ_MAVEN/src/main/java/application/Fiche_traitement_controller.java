@@ -143,7 +143,7 @@ public class Fiche_traitement_controller  implements Initializable{
 	
 	public void affichageProduitsUtilises(){
 		
-		ImageView iv = new ImageView(new Image(Progression.NULL_.getUsedImage().toURI().toString()));
+		ImageView iv = new ImageView(new Image(Progression.NULL_.getUsedImage()));
 		iv.setPreserveRatio(true);
         iv.setSmooth(true);
         iv.setCache(true);

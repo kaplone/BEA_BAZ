@@ -100,7 +100,7 @@ public class TacheTraitement extends Commun{
 	public ImageView getIcone_progression() {
 		
 		
-        Image image = new Image(fait_.getUsedImage().toURI().toString());
+        Image image = new Image(fait_.getUsedImage());
         
         ImageView usedImage = new ImageView();
         usedImage.setFitHeight(15);

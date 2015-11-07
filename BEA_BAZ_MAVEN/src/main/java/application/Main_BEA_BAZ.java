@@ -10,6 +10,13 @@ import models.OeuvreTraitee;
 import models.Produit;
 import models.TacheTraitement;
 import models.Traitement;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
+import com.mongodb.MongoTimeoutException;
+
 import application.JfxUtils;
 import javafx.application.Application;
 import javafx.collections.ObservableList;
@@ -42,13 +49,27 @@ public class Main_BEA_BAZ extends Application {
 	private static OeuvreTraitee oeuvre;
 	private static int oeuvre_index;
 	
-	
+	String cheminMongod = "C:\\Program Files\\MongoDB\\Server\\3.0\\bin\\mongod.exe";
+	//String cheminMongo = "C:\\Program Files\\MongoDB\\Server\\3.0\\bin\\mongo.exe";
+	String cheminMongo = "/home/kaplone/.wine/drive_c/Program Files (x86)/mongodb/mongo.exe";
+	String[] cmdArray = new String[]{"mongo"};
+	String[] cmdArrayd = new String[]{"mongod"};
 
 	@Override
 	public void start(Stage primaryStage) {
+	
+		System.out.println(isMongodRunning());
 		
-		String cheminMongod = "C:\\Program Files\\MongoDB\\Server\\3.0\\bin\\mongod.exe";
-		String cheminMongo = "C:\\Program Files\\MongoDB\\Server\\3.0\\bin\\mongo.exe";
+		if(! isMongodRunning()){
+			Process p;
+			try {
+				p = Runtime.getRuntime().exec(cmdArrayd);
+				System.out.println("lancement du serveur");
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 		
 		utils.MongoAccess.connect();
 		
@@ -63,6 +84,34 @@ public class Main_BEA_BAZ extends Application {
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public boolean isMongodRunning(){
+		
+		boolean bool = false;
+		
+		try {
+	        String line;
+	        Process p = Runtime.getRuntime().exec("ps -e");
+//	        Process p = Runtime.getRuntime().exec
+//	                (System.getenv("windir") +"\\system32\\"+"tasklist.exe");
+//	        
+	        BufferedReader input =
+	                new BufferedReader(new InputStreamReader(p.getInputStream()));
+	        while ((line = input.readLine()) != null) {
+	            //System.out.println(line); //<-- Parse data here.
+	        	if (line.contains("mongod")){
+	        		bool = true;
+	        	}
+	        }
+	        input.close();
+	    } catch (Exception err) {
+	        err.printStackTrace();
+	    }
+		
+		return bool;
+
+	    
 	}
 	
 	public static Stage getStage(){

@@ -549,9 +549,9 @@ public class Fiche_tache_traitement_controller  implements Initializable{
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		
-		coche_fait.setImage(new Image(Progression.FAIT_.getUsedImage().toURI().toString()));
-		coche_todo.setImage(new Image(Progression.TODO_.getUsedImage().toURI().toString()));
-		coche_so.setImage(new Image(Progression.NULL_.getUsedImage().toURI().toString()));
+		coche_fait.setImage(new Image(Progression.FAIT_.getUsedImage()));
+		coche_todo.setImage(new Image(Progression.TODO_.getUsedImage()));
+		coche_so.setImage(new Image(Progression.NULL_.getUsedImage()));
 		
 		traitementSelectionne = Main_BEA_BAZ.getTacheTraitementEdited();
 
