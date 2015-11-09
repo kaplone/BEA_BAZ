@@ -271,6 +271,7 @@ public class Documents {
 	public static void read(File file_, Commande commande_) throws IOException {
 		
 		commande_id = commande_.get_id();
+		commande = commande_;
 		
 		boolean titres = true;
 		boolean update = false;
@@ -434,14 +435,15 @@ public class Documents {
 	            o = mapper.readValue(string_oeuvre, Oeuvre.class);
 
 	            utils.MongoAccess.save("oeuvre", o);
-	            
-	            listeDesTachesTraitement(o);
+
         	}
         	ot = new OeuvreTraitee();
             ot.setOeuvre(o);
             ot.setCommande(commande_);
             ot.setProgressionOeuvreTraitee(Progression.TODO_);
             ot.setAlterations(alterations);
+            
+            utils.MongoAccess.save("oeuvreTraitee", ot);
             
             ArrayList<ObjectId> traitementsEnCours = new ArrayList<>();
             
@@ -450,18 +452,19 @@ public class Documents {
             	TacheTraitement tt = new TacheTraitement();
             	tt.setTraitement(t);
             	tt.setOeuvreTraiteeId(ot.get_id());
+            	tt.setCommandeId(commande_.get_id());
+    			tt.setCreated_at(Date.from(Instant.now()));
             	tt.setFait_(Progression.TODO_);
             	tt.setNom(t.getNom());
             	
             	utils.MongoAccess.save("tacheTraitement", tt);
-            	
-            	
+
             	traitementsEnCours.add(tt.get_id());
             	
     		}
             ot.setTraitementsAttendus(traitementsEnCours);
             
-            utils.MongoAccess.save("oeuvreTraitee", ot);
+            utils.MongoAccess.update("oeuvreTraitee", ot);
 	     }
         
         //////////////////////////////////////////////////////////////////////////////////////////////////:
