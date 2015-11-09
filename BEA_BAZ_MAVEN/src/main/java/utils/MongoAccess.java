@@ -116,17 +116,21 @@ public class MongoAccess {
 	}
     
     public static Find request(String table, String field, ObjectId objectId, String object) {	
-    	
-    	System.out.println("table : " + table);
-    	System.out.println("field : " + field);
-    	System.out.println("objectId : " + objectId);
-    	System.out.println("object : " + object);
 		
 		Find find = null;
 		collec = jongo.getCollection(table);
 		find = collec.find("{# :  #}", field, objectId).projection("{# : 1, _id : 0", object);
 
 		return find;
+	}
+    
+    public static FindOne request(String table, String field1, String value1, String field2, String value2) {	
+		
+		FindOne findOne = null;
+		collec = jongo.getCollection(table);
+		findOne = collec.findOne("{# :  #, # :  #}", field1, value1, field2, value2);
+
+		return findOne;
 	}
     
     public static Find request(String table, String field, Commande commande) {	
@@ -192,8 +196,16 @@ public class MongoAccess {
 
 	public static void update(String table, Commun c) {
 		collec = jongo.getCollection(table);	
-		System.out.println("mise a jour _id : " + c.get_id());
 		collec.update("{_id : #}", c.get_id()).with(c);
+	}
+	
+	public static void update(String table, ObjectId id, String c) {
+		collec = jongo.getCollection(table);	
+		String mod = String.format("{$set : %s}",c);
+	
+		System.out.println(mod);
+		
+		collec.update("{_id : #}", id).with(mod);
 	}
 
 

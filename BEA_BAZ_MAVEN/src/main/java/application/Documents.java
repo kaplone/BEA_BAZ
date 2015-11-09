@@ -53,6 +53,7 @@ public class Documents {
 	
 	private static Commande commande;
 	private static ObjectId commande_id;
+	private static ArrayList<String> alterations ;
 	
 	private static StringProperty bindedLabel = new SimpleStringProperty(); 
 
@@ -294,15 +295,16 @@ public class Documents {
         XSSFWorkbook workbook = new XSSFWorkbook(file);
 
         //Get first/desired sheet from the workbook
-        XSSFSheet sheet = workbook.getSheetAt(0);
+        XSSFSheet sheet0 = workbook.getSheetAt(0);
+        XSSFSheet sheet1 = workbook.getSheetAt(1);
 
         //Iterate through each rows one by one
-        Iterator<Row> rowIterator = sheet.iterator();
-        while (rowIterator.hasNext()){
+        Iterator<Row> rowIterator0 = sheet0.iterator();
+        while (rowIterator0.hasNext()){
         	
         	ArrayList<String> alterations = new ArrayList<>();
 
-        	Row row = rowIterator.next();
+        	Row row = rowIterator0.next();
         	
         	if (isRowEmpty(row)){
         		continue;
@@ -415,17 +417,8 @@ public class Documents {
 		                        
 		                    case Cell.CELL_TYPE_STRING:
 		                        
-		                        if (index >=7 && index <= 22){
-		                        	
-		                        	if ("x".equals(cell.getStringCellValue())){
-		                        		alterations.add(noms_titres_bruts.get(index));
-		                        	}
-		                        	
-		                        }
-		                        else {
-		                        	string_oeuvre_liste.add(String.format("\"%s\" : \"%s\"", noms_titres.get(index), Normalize.normalizeField(cell.getStringCellValue())));
-		                        }
-		                        
+		                        string_oeuvre_liste.add(String.format("\"%s\" : \"%s\"", noms_titres.get(index), Normalize.normalizeField(cell.getStringCellValue())));
+		      
 		                        break;
 		                }
 		                index ++; // on  avance dans la liste des champs
@@ -433,11 +426,8 @@ public class Documents {
 	            }
 	            
 	            index = 0; // on initialise pour la prochaine ligne
-	            
-	            if (titres) {
-	            	titres = false; // après le premier passage ce ne sera plus un titre
-	            	continue;
-	            }
+
+	            titres = false; // après le premier passage ce ne sera plus un titre
 
 	            string_oeuvre = string_oeuvre_liste.stream().collect(Collectors.joining(", ", "{", "}"));
 	
@@ -446,20 +436,12 @@ public class Documents {
 	            utils.MongoAccess.save("oeuvre", o);
 	            
 	            listeDesTachesTraitement(o);
-	            
-	            
         	}
-        	
         	ot = new OeuvreTraitee();
             ot.setOeuvre(o);
             ot.setCommande(commande_);
             ot.setProgressionOeuvreTraitee(Progression.TODO_);
-            
             ot.setAlterations(alterations);
-            
-            utils.MongoAccess.save("oeuvreTraitee", ot);
-            
-            System.out.println("ot.get_id() (juste apres le save() : "+ ot.get_id());
             
             ArrayList<ObjectId> traitementsEnCours = new ArrayList<>();
             
@@ -476,13 +458,111 @@ public class Documents {
             	
             	traitementsEnCours.add(tt.get_id());
             	
-				
-			}
-			ot.setTraitementsAttendus(traitementsEnCours);
+    		}
+            ot.setTraitementsAttendus(traitementsEnCours);
             
             utils.MongoAccess.save("oeuvreTraitee", ot);
+	     }
+        
+        //////////////////////////////////////////////////////////////////////////////////////////////////:
+        	
+    	//Iterate through each rows one by one
+        Iterator<Row> rowIterator1 = sheet1.iterator();
+        
+        titres = true;
+        index = 0;
+        noms_titres.clear();
+        noms_titres_bruts.clear();
+    	
+    	string_oeuvre_liste.clear();
+    	
+    	OeuvreTraitee oeuvreACompleter = new OeuvreTraitee();
+        
+        while (rowIterator1.hasNext()){
+	
+            Row row = rowIterator1.next();
+        	
+        	if (isRowEmpty(row)){
+        		continue;
+        	}
+        	
+        	if (! titres){
+        		oeuvreACompleter = MongoAccess.request("oeuvreTraitee", "oeuvre.titre_de_l_oeuvre", row.getCell(4).getStringCellValue(), "oeuvre.dimensions", row.getCell(6).getStringCellValue()).as(OeuvreTraitee.class);
+            	
+            	if (oeuvreACompleter == null){
+            		System.out.println(row.getCell(4).getStringCellValue() + " : non trouvée");
+            		continue;
+            	} 
+            	
+            	alterations = new ArrayList<>();
+        	}
+        	
+	            
+            //For each row, iterate through all the columns
+            Iterator<Cell> cellIterator = row.cellIterator();
+
+            while (cellIterator.hasNext()){
+            	
+                Cell cell = cellIterator.next();
+                
+                // le premier passage est 'à vide'
+                // c'est la liste des champs
+ 
+                if (titres){
+            		noms_titres.add(cell.getStringCellValue().equals("") ? String.format("field_%02d", nb_colonnes + 1) : Normalize.normalize(cell.getStringCellValue()));
+            		noms_titres_bruts.add(cell.getStringCellValue().equals("") ? String.format("field_%02d", nb_colonnes + 1) : Normalize.normalizeLight(cell.getStringCellValue()));
+            		nb_colonnes = noms_titres.size();
+            	}
+                // les valeurs suivantes servent à construire 
+                // une json string
+            	else {
+            		
+	                //Check the cell type and format accordingly
+	                switch (cell.getCellType())
+	                {
+	                    case Cell.CELL_TYPE_NUMERIC:
+
+                           // string_oeuvre_liste.add(String.format("\"%s\" : \"%s\"", noms_titres.get(index), cell.getNumericCellValue() + ""));
+	                        break;
+	                        
+	                    case Cell.CELL_TYPE_STRING:
+	                        
+	                        if (index >=7 && index <= 22){
+	                        	
+	                        	if ("x".equals(cell.getStringCellValue())){
+	                        		alterations.add(String.format("\"%s\"", noms_titres_bruts.get(index)));
+	                        	}
+	                        	
+	                        }
+	                        else if (index == 23) {
+	                        	string_oeuvre_liste.add(String.format("\"%s\" : \"%s\"", noms_titres.get(index), Normalize.normalizeField(cell.getStringCellValue())));
+	                        }
+	                        
+	                        break;
+	                }
+	                index ++; // on  avance dans la liste des champs
+
+	            }
+	            
+            } 
+       
+            if (! titres){
+            	
+            	if (alterations.size() > 0){
+                	string_oeuvre_liste.add(String.format("\"%s\" : %s", "alterations", alterations));
+                    alterations.clear();
+                }
+                
+            	string_oeuvre = string_oeuvre_liste.stream().collect(Collectors.joining(", ", "{", "}"));
+                utils.MongoAccess.update("oeuvreTraitee",oeuvreACompleter.get_id(), string_oeuvre);	
+            }
+
+            index = 0; // on initialise pour la prochaine ligne
+
+            titres = false; // après le premier passage ce ne sera plus un titre
+ 
+	    }
             
-        }
         
         workbook.close();
         file.close();
