@@ -49,9 +49,10 @@ public class Main_BEA_BAZ extends Application {
 	private static OeuvreTraitee oeuvre;
 	private static int oeuvre_index;
 	
+	private static String OS = System.getProperty("os.name").toLowerCase();
+	
 	String cheminMongod = "C:\\Program Files\\MongoDB\\Server\\3.0\\bin\\mongod.exe";
-	//String cheminMongo = "C:\\Program Files\\MongoDB\\Server\\3.0\\bin\\mongo.exe";
-	String cheminMongo = "/home/kaplone/.wine/drive_c/Program Files (x86)/mongodb/mongo.exe";
+	String cheminMongo = "C:\\Program Files\\MongoDB\\Server\\3.0\\bin\\mongo.exe";
 	String[] cmdArray = new String[]{"mongo"};
 	String[] cmdArrayd = new String[]{"mongod"};
 
@@ -86,20 +87,50 @@ public class Main_BEA_BAZ extends Application {
 		}
 	}
 	
-	public boolean isMongodRunning(){
+	public static boolean isWindows() {
+
+		return (OS.indexOf("win") >= 0);
+
+	}
+
+	public static boolean isMac() {
+
+		return (OS.indexOf("mac") >= 0);
+
+	}
+
+	public static boolean isUnix() {
+
+		return (OS.indexOf("nix") >= 0 || OS.indexOf("nux") >= 0 || OS.indexOf("aix") > 0 );
 		
+	}
+	
+	public boolean isMongodRunning(){
+
 		boolean bool = false;
+		Process p = null;
 		
 		try {
 	        String line;
-	        Process p = Runtime.getRuntime().exec("ps -e");
-//	        Process p = Runtime.getRuntime().exec
-//	                (System.getenv("windir") +"\\system32\\"+"tasklist.exe");
-//	        
+	        
+	        if (isWindows()) {
+				System.out.println("This is Windows");
+
+				cmdArray = new String[]{cheminMongo};
+				cmdArrayd = new String[]{cheminMongod};
+				
+				p = Runtime.getRuntime().exec
+		                (System.getenv("windir") +"\\system32\\"+"tasklist.exe");
+			} else if (isMac()) {
+				System.out.println("This is Mac");
+			} else if (isUnix()) {
+				System.out.println("This is Unix or Linux");
+				p = Runtime.getRuntime().exec("ps -e");
+			}
+
 	        BufferedReader input =
 	                new BufferedReader(new InputStreamReader(p.getInputStream()));
 	        while ((line = input.readLine()) != null) {
-	            //System.out.println(line); //<-- Parse data here.
 	        	if (line.contains("mongod")){
 	        		bool = true;
 	        	}
