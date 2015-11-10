@@ -67,6 +67,8 @@ public class Fiche_produit_controller  implements Initializable{
 	@FXML
 	private Button lier_button;
 	@FXML
+	private Button importerButton;
+	@FXML
 	private TextField file_path_textField;
 	
 	@FXML
@@ -137,14 +139,22 @@ public class Fiche_produit_controller  implements Initializable{
 	
 	@FXML
 	public void on_select_file_button(){
-		
+
 		file = chooseExport();
-		file_path_textField.setText(file.toString());
+		
+		if (file != null){
+			file_path_textField.setVisible(true);
+			file_path_textField.setText(file.toString());
+			importerButton.setVisible(true);
+		}
+		
 	}
 	@FXML
 	public void on_import_file_button(){
 		try {
 			Documents.read(file, "produit");
+			file_path_textField.setVisible(false);
+			importerButton.setVisible(false);
 			rafraichirAffichage();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -177,7 +187,8 @@ public class Fiche_produit_controller  implements Initializable{
     	mise_a_jour_traitement.setText("Enregistrer");
     	nom_produit_textField.setText("");
     	remarques_produit_textArea.setText("");
-    	nom_produit_textField.setPromptText("saisir le nom du nouveau traitement");
+    	nom_produit_textField.setPromptText("saisir le nom affiché du nouveau traitement");
+    	nom_produit_textField.setPromptText("saisir le nom complet du nouveau traitement");
     	remarques_produit_textArea.setPromptText("éventuelles remarques");
     	nouveau_produit.setVisible(false);
     	
@@ -188,6 +199,7 @@ public class Fiche_produit_controller  implements Initializable{
     	editer.setVisible(false);
     	mise_a_jour_traitement.setVisible(true);
     	nom_produit_textField.setEditable(true);
+    	nom_complet_produit_textField.setEditable(true);
 		remarques_produit_textArea.setEditable(true);
     	
     	
@@ -195,10 +207,15 @@ public class Fiche_produit_controller  implements Initializable{
     
     public void onAnnulerButton() {
     	
+    	nom_produit_textField.setEditable(false);
+    	nom_complet_produit_textField.setEditable(false);
+		remarques_produit_textArea.setEditable(false);
+    	
     	mise_a_jour_traitement.setText("Mise à jour");
     	nom_produit_textField.setText("");
     	remarques_produit_textArea.setText("");
     	nom_produit_textField.setPromptText("");
+    	nom_complet_produit_textField.setPromptText("");
     	remarques_produit_textArea.setPromptText("");
     	nouveau_produit.setText("Nouveau traitement");
     	rafraichirAffichage();
@@ -231,6 +248,7 @@ public class Fiche_produit_controller  implements Initializable{
     	editer.setVisible(false);
     	mise_a_jour_traitement.setVisible(true);
     	nom_produit_textField.setEditable(true);
+    	nom_complet_produit_textField.setEditable(true);
 		remarques_produit_textArea.setEditable(true);
 		
 		edit = true;
@@ -245,6 +263,7 @@ public class Fiche_produit_controller  implements Initializable{
     	editer.setVisible(true);
     	mise_a_jour_traitement.setVisible(false);
     	nom_produit_textField.setEditable(false);
+    	nom_complet_produit_textField.setEditable(false);
 		remarques_produit_textArea.setEditable(false);
 		nouveau_produit.setVisible(true);
 		rafraichirAffichage();
@@ -343,6 +362,7 @@ public class Fiche_produit_controller  implements Initializable{
 		traitementSelectionne = Main_BEA_BAZ.getTacheTraitementEdited();
 
 		nom_produit_textField.setEditable(false);
+		nom_complet_produit_textField.setEditable(false);
 		remarques_produit_textArea.setEditable(false);
         editer.setVisible(true);
         mise_a_jour_traitement.setVisible(false);
@@ -352,6 +372,9 @@ public class Fiche_produit_controller  implements Initializable{
 		versOeuvreButton.setVisible(false);
 		versRapportButton.setVisible(false);
 		versProduitsButton.setVisible(false);
+		
+		file_path_textField.setVisible(false);
+		importerButton.setVisible(false);
 		
 		if (traitementSelectionne != null){
 			nom_traitement_label.setText("Edition pour " + traitementSelectionne.getNom());

@@ -64,6 +64,8 @@ public class Fiche_traitement_controller  implements Initializable{
 	private Button versOeuvreButton;
 	@FXML
 	private Button versRapportButton;
+	@FXML
+	private Button importerButton;
 	
 	@FXML
 	private Label fiche_traitement_label;
@@ -109,8 +111,14 @@ public class Fiche_traitement_controller  implements Initializable{
     }
 	@FXML
     public void onVersFichiersButton(){}
+	
     @FXML
-    public void onVersModelesButton(){}
+    public void onVersModelesButton(){
+    	Scene fiche_modele_scene = new Scene((Parent) JfxUtils.loadFxml("/views/fiche_model.fxml"), 1275, 722);
+		fiche_modele_scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+		
+		currentStage.setScene(fiche_modele_scene);
+    }
 	
 	@FXML
 	public void onVersCommandeButton(){
@@ -120,6 +128,14 @@ public class Fiche_traitement_controller  implements Initializable{
 		
 		currentStage.setScene(fiche_commande_scene);	
 	}	
+	
+	@FXML
+    public void onVersClientButton(){
+    	Scene fiche_client_scene = new Scene((Parent) JfxUtils.loadFxml("/views/fiche_client.fxml"), 1275, 722);
+		fiche_client_scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+		
+		currentStage.setScene(fiche_client_scene);
+    }
 
 	@FXML
 	public void onAjoutTraitement(){
@@ -221,14 +237,23 @@ public class Fiche_traitement_controller  implements Initializable{
 	
 	@FXML
 	public void on_select_file_button(){
-		
+
 		file = chooseExport();
-		file_path_textField.setText(file.toString());
+		
+		if (file != null){
+			file_path_textField.setVisible(true);
+			file_path_textField.setText(file.toString());
+			importerButton.setVisible(true);
+			
+		}
+		
 	}
 	@FXML
 	public void on_import_file_button(){
 		try {
 			Documents.read(file, "traitement");
+			file_path_textField.setVisible(false);
+			importerButton.setVisible(false);
 			afficherTraitements();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -270,7 +295,8 @@ public class Fiche_traitement_controller  implements Initializable{
     	mise_a_jour_traitement.setText("Enregistrer");
     	nom_traitement_textField.setText("");
     	remarques_traitement_textArea.setText("");
-    	nom_traitement_textField.setPromptText("saisir le nom du nouveau traitement");
+    	nom_traitement_textField.setPromptText("saisir le nom affiché du nouveau traitement");
+    	nom_complet_traitement_textField.setPromptText("saisir le nom complet du nouveau traitement");
     	remarques_traitement_textArea.setPromptText("éventuelles remarques");
     	nouveau_traitement.setVisible(false);
     	
@@ -281,12 +307,17 @@ public class Fiche_traitement_controller  implements Initializable{
     	editer.setVisible(false);
     	mise_a_jour_traitement.setVisible(true);
     	nom_traitement_textField.setEditable(true);
+    	nom_complet_traitement_textField.setEditable(true);
 		remarques_traitement_textArea.setEditable(true);
     	
     	
     }
     
     public void onAnnulerButton() {
+    	
+    	nom_traitement_textField.setEditable(false);
+    	nom_complet_traitement_textField.setEditable(false);
+		remarques_traitement_textArea.setEditable(false);
     	
     	mise_a_jour_traitement.setText("Mise à jour");
     	nom_traitement_textField.setText("");
@@ -325,6 +356,7 @@ public class Fiche_traitement_controller  implements Initializable{
     	editer.setVisible(false);
     	mise_a_jour_traitement.setVisible(true);
     	nom_traitement_textField.setEditable(true);
+    	nom_complet_traitement_textField.setEditable(true);
 		remarques_traitement_textArea.setEditable(true);
 		
 		edit = true;
@@ -339,6 +371,7 @@ public class Fiche_traitement_controller  implements Initializable{
     	editer.setVisible(true);
     	mise_a_jour_traitement.setVisible(false);
     	nom_traitement_textField.setEditable(false);
+    	nom_complet_traitement_textField.setEditable(false);
 		remarques_traitement_textArea.setEditable(false);
 		nouveau_traitement.setVisible(true);
 		rafraichirAffichage();
@@ -390,9 +423,6 @@ public class Fiche_traitement_controller  implements Initializable{
 		annuler.setVisible(false);
 		fiche_traitement_label.setText("FICHE TRAITEMENT :");
 		nom_traitement_label.setText(traitementSelectionne.getNom());
-		nom_traitement_textField.setDisable(true);
-		remarques_traitement_textArea.setDisable(true);
-		nom_traitement_label.setText(traitementSelectionne.getNom());
 		rafraichirAffichage();
     }
     
@@ -434,15 +464,6 @@ public class Fiche_traitement_controller  implements Initializable{
 		
 		currentStage.setScene(fiche_produit_scene);
     }
-    @FXML
-    public void onVersClientButton(){
-    	Scene fiche_client_scene = new Scene((Parent) JfxUtils.loadFxml("/views/fiche_client.fxml"), 1275, 722);
-		fiche_client_scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
-		
-		currentStage.setScene(fiche_client_scene);
-    }
-
-    	
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -453,6 +474,7 @@ public class Fiche_traitement_controller  implements Initializable{
 		traitementSelectionne = Main_BEA_BAZ.getTraitement();
 
 		nom_traitement_textField.setEditable(false);
+		nom_complet_traitement_textField.setEditable(false);
 		remarques_traitement_textArea.setEditable(false);
         editer.setVisible(true);
         mise_a_jour_traitement.setVisible(false);
@@ -462,6 +484,9 @@ public class Fiche_traitement_controller  implements Initializable{
 		versTraitementsButton.setVisible(false);
 		versOeuvreButton.setVisible(false);
 		versRapportButton.setVisible(false);
+		
+		file_path_textField.setVisible(false);
+		importerButton.setVisible(false);
 		
 		
 		liste_traitements = FXCollections.observableArrayList();
