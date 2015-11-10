@@ -62,6 +62,8 @@ public class Fiche_auteur_controller  implements Initializable{
 	private Button versFichiersButton;
 	@FXML
 	private Button versAuteursButton;
+	@FXML
+	private TextField nom_complet_auteur_textField;
 	
 	MongoCursor<Auteur> auteurCursor;
 	Auteur auteurSelectionne;
@@ -74,6 +76,12 @@ public class Fiche_auteur_controller  implements Initializable{
 	
 	@FXML
 	public void onVersCommandeButton(){
+		
+		Scene fiche_commande_scene = new Scene((Parent) JfxUtils.loadFxml("/views/fiche_commande.fxml"), 1275, 722);
+		fiche_commande_scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+		
+		currentStage.setScene(fiche_commande_scene);
+		
 	}
 	
 	@FXML
@@ -94,8 +102,13 @@ public class Fiche_auteur_controller  implements Initializable{
 		currentStage.setScene(fiche_traitement_scene);
     }
     @FXML
-    public void onVersModelesButton(){}
-
+    public void onVersModelesButton(){
+    	Scene fiche_modele_scene = new Scene((Parent) JfxUtils.loadFxml("/views/fiche_model.fxml"), 1275, 722);
+		fiche_modele_scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+		
+		currentStage.setScene(fiche_modele_scene);
+    }
+        
 
 	@FXML
 	public void onVersClientButton(){
@@ -110,28 +123,53 @@ public class Fiche_auteur_controller  implements Initializable{
 	@FXML
 	public void onAuteurSelect(){
 		
-		auteurSelectionne = listView_auteur.getSelectionModel().getSelectedItem();
-		Main_BEA_BAZ.setAuteur(auteurSelectionne);		
-		affichageInfos(auteurSelectionne);
+		System.out.println(listView_auteur.getSelectionModel().getSelectedItem());
+		
+		if (listView_auteur.getSelectionModel().getSelectedItem() == null){
+            
+			System.out.println("-");
+			editer.setVisible(false);	
+		}
+		else {
+			
+			if (listView_auteur.getSelectionModel().getSelectedItem().getNom() != null){
+
+				auteurSelectionne = listView_auteur.getSelectionModel().getSelectedItem();
+				Main_BEA_BAZ.setAuteur(auteurSelectionne);		
+				affichageInfos(auteurSelectionne);
+				editer.setVisible(true);
+    		}
+    		else {
+    			editer.setVisible(false);
+    		}
+			
+		}
+		
 		
 	}
 	
     private void affichageInfos(Auteur auteurSelectionne){
-
-    	
-    	nom_auteur_textField.setText(auteurSelectionne.getNom());
-    	remarques_auteur_textArea.setText(auteurSelectionne.getRemarques());
-    	
-    	auteur = Main_BEA_BAZ.getAuteur();    	
-    	
+        
+    	if (listView_auteur.getSelectionModel().getSelectedItem() != null){
+    		nom_auteur_textField.setText(auteurSelectionne.getNom());
+    		nom_complet_auteur_textField.setText(auteurSelectionne.getNom_complet());
+        	remarques_auteur_textArea.setText(auteurSelectionne.getRemarques());
+    	}	
+    	else {
+    		nom_auteur_textField.setText("");
+    		nom_complet_auteur_textField.setText("");
+        	remarques_auteur_textArea.setText("");
+    	}
     }
     
     public void onNouveauAuteurButton() {
     	
     	mise_a_jour_auteur.setText("Enregistrer");
     	nom_auteur_textField.setText("");
+    	nom_complet_auteur_textField.setText("");
     	remarques_auteur_textArea.setText("");
-    	nom_auteur_textField.setPromptText("saisir le nom du nouvel auteur");
+    	nom_auteur_textField.setPromptText("saisir le nom affiché du nouvel auteur");
+    	nom_complet_auteur_textField.setPromptText("saisir le nom complet du nouvel auteur");
     	remarques_auteur_textArea.setPromptText("éventuelles remarques");
     	nouveau_auteur.setVisible(false);
     	
@@ -142,6 +180,7 @@ public class Fiche_auteur_controller  implements Initializable{
     	editer.setVisible(false);
     	mise_a_jour_auteur.setVisible(true);
     	nom_auteur_textField.setEditable(true);
+    	nom_complet_auteur_textField.setEditable(true);
 		remarques_auteur_textArea.setEditable(true);
     }
     
@@ -150,20 +189,36 @@ public class Fiche_auteur_controller  implements Initializable{
     	mise_a_jour_auteur.setText("Mise à jour");
     	nom_auteur_textField.setText("");
     	remarques_auteur_textArea.setText("");
+    	nom_complet_auteur_textField.setText("");
     	nom_auteur_textField.setPromptText("");
+    	nom_complet_auteur_textField.setPromptText("");
     	remarques_auteur_textArea.setPromptText("");
     	nouveau_auteur.setText("Nouvel auteur");
+    	nom_auteur_textField.setEditable(false);
+    	nom_complet_auteur_textField.setEditable(false);
+    	remarques_auteur_textArea.setEditable(false);
+    	if (listView_auteur.getSelectionModel().getSelectedItem() == null){
+    		editer.setVisible(false);
+    	}
+    	else {
+    		if (listView_auteur.getSelectionModel().getSelectedItem().getNom() == null){
+    			editer.setVisible(true);
+    		}
+    		else {
+    			editer.setVisible(false);
+    		}
+    		
+    	}
     	rafraichirAffichage();
     	listView_auteur.getSelectionModel().select(auteurSelectionne);
     	affichageInfos(auteurSelectionne);
+    	
     }
     
     public void rafraichirAffichage(){
     	
     	liste_auteurs = FXCollections.observableArrayList();
-		
-		
-		
+
 		auteurCursor = MongoAccess.request("auteur").as(Auteur.class);
 		
 		while (auteurCursor.hasNext()){
@@ -182,6 +237,7 @@ public class Fiche_auteur_controller  implements Initializable{
     	editer.setVisible(false);
     	mise_a_jour_auteur.setVisible(true);
     	nom_auteur_textField.setEditable(true);
+    	nom_complet_auteur_textField.setEditable(true);
 		remarques_auteur_textArea.setEditable(true);
 		
 		edit = true;
@@ -193,14 +249,30 @@ public class Fiche_auteur_controller  implements Initializable{
     public void onAnnulerEditButton(){
     	
     	annuler.setVisible(false);
-    	editer.setVisible(true);
+    	if (listView_auteur.getSelectionModel().getSelectedItem() == null){
+    		editer.setVisible(false);
+    	}
+    	else {
+    		if (listView_auteur.getSelectionModel().getSelectedItem().getNom() == null){
+    			editer.setVisible(true);
+    		}
+    		else {
+    			editer.setVisible(false);
+    		}
+    		
+    	}
     	mise_a_jour_auteur.setVisible(false);
     	nom_auteur_textField.setEditable(false);
+    	nom_complet_auteur_textField.setEditable(false);
 		remarques_auteur_textArea.setEditable(false);
 		nouveau_auteur.setVisible(true);
-		rafraichirAffichage();
-		listView_auteur.getSelectionModel().select(auteurSelectionne);
-    	affichageInfos(auteurSelectionne);
+		
+		nom_auteur_textField.setText("");
+    	remarques_auteur_textArea.setText("");
+    	nom_complet_auteur_textField.setText("");
+    	nom_auteur_textField.setPromptText("");
+    	nom_complet_auteur_textField.setPromptText("");
+    	remarques_auteur_textArea.setPromptText("");
     	
     	edit = false;
     	
@@ -214,12 +286,25 @@ public class Fiche_auteur_controller  implements Initializable{
     	}
     	
     	auteurSelectionne.setNom(nom_auteur_textField.getText());
+    	auteurSelectionne.setNom_complet(nom_complet_auteur_textField.getText());
     	auteurSelectionne.setRemarques(remarques_auteur_textArea.getText());
     	
     	annuler.setVisible(false);
-    	editer.setVisible(true);
+    	if (listView_auteur.getSelectionModel().getSelectedItem() == null){
+    		editer.setVisible(false);
+    	}
+    	else {
+    		if (listView_auteur.getSelectionModel().getSelectedItem().getNom() == null){
+    			editer.setVisible(true);
+    		}
+    		else {
+    			editer.setVisible(false);
+    		}
+    		
+    	}
     	mise_a_jour_auteur.setVisible(false);
     	nom_auteur_textField.setEditable(false);
+    	nom_complet_auteur_textField.setEditable(false);
 		remarques_auteur_textArea.setEditable(false);
 		
 		if (edit) {
@@ -247,17 +332,25 @@ public class Fiche_auteur_controller  implements Initializable{
 		auteur = Main_BEA_BAZ.getAuteur();
 
 		nom_auteur_textField.setEditable(false);
+		nom_complet_auteur_textField.setEditable(false);
 		remarques_auteur_textArea.setEditable(false);
         editer.setVisible(true);
         mise_a_jour_auteur.setVisible(false);
 		annuler.setVisible(false);
 		
 		versClientButton.setVisible(true);
-		versCommandeButton.setVisible(false);
 		versOeuvreButton.setVisible(false);
 		versRapportButton.setVisible(false);
 		
 		versAuteursButton.setVisible(false);
+		editer.setVisible(false);
+		
+		if (Main_BEA_BAZ.getCommande() != null){
+			versCommandeButton.setVisible(true);
+		}
+		else {
+			versCommandeButton.setVisible(false);
+		}
 		
 		liste_auteurs = FXCollections.observableArrayList();
 		

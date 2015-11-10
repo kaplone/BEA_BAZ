@@ -81,15 +81,9 @@ public class FreeMarkerMaker {
 					}
 				});
 		      }
-		      System.out.println(listeFichiers.size() -2);
-		      System.out.println(listeFichiers.get(listeFichiers.size() -2));
-		      System.out.println(listeFichiers.get(listeFichiers.size() -2).getFichierLie());
-		      System.out.println(listeFichiers.get(listeFichiers.size() -2).getFichierLie().toString());
 		      
 			  Image img = new Image("file:" + listeFichiers.get(listeFichiers.size() -2).getFichierLie().toString());
-			  
-			  
-			  
+ 
 			  InputStream in;
 			  
 			  if (img.getHeight() > img.getWidth()){
@@ -152,8 +146,7 @@ public class FreeMarkerMaker {
 //		    	  listeFiles.add(f.getNom());
 //		    	  listeLegendes.add(f.getLegende());
 //		    	  
-//		      }
-		      
+//		      }		      
 //		      context.put("fichiers", listeFiles);
 //		      context.put("legendes", listeLegendes);
 		      

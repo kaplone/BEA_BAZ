@@ -69,6 +69,12 @@ public class Fiche_modele_controller  implements Initializable{
 	private Button versFichiersButton;
 	@FXML
 	private Button versModelsButton;
+	@FXML
+	private Button versAuteursButton;
+	
+	
+	@FXML
+	private Button cheminVersModelButton;
 	
 	MongoCursor<Model> modelCursor;
 	Model modelSelectionne;
@@ -80,11 +86,7 @@ public class Fiche_modele_controller  implements Initializable{
 	private File file;
 	
 	private boolean edit = false;
-	
-	@FXML
-	public void onVersCommandeButton(){
-	}
-	
+
 	@FXML
 	public void onVersProduitsButton(){
 		
@@ -114,6 +116,26 @@ public class Fiche_modele_controller  implements Initializable{
 	}
 	
 	@FXML
+	public void onVersCommandeButton(){
+		
+		Scene fiche_commande_scene = new Scene((Parent) JfxUtils.loadFxml("/views/fiche_commande.fxml"), 1275, 722);
+		fiche_commande_scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+		
+		currentStage.setScene(fiche_commande_scene);
+		
+	}
+	
+	@FXML
+	public void onVersAuteursButton(){
+		
+		Scene fiche_auteur_scene = new Scene((Parent) JfxUtils.loadFxml("/views/fiche_auteur.fxml"), 1275, 722);
+		fiche_auteur_scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+		
+		currentStage.setScene(fiche_auteur_scene);
+		
+	}
+	
+	@FXML
 	public void onModelSelect(){
 		
 		modelSelectionne = listView_model.getSelectionModel().getSelectedItem();
@@ -127,12 +149,15 @@ public class Fiche_modele_controller  implements Initializable{
     	
     	nom_model_textField.setText(modelSelectionne.getNom());
     	remarques_model_textArea.setText(modelSelectionne.getRemarques());
+    	file_path_textField.setText(modelSelectionne.getCheminVersModelSTR());
     	
     	model = Main_BEA_BAZ.getModel();    	
     	
     }
     
     public void onNouveauModelButton() {
+    	
+    	cheminVersModelButton.setVisible(true);
     	
     	mise_a_jour_model.setText("Enregistrer");
     	nom_model_textField.setText("");
@@ -152,6 +177,8 @@ public class Fiche_modele_controller  implements Initializable{
     }
     
     public void onAnnulerButton() {
+    	
+    	cheminVersModelButton.setVisible(false);
     	
     	mise_a_jour_model.setText("Mise à jour");
     	nom_model_textField.setText("");
@@ -183,7 +210,9 @@ public class Fiche_modele_controller  implements Initializable{
     @FXML
     public void onEditerModelButton(){
     	
-
+        
+    	
+    	
     	annuler.setVisible(true);
     	editer.setVisible(false);
     	mise_a_jour_model.setVisible(true);
@@ -284,30 +313,28 @@ protected File chooseExport(){
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 
-		model = Main_BEA_BAZ.getModel();
+		file_path_textField.setEditable(false);
+		nom_model_textField.setEditable(false);
+		remarques_model_textArea.setEditable(false);
+        editer.setVisible(true);
+        mise_a_jour_model.setVisible(false);
+		annuler.setVisible(false);
 		
-		if (model != null){
-			nom_model_textField.setEditable(false);
-			remarques_model_textArea.setEditable(false);
-	        editer.setVisible(true);
-	        mise_a_jour_model.setVisible(false);
-			annuler.setVisible(false);
-		}
-		else {
-			nom_model_textField.setEditable(true);
-			remarques_model_textArea.setEditable(true);
-	        editer.setVisible(false);
-	        mise_a_jour_model.setVisible(true);
-	        mise_a_jour_model.setText("Enregistrer");
-			annuler.setVisible(false);
-		}
-		
+		versAuteursButton.setVisible(true);
 		versClientButton.setVisible(true);
-		versCommandeButton.setVisible(false);
+		versCommandeButton.setVisible(true);
 		versOeuvreButton.setVisible(false);
 		versRapportButton.setVisible(false);
+		versModelesButton.setVisible(false);
 		
-		versModelsButton.setVisible(false);
+		if (Main_BEA_BAZ.getCommande() != null){
+			versCommandeButton.setVisible(true);
+		}
+		else {
+			versCommandeButton.setVisible(false);
+		}
+		
+		cheminVersModelButton.setVisible(false);
 		
 		liste_models = FXCollections.observableArrayList();
 		
