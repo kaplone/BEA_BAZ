@@ -343,11 +343,11 @@ public class Documents {
         	}
         	catch (IllegalStateException ise){
         		// l'oeuvre existe dans la base
-        		if (utils.MongoAccess.request("oeuvre", "cote_archives_6s", row.getCell(1).getNumericCellValue() + "").as(Oeuvre.class) != null){
+        		if (utils.MongoAccess.request("oeuvre", "cote_archives_6s", (int)Math.round(row.getCell(1).getNumericCellValue()) + "").as(Oeuvre.class) != null){
         			
         			System.out.println("cas 3");
         			
-        			o = utils.MongoAccess.request("oeuvre", "cote_archives_6s", row.getCell(1).getNumericCellValue() + "").as(Oeuvre.class); 
+        			o = utils.MongoAccess.request("oeuvre", "cote_archives_6s", (int)Math.round(row.getCell(1).getNumericCellValue()) + "").as(Oeuvre.class); 
         			update = true;
         		}
         		// l'oeuvre n'existe pas encore dans la base
@@ -413,7 +413,9 @@ public class Documents {
 		                {
 		                    case Cell.CELL_TYPE_NUMERIC:
 	
-	                            string_oeuvre_liste.add(String.format("\"%s\" : \"%s\"", noms_titres.get(index), cell.getNumericCellValue() + ""));
+	                            string_oeuvre_liste.add(String.format("\"%s\" : \"%s\"", noms_titres.get(index),
+	                            		index == 1 ? (int)Math.round(cell.getNumericCellValue()) + "" : cell.getNumericCellValue() + ""));
+	                         
 		                        break;
 		                        
 		                    case Cell.CELL_TYPE_STRING:
