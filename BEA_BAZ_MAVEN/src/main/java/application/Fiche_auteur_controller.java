@@ -119,6 +119,27 @@ public class Fiche_auteur_controller  implements Initializable{
 		currentStage.setScene(fiche_client_scene);
 		
 	}
+	@FXML
+    public void onVersAuteursButton(){
+    	Scene fiche_auteur_scene = new Scene((Parent) JfxUtils.loadFxml("/views/fiche_auteur.fxml"), 1275, 722);
+		fiche_auteur_scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+		
+		currentStage.setScene(fiche_auteur_scene);
+    }
+	@FXML
+    public void onMatieres_button(){
+    	Scene fiche_matiere_scene = new Scene((Parent) JfxUtils.loadFxml("/views/fiche_matiere.fxml"), 1275, 722);
+		fiche_matiere_scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+		
+		currentStage.setScene(fiche_matiere_scene);
+    }
+    @FXML
+    public void onTechniques_button(){
+    	Scene fiche_technique_scene = new Scene((Parent) JfxUtils.loadFxml("/views/fiche_technique.fxml"), 1275, 722);
+		fiche_technique_scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+		
+		currentStage.setScene(fiche_technique_scene);
+    }
 	
 	@FXML
 	public void onAuteurSelect(){

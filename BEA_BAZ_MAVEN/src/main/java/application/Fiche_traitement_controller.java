@@ -119,6 +119,20 @@ public class Fiche_traitement_controller  implements Initializable{
 		
 		currentStage.setScene(fiche_modele_scene);
     }
+    @FXML
+    public void onMatieres_button(){
+    	Scene fiche_matiere_scene = new Scene((Parent) JfxUtils.loadFxml("/views/fiche_matiere.fxml"), 1275, 722);
+		fiche_matiere_scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+		
+		currentStage.setScene(fiche_matiere_scene);
+    }
+    @FXML
+    public void onTechniques_button(){
+    	Scene fiche_technique_scene = new Scene((Parent) JfxUtils.loadFxml("/views/fiche_technique.fxml"), 1275, 722);
+		fiche_technique_scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+		
+		currentStage.setScene(fiche_technique_scene);
+    }
 	
 	@FXML
 	public void onVersCommandeButton(){

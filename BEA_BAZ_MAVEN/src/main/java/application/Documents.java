@@ -23,11 +23,13 @@ import models.Auteur;
 import models.Client;
 import models.Commande;
 import models.Etat;
+import models.Matiere;
 import models.Model;
 import models.Oeuvre;
 import models.OeuvreTraitee;
 import models.Produit;
 import models.TacheTraitement;
+import models.Technique;
 import models.Traitement;
 import enums.Classes;
 import enums.Progression;
@@ -67,6 +69,9 @@ public class Documents {
 		boolean update = false;
 		
 		ArrayList<String> string_produit_liste = new ArrayList<>();
+		ArrayList<String> string_traitement_liste = new ArrayList<>();
+		ArrayList<String> string_technique_liste = new ArrayList<>();
+		ArrayList<String> string_matiere_liste = new ArrayList<>();
 		
 		ObjectMapper mapper = new ObjectMapper();
 		 
@@ -80,9 +85,14 @@ public class Documents {
         Iterator<Row> rowIterator = sheet.iterator();
         
         String string_produit = "";
+        String string_traitement = "";
+        String string_matiere = "";
+        String string_technique = "";
         
         Produit p;
         Traitement t;
+        Technique te;
+        Matiere m;
         
         while (rowIterator.hasNext())
         {
@@ -180,8 +190,8 @@ public class Documents {
 	                else {
 	                	
 	                	t = new Traitement();
-	                    string_produit = "";
-	                    string_produit_liste.clear();
+	                    string_traitement = "";
+	                    string_traitement_liste.clear();
 	                    
 	                    update = false;
 	                }
@@ -190,8 +200,8 @@ public class Documents {
 	        	catch (NullPointerException mpe){
 	        		
 	                t = new Traitement();
-	                string_produit = "";
-	                string_produit_liste.clear();
+	                string_traitement = "";
+	                string_traitement_liste.clear();
 	                update = false;
 	        		
 	        	}
@@ -234,9 +244,9 @@ public class Documents {
 		            
 		            if (champs[0] != null){
 		            	
-		            	string_produit = String.format("{\"nom_complet\" : \"%s\", \"nom\" : \"%s\"}", champs[0], champs[1]);
+		            	string_traitement = String.format("{\"nom_complet\" : \"%s\", \"nom\" : \"%s\"}", champs[0], champs[1]);
 
-			            t = (Traitement) mapper.readValue(string_produit, Classes.valueOf(table_).getUsedClass());
+			            t = (Traitement) mapper.readValue(string_traitement, Classes.valueOf(table_).getUsedClass());
 			            
 			            utils.MongoAccess.save(table_, t);
 		            	
@@ -245,6 +255,160 @@ public class Documents {
 		            
 	        	
 	            break;
+	            
+            case "technique" :
+	        	
+	        	try {
+	                if (utils.MongoAccess.request(table_, "nom_complet", row.getCell(0).getStringCellValue()).as(Classes.valueOf(table_).getUsedClass()) != null){
+	                	
+	                	te = (Technique) utils.MongoAccess.request(table_, "nom_complet", row.getCell(0).getStringCellValue()).as(Classes.valueOf(table_).getUsedClass());
+	                	update = true;
+	                }
+	                else {
+	                	
+	                	te = new Technique();
+	                    string_technique = "";
+	                    string_technique_liste.clear();
+	                    
+	                    update = false;
+	                }
+	        	}
+	
+	        	catch (NullPointerException mpe){
+	        		
+	                t = new Traitement();
+	                string_technique = "";
+	                string_technique_liste.clear();
+	                update = false;
+	        		
+	        	}
+	        	
+	        	if (update) {
+	        		
+	        	}
+	        	else{
+		            
+		            //For each row, iterate through all the columns
+		            Iterator<Cell> cellIterator = row.cellIterator();
+		            
+		            
+		
+		            while (cellIterator.hasNext())
+		            {
+		                Cell cell = cellIterator.next();
+		                
+		                // le premier passage est 'à vide'
+		                // c'est la liste des champs
+		                if (titres){
+	
+		            	}
+		                // les valeurs suivantes servent à construire 
+		                // une json string
+		            	else {
+		
+		            		champs [index] = (String) Normalize.normalizeField(cell.getStringCellValue()); 	
+	
+			                }
+			                index ++; // on  avance dans la liste des champs
+		            	}
+		            }
+		            
+	        	    
+	        	
+		            titres = false; // après le premier passage ce ne sera plus un titre
+		            
+		            index = 0; // on initialise pour la prochaine ligne
+		            
+		            if (champs[0] != null){
+		            	
+		            	string_technique = String.format("{\"nom_complet\" : \"%s\", \"nom\" : \"%s\"}", champs[0], champs[1]);
+
+			            te = (Technique) mapper.readValue(string_technique, Classes.valueOf(table_).getUsedClass());
+			            
+			            utils.MongoAccess.save(table_, te);
+		            	
+		            }
+		            
+		            
+	        	
+	            break;
+	        
+             case "matiere" :
+	        	
+	        	try {
+	                if (utils.MongoAccess.request(table_, "nom_complet", row.getCell(0).getStringCellValue()).as(Classes.valueOf(table_).getUsedClass()) != null){
+	                	
+	                	m = (Matiere) utils.MongoAccess.request(table_, "nom_complet", row.getCell(0).getStringCellValue()).as(Classes.valueOf(table_).getUsedClass());
+	                	update = true;
+	                }
+	                else {
+	                	
+	                	m = new Matiere();
+	                    string_matiere = "";
+	                    string_matiere_liste.clear();
+	                    
+	                    update = false;
+	                }
+	        	}
+	
+	        	catch (NullPointerException mpe){
+	        		
+	                m = new Matiere();
+	                string_matiere = "";
+	                string_matiere_liste.clear();
+	                update = false;
+	        		
+	        	}
+	        	
+	        	if (update) {
+	        		
+	        	}
+	        	else{
+		            
+		            //For each row, iterate through all the columns
+		            Iterator<Cell> cellIterator = row.cellIterator();
+		            
+		            
+		
+		            while (cellIterator.hasNext())
+		            {
+		                Cell cell = cellIterator.next();
+		                
+		                // le premier passage est 'à vide'
+		                // c'est la liste des champs
+		                if (titres){
+	
+		            	}
+		                // les valeurs suivantes servent à construire 
+		                // une json string
+		            	else {
+		
+		            		champs [index] = (String) Normalize.normalizeField(cell.getStringCellValue()); 	
+	
+			                }
+			                index ++; // on  avance dans la liste des champs
+		            	}
+		            }
+		            
+	        	    
+	        	
+		            titres = false; // après le premier passage ce ne sera plus un titre
+		            
+		            index = 0; // on initialise pour la prochaine ligne
+		            
+		            if (champs[0] != null){
+		            	
+		            	string_matiere = String.format("{\"nom_complet\" : \"%s\", \"nom\" : \"%s\"}", champs[0], champs[1]);
+
+			            m = (Matiere) mapper.readValue(string_matiere, Classes.valueOf(table_).getUsedClass());
+			            
+			            utils.MongoAccess.save(table_, m);
+		            	
+		            }
+		            
+		            
+	        	
+	            break;    
 	        
 	        default : break;
 	        	

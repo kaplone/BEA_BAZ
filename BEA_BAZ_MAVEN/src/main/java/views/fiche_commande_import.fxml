@@ -292,6 +292,16 @@
                   <Insets left="10.0" />
                </HBox.margin>
             </Button>
+            <Button fx:id="matieres_button" mnemonicParsing="false" onAction="#onMatieres_button" text="Matières">
+               <HBox.margin>
+                  <Insets left="10.0" />
+               </HBox.margin>
+            </Button>
+            <Button fx:id="techniques_button" mnemonicParsing="false" onAction="#onTechniques_button" text="Techniques">
+               <HBox.margin>
+                  <Insets left="10.0" />
+               </HBox.margin>
+            </Button>
          </children>
          <BorderPane.margin>
             <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />

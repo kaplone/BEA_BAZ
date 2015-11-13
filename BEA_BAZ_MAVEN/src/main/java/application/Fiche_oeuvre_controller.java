@@ -9,16 +9,19 @@ import java.util.ResourceBundle;
 import org.bson.types.ObjectId;
 import org.jongo.MongoCursor;
 
+import enums.EtatFinal;
 import enums.Progression;
 import utils.FreeMarkerMaker;
 import utils.MongoAccess;
 import models.Auteur;
 import models.Commande;
 import models.Fichier;
+import models.Matiere;
 import models.Oeuvre;
 import models.OeuvreTraitee;
 import models.Produit;
 import models.TacheTraitement;
+import models.Technique;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -36,6 +39,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
 import javafx.stage.Stage;
@@ -108,9 +112,25 @@ public class Fiche_oeuvre_controller  implements Initializable{
 	@FXML
 	private TextArea inscriptions_textArea;
 	@FXML
+	private TextArea degradations_textArea;
+	@FXML
+	private TextArea remarques_textArea;
+	@FXML
 	private TextArea observations_textArea;
 	@FXML
+	private HBox matieres_hbox;
+	@FXML
+	private HBox techniques_hbox;
+	@FXML
+	private ListView<Matiere> matieres_listView;
+	@FXML
+	private ListView<Technique> techniques_listView;
+	
+	
+	@FXML
 	private GridPane grid;
+	@FXML
+	private ChoiceBox etat_final_choiceBox;
 	
 	@FXML
 	private TableView<OeuvreTraitee> tableOeuvre;
@@ -139,6 +159,8 @@ public class Fiche_oeuvre_controller  implements Initializable{
 	boolean directSelect = false;
 	
 	private MongoCursor<OeuvreTraitee> oeuvresTraiteesCursor;
+	
+	private ObservableList<EtatFinal> etatsFinaux;
 	
 	@FXML
 	public void onVersProduitsButton(){
@@ -260,7 +282,7 @@ public class Fiche_oeuvre_controller  implements Initializable{
 		date_oeuvre_textField.setText(oeuvreSelectionne.getDate());
 		dimensions_textField.setText(oeuvreSelectionne.getDimensions());
 		inscriptions_textArea.setText(oeuvreSelectionne.getInscriptions_au_verso());
-		observations_textArea.setText(oeuvreSelectionne.get_observations());
+		degradations_textArea.setText(oeuvreSelectionne.get_observations());
 		
 		afficherAuteurs();
 		afficherTraitements();
@@ -302,14 +324,8 @@ public class Fiche_oeuvre_controller  implements Initializable{
 		traitements_attendus_tableColumn.setCellValueFactory(new PropertyValueFactory<TacheTraitement, String>("nom"));
 		faits_attendus_tableColumn.setCellValueFactory(new PropertyValueFactory<TacheTraitement, ImageView>("icone_progression"));
 		//faits_attendus_tableColumn.setCellValueFactory(new PropertyValueFactory<TacheTraitement, String>("fait"));
-		
-		traitements_supplementaires_tableColumn.setCellValueFactory(new PropertyValueFactory<TacheTraitement, String>("nom"));
-		//traitements_supp_faits_tableColumn.setCellValueFactory(new PropertyValueFactory<TacheTraitement, String>("fait"));
-		traitements_supp_faits_tableColumn.setCellValueFactory(new PropertyValueFactory<TacheTraitement, ImageView>("icone_progression"));
-
 		traitements_attendus_tableView.setItems(traitementsAttendus);
-		
-		traitements_supplementaires_tableView.setItems(traitementsSupplementaires);
+
 	}
 	
     public void afficherAuteurs(){
@@ -642,14 +658,14 @@ public class Fiche_oeuvre_controller  implements Initializable{
 		date_oeuvre_textField.setEditable(false);
 		dimensions_textField.setEditable(false);
 		inscriptions_textArea.setEditable(false);
-		observations_textArea.setEditable(false);
+		degradations_textArea.setEditable(false);
 
 		numero_archive_6s_textField.setText(oeuvreSelectionne.getCote_archives_6s());
 		titre_textField.setText(oeuvreSelectionne.getTitre_de_l_oeuvre());
 		date_oeuvre_textField.setText(oeuvreSelectionne.getDate());
 		dimensions_textField.setText(oeuvreSelectionne.getDimensions());
 		inscriptions_textArea.setText(oeuvreSelectionne.getInscriptions_au_verso());
-		observations_textArea.setText(oeuvreSelectionne.get_observations());
+		degradations_textArea.setText(oeuvreSelectionne.get_observations());
 
         editer.setVisible(true);
         mise_a_jour_oeuvre.setVisible(false);
@@ -657,8 +673,10 @@ public class Fiche_oeuvre_controller  implements Initializable{
 
 		versOeuvreButton.setVisible(false);
 		versRapportButton.setVisible(false);
-
-		
+	
+		etatsFinaux = FXCollections.observableArrayList(EtatFinal.values());
+		etat_final_choiceBox.setItems(etatsFinaux);
+	
 		traitementsAttendus = FXCollections.observableArrayList();
 		traitementsSupplementaires = FXCollections.observableArrayList();
 		observableFichiers = FXCollections.observableArrayList();
