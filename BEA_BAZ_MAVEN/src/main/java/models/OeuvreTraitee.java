@@ -33,7 +33,7 @@ public class OeuvreTraitee extends Oeuvre {
 //	@JsonIgnore
 //	private ImageView icone_progression;
 	
-
+    private String observations;
 
 	@Override
 	public String getNom(){
@@ -133,6 +133,53 @@ public class OeuvreTraitee extends Oeuvre {
 	}
 	public Etat getEtat() {
 		return etat;
+	}
+	public String getObservations() {
+		return observations;
+	}
+	public void setObservations(String observations) {
+		this.observations = observations;
 	} 
+	
+    public void addMatiere(Matiere m){
+    	
+    	if (! oeuvre.getMatieresUtilisees().contains(m)){
+    		oeuvre.getMatieresUtilisees().add(m);
+    	}
+    	
+    }
+    public void deleteMatiere(Matiere m){
+    	
+    	Matiere matiere_ = null;
+    	
+    	for (Matiere m_ : oeuvre.getMatieresUtilisees()){
+    		if (m.getNom().equals(m_.getNom())){
+    			matiere_ = m_;
+    			oeuvre.getMatieresUtilisees().remove(m_);
+    			break;
+    		}
+    	} 	
+    }
+    
+    public void addTechnique(Technique t){
+    	
+    	if (! oeuvre.getTechniquesUtilisees().contains(t)){
+    		oeuvre.getTechniquesUtilisees().add(t);
+    	}
+    	
+    }
+    
+    public void deleteTechnique(Technique t){
+    	
+    	Technique technique_ = null;
+    	
+    	for (Technique t_ : oeuvre.getTechniquesUtilisees()){
+    		if (t.getNom().equals(t_.getNom())){
+    			technique_ = t_;
+    			oeuvre.getTechniquesUtilisees().remove(t_);
+    			break;
+    		}
+    	} 	
+    }
 	
 }

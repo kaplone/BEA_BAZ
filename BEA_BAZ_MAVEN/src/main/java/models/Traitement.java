@@ -54,14 +54,10 @@ public class Traitement extends Commun{
     	for (Produit p_ : produits){
     		if (p.getNom().equals(p_.getNom())){
     			produit_ = p_;
+    			// produits.remove ???
     			break;
     		}
-    	}
-    	produits.remove(produit_);
-
-		
-
-    	
+    	} 	
     }
 
 	public String getNom_complet() {

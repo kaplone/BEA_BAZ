@@ -29,16 +29,22 @@ public class Oeuvre extends Commun{
 	               _observations,
 	               field_25,
 	               inscriptions_au_verso,
-	               format_de_conditionnement,
-	               technique,
-	               matiere;
+	               format_de_conditionnement;
 	
 	private ObjectId auteur;
+	
+	private ArrayList<Matiere> matieresUtilisees;
+	private ArrayList<Technique> techniquesUtilisees;
 	
 	private String etat_current;
 	
 	@JsonIgnore
 	private ImageView etat;
+//	
+//	public Oeuvre(){
+//		matieresUtilisees = new ArrayList<>();
+//		techniquesUtilisees = new ArrayList<>();
+//	}
 	
 	@Override
 	public String toString(){
@@ -67,6 +73,56 @@ public class Oeuvre extends Commun{
 		MongoAccess.save("oeuvre", c);
 		
 	}
+    
+    public void addMatiere(Matiere m){
+    	
+    	if (matieresUtilisees == null){
+    		matieresUtilisees = new ArrayList<>();
+    	}
+    	
+    	else if (! matieresUtilisees.contains(m)){
+    		matieresUtilisees.add(m);
+    	}
+    	
+    }
+    
+    public void deleteMatiere(Matiere m){
+    	
+    	Matiere matiere_ = null;
+    	
+    	for (Matiere m_ : matieresUtilisees){
+    		if (m.getNom().equals(m_.getNom())){
+    			matiere_ = m_;
+    			matieresUtilisees.remove(m_);
+    			break;
+    		}
+    	} 	
+    }
+    
+    public void addTechnique(Technique t){
+    	
+    	if (techniquesUtilisees == null){
+    		techniquesUtilisees = new ArrayList<>();
+    	}
+    	
+    	else if (! techniquesUtilisees.contains(t)){
+    		techniquesUtilisees.add(t);
+    	}
+    	
+    }
+    
+    public void deleteTechnique(Technique t){
+    	
+    	Technique technique_ = null;
+    	
+    	for (Technique t_ : techniquesUtilisees){
+    		if (t.getNom().equals(t_.getNom())){
+    			technique_ = t_;
+    			techniquesUtilisees.remove(t_);
+    			break;
+    		}
+    	} 	
+    }
 
 	public String getN_d_origine() {
 		return n_d_origine;
@@ -176,21 +232,23 @@ public class Oeuvre extends Commun{
 		this.etat_current = etat_current;
 	}
 
-	public String getTechnique() {
-		return technique;
+	public ArrayList<Matiere> getMatieresUtilisees() {
+		return matieresUtilisees;
 	}
 
-	public void setTechnique(String technique) {
-		this.technique = technique;
+	public void setMatieresUtilisees(ArrayList<Matiere> matieresUtilisees) {
+		this.matieresUtilisees = matieresUtilisees;
 	}
 
-	public String getMatiere() {
-		return matiere;
+	public ArrayList<Technique> getTechniquesUtilisees() {
+		return techniquesUtilisees;
 	}
 
-	public void setMatiere(String matiere) {
-		this.matiere = matiere;
+	public void setTechniquesUtilisees(ArrayList<Technique> techniquesUtilisees) {
+		this.techniquesUtilisees = techniquesUtilisees;
 	}
+	
+	
 
 	
 }
