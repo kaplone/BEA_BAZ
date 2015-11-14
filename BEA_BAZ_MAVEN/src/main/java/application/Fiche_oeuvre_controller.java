@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 import org.bson.types.ObjectId;
 import org.jongo.MongoCursor;
@@ -22,10 +23,12 @@ import models.OeuvreTraitee;
 import models.Produit;
 import models.TacheTraitement;
 import models.Technique;
+import models.Traitement;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -37,6 +40,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -95,8 +99,6 @@ public class Fiche_oeuvre_controller  implements Initializable{
 	private Label fiche_oeuvre_label;
 	@FXML
 	private Label nom_oeuvre_label;
-	@FXML
-	private TextArea remarques_oeuvre_textArea;
 	@FXML
 	private ChoiceBox<Auteur> auteursChoiceBox;
 	@FXML
@@ -159,6 +161,21 @@ public class Fiche_oeuvre_controller  implements Initializable{
 	boolean directSelect = false;
 	
 	private MongoCursor<OeuvreTraitee> oeuvresTraiteesCursor;
+	private MongoCursor<Matiere> matieresCursor;
+	private MongoCursor<Technique> techniquesCursor;
+	
+	private ObservableList<Matiere> matieres;
+	private ObservableList<Technique> techniques;
+	
+	private ArrayList<Matiere> matieresUtilisees;
+	private ArrayList<Technique> techniquesUtilisees;
+	
+	private Matiere matiere;
+	private Technique technique;
+	
+	private Matiere matiereSelectionne;
+	private Technique techniqueSelectionne;
+	
 	
 	private ObservableList<EtatFinal> etatsFinaux;
 	
@@ -191,6 +208,20 @@ public class Fiche_oeuvre_controller  implements Initializable{
 		
 		currentStage.setScene(fiche_auteur_scene);
     }
+    @FXML
+    public void onMatieres_button(){
+    	Scene fiche_matiere_scene = new Scene((Parent) JfxUtils.loadFxml("/views/fiche_matiere.fxml"), 1275, 722);
+		fiche_matiere_scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+		
+		currentStage.setScene(fiche_matiere_scene);
+    }
+    @FXML
+    public void onTechniques_button(){
+    	Scene fiche_technique_scene = new Scene((Parent) JfxUtils.loadFxml("/views/fiche_technique.fxml"), 1275, 722);
+		fiche_technique_scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+		
+		currentStage.setScene(fiche_technique_scene);
+    }
 	
 	@FXML
 	public void onVersCommandeButton(){
@@ -211,58 +242,20 @@ public class Fiche_oeuvre_controller  implements Initializable{
 	
 	@FXML
 	public void onOeuvreSelect(){
-		
-		
+	
 		directSelect = true;
 		reloadOeuvre();
 	
 	}
-	
-	@FXML
-	public void onPrecedent_fleche(){
 
-		tableOeuvre.getSelectionModel().select(tableOeuvre.getSelectionModel().getSelectedIndex() -1);
-		
-		reloadOeuvre();
-		
-		
-		
-	}
-	@FXML
-	public void onPrecedent_fleche_on(){
-		
-		precedent_fleche.setFill(Color.DEEPSKYBLUE);
-	}
-	@FXML
-	public void onPrecedent_fleche_off(){
-
-		precedent_fleche.setFill(Color.DODGERBLUE);
-	}
-	
-	@FXML
-	public void onSuivant_fleche(){
-
-		tableOeuvre.getSelectionModel().select(tableOeuvre.getSelectionModel().getSelectedIndex() +1);
-		
-		
-		reloadOeuvre();
-		
-	}
-	@FXML
-	public void onSuivant_fleche_on(){
-		
-		suivant_fleche.setFill(Color.DEEPSKYBLUE);
-	}
-	@FXML
-	public void onSuivant_fleche_off(){
-
-		suivant_fleche.setFill(Color.DODGERBLUE);
-	}
 	
 	public void reloadOeuvre(){
         
 		oeuvreTraiteeSelectionne = (OeuvreTraitee) tableOeuvre.getSelectionModel().getSelectedItem();
 		oeuvreSelectionne = oeuvreTraiteeSelectionne.getOeuvre();
+		
+		matieresUtilisees = oeuvreSelectionne.getMatieresUtilisees();
+		techniquesUtilisees = oeuvreSelectionne.getTechniquesUtilisees();
 		
 		Main_BEA_BAZ.setOeuvre(oeuvreTraiteeSelectionne);
 		Main_BEA_BAZ.setOeuvre_index(tableOeuvre.getSelectionModel().getSelectedIndex());
@@ -282,8 +275,31 @@ public class Fiche_oeuvre_controller  implements Initializable{
 		date_oeuvre_textField.setText(oeuvreSelectionne.getDate());
 		dimensions_textField.setText(oeuvreSelectionne.getDimensions());
 		inscriptions_textArea.setText(oeuvreSelectionne.getInscriptions_au_verso());
-		degradations_textArea.setText(oeuvreSelectionne.get_observations());
+		degradations_textArea.setText(oeuvreTraiteeSelectionne.getAlterations().stream()
+				                                                               .map(o -> o.replace("oui/non", ""))
+				                                                               .collect(Collectors.joining("\n")));
+		observations_textArea.setText(oeuvreTraiteeSelectionne.getObservations());
+		remarques_textArea.setText(oeuvreSelectionne.getRemarques());
 		
+		matieres_hbox.getChildren().clear();
+		techniques_hbox.getChildren().clear();
+		
+		if (oeuvreSelectionne.getMatieresUtilisees() != null){
+			for (Matiere m : oeuvreSelectionne.getMatieresUtilisees()){
+				matiereSelectionne = m;
+				affichageMatieresUtilises();
+			}
+		}
+		
+		if (oeuvreSelectionne.getTechniquesUtilisees() != null){
+			for (Technique t : oeuvreSelectionne.getTechniquesUtilisees()){
+				techniqueSelectionne = t;
+				affichageTechniquesUtilises();
+			}
+		}
+		
+		
+
 		afficherAuteurs();
 		afficherTraitements();
 		afficherFichiers();
@@ -426,17 +442,24 @@ public class Fiche_oeuvre_controller  implements Initializable{
 //    
     @FXML
     public void onEditerOeuvreButton(){
-//    	
-//
-//    	annuler.setVisible(true);
-//    	editer.setVisible(false);
-//    	mise_a_jour_traitement.setVisible(true);
-//    	nom_traitement_textField.setEditable(true);
-//		remarques_traitement_textArea.setEditable(true);
-//		
-//		edit = true;
-//
-//	
+    	
+
+    	annuler.setVisible(true);
+    	editer.setVisible(false);
+    	mise_a_jour_oeuvre.setVisible(true);
+    	
+    	numero_archive_6s_textField.setEditable(true);
+		titre_textField.setEditable(true);
+		date_oeuvre_textField.setEditable(true);
+		dimensions_textField.setEditable(true);
+		inscriptions_textArea.setEditable(true);
+		degradations_textArea.setEditable(true);
+		observations_textArea.setEditable(true);
+		remarques_textArea.setEditable(true);
+		
+		edit = true;
+
+	
     }
 //    
     @FXML
@@ -580,6 +603,38 @@ public class Fiche_oeuvre_controller  implements Initializable{
 		
 	}
     
+    public void afficherTechniques(){
+    	
+       techniques.clear();
+    	
+       techniquesCursor = MongoAccess.request("technique").as(Technique.class);
+		
+		while (techniquesCursor.hasNext()){
+			techniques.add(techniquesCursor.next());
+		}
+		techniques_listView.setItems(techniques);
+//		
+//		tableOeuvre.getSelectionModel().clearAndSelect(Main_BEA_BAZ.getOeuvre_index());
+//		tableOeuvre.getSelectionModel().focus(Main_BEA_BAZ.getOeuvre_index());
+		
+	}
+    
+   public void afficherMatieres(){
+   	
+       matieres.clear();
+    	
+       matieresCursor = MongoAccess.request("matiere").as(Matiere.class);
+		
+		while (matieresCursor.hasNext()){
+			matieres.add(matieresCursor.next());
+		}
+		matieres_listView.setItems(matieres);
+//		
+//		tableOeuvre.getSelectionModel().clearAndSelect(Main_BEA_BAZ.getOeuvre_index());
+//		tableOeuvre.getSelectionModel().focus(Main_BEA_BAZ.getOeuvre_index());
+		
+	}
+    
     public void afficherFichiers(){
     	
     	observableFichiers.clear();
@@ -639,8 +694,132 @@ public class Fiche_oeuvre_controller  implements Initializable{
 		currentStage.setScene(fiche_fichier_scene);
     	
     }
+    
+    @FXML
+	public void onMatiereSelect(){
+		
+		matiereSelectionne = matieres_listView.getSelectionModel().getSelectedItem();
+	
+		oeuvreSelectionne.addMatiere(matiereSelectionne);
+		oeuvreTraiteeSelectionne.addMatiere(matiereSelectionne);
 
-    	
+		MongoAccess.update("oeuvre", oeuvreSelectionne);
+		MongoAccess.update("oeuvreTraitee", oeuvreTraiteeSelectionne);
+
+		matieres_hbox.getChildren().clear();
+		
+		for (Matiere m : oeuvreSelectionne.getMatieresUtilisees()){
+			matiereSelectionne = m;
+			affichageMatieresUtilises();
+		}
+		
+		
+	}
+    
+    @FXML
+	public void onTechniqueSelect(){
+		
+        techniqueSelectionne = techniques_listView.getSelectionModel().getSelectedItem();
+			
+		oeuvreSelectionne.addTechnique(techniqueSelectionne);
+		oeuvreTraiteeSelectionne.addTechnique(techniqueSelectionne);
+
+		MongoAccess.update("oeuvre", oeuvreSelectionne);
+		MongoAccess.update("oeuvreTraitee", oeuvreTraiteeSelectionne);
+		
+		techniques_hbox.getChildren().clear();
+		
+		for (Technique t : oeuvreSelectionne.getTechniquesUtilisees()){
+			techniqueSelectionne = t;
+			affichageTechniquesUtilises();
+		}
+		
+	}
+    
+    public void affichageMatieresUtilises(){
+
+		ImageView iv = new ImageView(new Image(Progression.NULL_.getUsedImage()));
+		iv.setPreserveRatio(true);
+        iv.setSmooth(true);
+        iv.setCache(true);
+        iv.setFitWidth(15);
+		
+		
+		Button b = new Button(matiereSelectionne.getNom());
+		Button b2 = new Button("", iv);
+		
+		b2.setOnAction((event) -> deleteMatiereLie((Button)event.getSource()));
+
+		matieres_hbox.getChildren().add(b);
+		matieres_hbox.getChildren().add(b2);
+		HBox.setMargin(b2, new Insets(0,10,0,0));
+	}
+    
+    public void deleteMatiereLie(Button e){
+		
+		int index = matieres_hbox.getChildren().indexOf(e);
+
+		Matiere matiere = MongoAccess.request("matiere", "nom",  ((Button) matieres_hbox.getChildren().get(index -1)).getText()).as(Matiere.class);
+		
+		matieres_hbox.getChildren().remove(index, index +1);
+		
+		oeuvreSelectionne.deleteMatiere(matiere);
+		oeuvreTraiteeSelectionne.deleteMatiere(matiere);
+		
+		OeuvreTraitee.update(oeuvreTraiteeSelectionne);
+		Oeuvre.update(oeuvreSelectionne);
+		
+		matieres_hbox.getChildren().clear();
+		for (Matiere m : oeuvreSelectionne.getMatieresUtilisees()){
+			matiereSelectionne = m;
+			affichageMatieresUtilises();
+			
+		}
+		//affichageMatieresUtilisees();
+	}
+
+    // pareil pour technique (deleteTechnique liee(), deleteTechnique, getTechniques, affichageTechniqueUtilisées)
+    
+    public void deleteTechniqueLie(Button e){
+		
+		int index = techniques_hbox.getChildren().indexOf(e);
+
+		Technique technique = MongoAccess.request("technique", "nom",  ((Button) techniques_hbox.getChildren().get(index -1)).getText()).as(Technique.class);
+		
+		techniques_hbox.getChildren().remove(index -1, index +1);
+		
+		oeuvreSelectionne.deleteTechnique(technique);
+		oeuvreTraiteeSelectionne.deleteTechnique(technique);
+		
+		OeuvreTraitee.update(oeuvreTraiteeSelectionne);
+		Oeuvre.update(oeuvreSelectionne);
+		
+		techniques_hbox.getChildren().clear();
+		for (Technique t : oeuvreSelectionne.getTechniquesUtilisees()){
+			techniqueSelectionne = t;
+			affichageTechniquesUtilises();	
+		}
+		//
+	}
+
+    public void affichageTechniquesUtilises(){
+
+		ImageView iv = new ImageView(new Image(Progression.NULL_.getUsedImage()));
+		iv.setPreserveRatio(true);
+        iv.setSmooth(true);
+        iv.setCache(true);
+        iv.setFitWidth(15);
+		
+		
+		Button b = new Button(techniqueSelectionne.getNom());
+		Button b2 = new Button("", iv);
+		
+		b2.setOnAction((event) -> deleteTechniqueLie((Button)event.getSource()));
+
+		techniques_hbox.getChildren().add(b);
+		techniques_hbox.getChildren().add(b2);
+		HBox.setMargin(b2, new Insets(0,10,0,0));
+	}	
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -652,13 +831,15 @@ public class Fiche_oeuvre_controller  implements Initializable{
 		oeuvreTraiteeSelectionne = Main_BEA_BAZ.getOeuvre();
 		commandeSelectionne = Main_BEA_BAZ.getCommande();
 		auteur = Main_BEA_BAZ.getAuteur();
-		
+
 		numero_archive_6s_textField.setEditable(false);
 		titre_textField.setEditable(false);
 		date_oeuvre_textField.setEditable(false);
 		dimensions_textField.setEditable(false);
 		inscriptions_textArea.setEditable(false);
 		degradations_textArea.setEditable(false);
+		observations_textArea.setEditable(false);
+		remarques_textArea.setEditable(false);
 
 		numero_archive_6s_textField.setText(oeuvreSelectionne.getCote_archives_6s());
 		titre_textField.setText(oeuvreSelectionne.getTitre_de_l_oeuvre());
@@ -673,6 +854,9 @@ public class Fiche_oeuvre_controller  implements Initializable{
 
 		versOeuvreButton.setVisible(false);
 		versRapportButton.setVisible(false);
+		
+		matieres = FXCollections.observableArrayList();
+		techniques = FXCollections.observableArrayList();
 	
 		etatsFinaux = FXCollections.observableArrayList(EtatFinal.values());
 		etat_final_choiceBox.setItems(etatsFinaux);
@@ -688,6 +872,8 @@ public class Fiche_oeuvre_controller  implements Initializable{
         
 		afficherFichiers();
 		afficherOeuvres();
+		afficherMatieres();
+		afficherTechniques();
 		reloadOeuvre();
 
 	}

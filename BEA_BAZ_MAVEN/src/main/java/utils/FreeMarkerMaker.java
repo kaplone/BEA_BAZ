@@ -108,8 +108,12 @@ public class FreeMarkerMaker {
 		      context.put("inventaire", o.getCote_archives_6s());
 		      context.put("titre", o.getTitre_de_l_oeuvre() != null ? o.getTitre_de_l_oeuvre() : "");
 		      context.put("dimensions", o.getDimensions() != null ? o.getDimensions() : "");
-		      context.put("technique", o.getTechnique() != null ? o.getTechnique() : "");
-		      context.put("matiere", o.getMatiere() != null ? o.getMatiere() : "");
+		      context.put("technique", o.getTechniquesUtilisees() != null ? o.getTechniquesUtilisees().stream()
+                                                                                                      .map(a -> a.getNom_complet())
+                                                                                                      .collect(Collectors.joining(", ")) : "");
+		      context.put("matiere", o.getMatieresUtilisees() != null ? o.getMatieresUtilisees().stream()
+		    		                                                                            .map(a -> a.getNom_complet())
+		    		                                                                            .collect(Collectors.joining(", ")) : "");
 		      context.put("inscriptions", o.getInscriptions_au_verso() != null ? o.getInscriptions_au_verso() : "");
 		      
 		      context.put("etat_final", ot.getEtat() != null ? ot.getEtat().toString() : "");

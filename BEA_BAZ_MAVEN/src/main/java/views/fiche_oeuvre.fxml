@@ -32,13 +32,13 @@
                      <VBox.margin>
                         <Insets bottom="5.0" top="10.0" />
                      </VBox.margin></Label>
-                  <ListView fx:id="matieres_listView" prefHeight="120.0" prefWidth="288.0" />
+                  <ListView fx:id="matieres_listView" onMouseReleased="#onMatiereSelect" prefHeight="120.0" prefWidth="288.0" />
                   <Label text="Techniques">
                      <VBox.margin>
                         <Insets bottom="5.0" top="10.0" />
                      </VBox.margin>
                   </Label>
-                  <ListView fx:id="techniques_listView" prefHeight="133.0" prefWidth="288.0" />
+                  <ListView fx:id="techniques_listView" onMouseReleased="#onTechniqueSelect" prefHeight="133.0" prefWidth="288.0" />
                </children>
             </VBox>
             <VBox alignment="TOP_CENTER" layoutX="10.0" layoutY="10.0" prefHeight="231.0" prefWidth="288.0">
@@ -148,7 +148,7 @@
                         <Insets bottom="5.0" top="5.0" />
                      </GridPane.margin>
                   </TextArea>
-                  <TextArea fx:id="remarques_testArea" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="7">
+                  <TextArea fx:id="remarques_textArea" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="7">
                      <GridPane.margin>
                         <Insets bottom="5.0" top="5.0" />
                      </GridPane.margin>

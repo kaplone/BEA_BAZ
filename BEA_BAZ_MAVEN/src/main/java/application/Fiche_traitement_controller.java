@@ -90,8 +90,6 @@ public class Fiche_traitement_controller  implements Initializable{
 	
 	Stage currentStage;
 
-	Produit detail;
-	
 	private File file;
 	
 	@FXML
@@ -483,8 +481,7 @@ public class Fiche_traitement_controller  implements Initializable{
 	public void initialize(URL location, ResourceBundle resources) {
 		
 		Main_BEA_BAZ.setTacheTraitementEdited(null);
-		
-		detail = Main_BEA_BAZ.getDetail();
+
 		traitementSelectionne = Main_BEA_BAZ.getTraitement();
 
 		nom_traitement_textField.setEditable(false);
