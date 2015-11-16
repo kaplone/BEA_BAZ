@@ -476,77 +476,82 @@ public class Documents {
         	}
         	
         	boolean st;
+        	
+        	if (! titres){
 
-        	try {
-        		// l'oeuvre existe dans la base
-                if (utils.MongoAccess.request("oeuvre", "cote_archives_6s", row.getCell(1).getStringCellValue()).as(Oeuvre.class) != null){
-                	
-                	System.out.println("cas 1");
-                	
-                	o = utils.MongoAccess.request("oeuvre", "cote_archives_6s", row.getCell(1).getStringCellValue()).as(Oeuvre.class);
-                	update = true;
-                }
-             // l'oeuvre n'existe pas encore dans la base
-                else {
-                	
-                	System.out.println("cas 2");
-                	
-                	o = new Oeuvre();
-                    string_oeuvre = "";
-                    string_oeuvre_liste.clear();
-                    string_oeuvre_liste.add(String.format("\"%s\" : \"%s\"", "commande", commande_id));
-                    string_oeuvre_liste.add(String.format("\"%s\" : \"%s\"", "auteur", commande.getAuteur().get_id()));
-                    string_oeuvre_liste.add(String.format("\"%s\" : \"%s\"", "created_at", LocalDate.now()));
-                    string_oeuvre_liste.add(String.format("\"%s\" : \"%s\"", "updated_at", null));
-                    string_oeuvre_liste.add(String.format("\"%s\" : \"%s\"", "deleted_at", null));
-                    
-                    update = false;
-                }
-    
-                
-        	}
-        	catch (IllegalStateException ise){
-        		// l'oeuvre existe dans la base
-        		if (utils.MongoAccess.request("oeuvre", "cote_archives_6s", (int)Math.round(row.getCell(1).getNumericCellValue()) + "").as(Oeuvre.class) != null){
-        			
-        			System.out.println("cas 3");
-        			
-        			o = utils.MongoAccess.request("oeuvre", "cote_archives_6s", (int)Math.round(row.getCell(1).getNumericCellValue()) + "").as(Oeuvre.class); 
-        			update = true;
-        		}
-        		// l'oeuvre n'existe pas encore dans la base
-        		else {
-        			
-        			System.out.println("cas 4");
-        			
-        			 o = new Oeuvre();
-                     string_oeuvre = "";
-                     string_oeuvre_liste.clear();
-                     string_oeuvre_liste.add(String.format("\"%s\" : \"%s\"", "commande", commande_id));
-                     string_oeuvre_liste.add(String.format("\"%s\" : \"%s\"", "auteur", commande.getAuteur().get_id()));
-                     string_oeuvre_liste.add(String.format("\"%s\" : \"%s\"", "created_at", LocalDate.now()));
-                     string_oeuvre_liste.add(String.format("\"%s\" : \"%s\"", "updated_at", null));
-                     string_oeuvre_liste.add(String.format("\"%s\" : \"%s\"", "deleted_at", null));
-                     
-                     update = false;
-        		}
-            }
-        	catch (NullPointerException mpe){
-        		
-        		System.out.println("cas 5");
-        		
-        		// l'oeuvre n'existe pas encore dans la base
-                o = new Oeuvre();
-                string_oeuvre = "";
-                string_oeuvre_liste.clear();
-                string_oeuvre_liste.add(String.format("\"%s\" : \"%s\"", "commande", commande_id));
-                string_oeuvre_liste.add(String.format("\"%s\" : \"%s\"", "created_at", LocalDate.now()));
-                string_oeuvre_liste.add(String.format("\"%s\" : \"%s\"", "updated_at", null));
-                string_oeuvre_liste.add(String.format("\"%s\" : \"%s\"", "deleted_at", null));
-                string_oeuvre_liste.add(String.format("\"%s\" : \"%s\"", "etat_current", "TODO_"));
-                
-                update = false;
-        		
+	        	try {
+	        		// l'oeuvre existe dans la base
+	                if (utils.MongoAccess.request("oeuvre", "cote_archives_6s", row.getCell(1).getStringCellValue()).as(Oeuvre.class) != null){
+	                	
+	                	System.out.print("cas 1");
+	                	System.out.println(row.getCell(1).getStringCellValue());
+	                	
+	                	o = utils.MongoAccess.request("oeuvre", "cote_archives_6s", row.getCell(1).getStringCellValue()).as(Oeuvre.class);
+	                	update = true;
+	                }
+	             // l'oeuvre n'existe pas encore dans la base
+	                else {
+	                	
+	                	System.out.println("cas 2");
+	                	
+	                	o = new Oeuvre();
+	                    string_oeuvre = "";
+	                    string_oeuvre_liste.clear();
+	                    string_oeuvre_liste.add(String.format("\"%s\" : \"%s\"", "commande", commande_id));
+	                    string_oeuvre_liste.add(String.format("\"%s\" : \"%s\"", "auteur", commande.getAuteur().get_id()));
+	                    string_oeuvre_liste.add(String.format("\"%s\" : \"%s\"", "created_at", LocalDate.now()));
+	                    string_oeuvre_liste.add(String.format("\"%s\" : \"%s\"", "updated_at", null));
+	                    string_oeuvre_liste.add(String.format("\"%s\" : \"%s\"", "deleted_at", null));
+	                    
+	                    update = false;
+	                }
+	    
+	                
+	        	}
+	        	catch (IllegalStateException ise){
+	        		// l'oeuvre existe dans la base
+	        		if (utils.MongoAccess.request("oeuvre", "cote_archives_6s", (int)Math.round(row.getCell(1).getNumericCellValue()) + "").as(Oeuvre.class) != null){
+	        			
+	        			System.out.println("cas 3");
+	        			
+	        			o = utils.MongoAccess.request("oeuvre", "cote_archives_6s", (int)Math.round(row.getCell(1).getNumericCellValue()) + "").as(Oeuvre.class); 
+	        			update = true;
+	        		}
+	        		// l'oeuvre n'existe pas encore dans la base
+	        		else {
+	        			
+	        			System.out.print("cas 4");
+	        			System.out.println(row.getCell(1).getNumericCellValue() + "");
+	        			
+	        			 o = new Oeuvre();
+	                     string_oeuvre = "";
+	                     string_oeuvre_liste.clear();
+	                     string_oeuvre_liste.add(String.format("\"%s\" : \"%s\"", "commande", commande_id));
+	                     string_oeuvre_liste.add(String.format("\"%s\" : \"%s\"", "auteur", commande.getAuteur().get_id()));
+	                     string_oeuvre_liste.add(String.format("\"%s\" : \"%s\"", "created_at", LocalDate.now()));
+	                     string_oeuvre_liste.add(String.format("\"%s\" : \"%s\"", "updated_at", null));
+	                     string_oeuvre_liste.add(String.format("\"%s\" : \"%s\"", "deleted_at", null));
+	                     
+	                     update = false;
+	        		}
+	            }
+	        	catch (NullPointerException mpe){
+	        		
+	        		System.out.println("cas 5");
+	        		
+	        		// l'oeuvre n'existe pas encore dans la base
+	                o = new Oeuvre();
+	                string_oeuvre = "";
+	                string_oeuvre_liste.clear();
+	                string_oeuvre_liste.add(String.format("\"%s\" : \"%s\"", "commande", commande_id));
+	                string_oeuvre_liste.add(String.format("\"%s\" : \"%s\"", "created_at", LocalDate.now()));
+	                string_oeuvre_liste.add(String.format("\"%s\" : \"%s\"", "updated_at", null));
+	                string_oeuvre_liste.add(String.format("\"%s\" : \"%s\"", "deleted_at", null));
+	                string_oeuvre_liste.add(String.format("\"%s\" : \"%s\"", "etat_current", "TODO_"));
+	                
+	                update = false;
+	        		
+	        	}
         	}
         	
         	if (update) {
@@ -584,7 +589,7 @@ public class Documents {
 		                        
 		                    case Cell.CELL_TYPE_STRING:
 		                        
-		                        string_oeuvre_liste.add(String.format("\"%s\" : \"%s\"", noms_titres.get(index), Normalize.normalizeField(cell.getStringCellValue())));
+		                        string_oeuvre_liste.add(String.format("\"%s\" : \"%s\"", noms_titres.get(index), Normalize.normalizeStringField(cell.getStringCellValue())));
 		      
 		                        break;
 		                }
@@ -594,13 +599,16 @@ public class Documents {
 	            
 	            index = 0; // on initialise pour la prochaine ligne
 
+	            if (! titres){
+	            	
+	            	string_oeuvre = string_oeuvre_liste.stream().collect(Collectors.joining(", ", "{", "}"));
+	            	
+		            o = mapper.readValue(string_oeuvre, Oeuvre.class);
+
+		            utils.MongoAccess.save("oeuvre", o);
+	            }
+ 
 	            titres = false; // après le premier passage ce ne sera plus un titre
-
-	            string_oeuvre = string_oeuvre_liste.stream().collect(Collectors.joining(", ", "{", "}"));
-	
-	            o = mapper.readValue(string_oeuvre, Oeuvre.class);
-
-	            utils.MongoAccess.save("oeuvre", o);
 
         	}
         	ot = new OeuvreTraitee();
@@ -656,10 +664,19 @@ public class Documents {
         	}
         	
         	if (! titres){
-        		oeuvreACompleter = MongoAccess.request("oeuvreTraitee", "oeuvre.titre_de_l_oeuvre", row.getCell(4).getStringCellValue(), "oeuvre.dimensions", row.getCell(6).getStringCellValue()).as(OeuvreTraitee.class);
-            	
+        		
+        		//System.out.println("**" + row.getCell(6).getStringCellValue() +  "**");
+        		
+        		if ("".equals(row.getCell(6).getStringCellValue())){
+        			oeuvreACompleter = MongoAccess.request("oeuvreTraitee", "oeuvre.titre_de_l_oeuvre", Normalize.normalizeStringField(row.getCell(4).getStringCellValue())).as(OeuvreTraitee.class);
+        		}
+        		else {
+        			oeuvreACompleter = MongoAccess.request("oeuvreTraitee", "oeuvre.titre_de_l_oeuvre", Normalize.normalizeStringField(row.getCell(4).getStringCellValue()), "oeuvre.dimensions", row.getCell(6).getStringCellValue()).as(OeuvreTraitee.class);
+        		}
+        		
+        		
             	if (oeuvreACompleter == null){
-            		System.out.println(row.getCell(4).getStringCellValue() + " : non trouvée");
+            		System.out.println(Normalize.normalizeStringField(row.getCell(4).getStringCellValue()) + " : non trouvée");
             		continue;
             	} 
             	
@@ -724,6 +741,7 @@ public class Documents {
                 
             	string_oeuvre = string_oeuvre_liste.stream().collect(Collectors.joining(", ", "{", "}"));
                 utils.MongoAccess.update("oeuvreTraitee",oeuvreACompleter.get_id(), string_oeuvre);	
+                string_oeuvre_liste.clear();
             }
 
             index = 0; // on initialise pour la prochaine ligne

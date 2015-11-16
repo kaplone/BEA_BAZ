@@ -16,6 +16,7 @@ import models.Client;
 import models.Commande;
 import models.Commun;
 import models.Model;
+import models.Settings;
 import models.Traitement;
 
 import com.mongodb.BasicDBObject;
@@ -34,11 +35,17 @@ public class MongoAccess {
 	static MongoCollection collec;
 	
 	public static void connect(){
+		
+		LoadConfig.loadSettings();
 	
 		try {
-			
-			//MongoClientURI uri  = new MongoClientURI("mongodb://bea:beabaz@ds055852.mongolab.com:55852/heroku_g9z5lnn2"); 
-			MongoClientURI uri  = new MongoClientURI("mongodb://127.0.0.1/test2"); 
+			MongoClientURI uri  = new MongoClientURI(String.format("mongodb://%s:%s@%s:%s/%s", 
+					                                 Settings.getLogin(),
+					                                 Settings.getPass(),
+					                                 Settings.getAdresse(),
+					                                 Settings.getPort(),
+					                                 Settings.getBase())); 
+			//MongoClientURI uri  = new MongoClientURI("mongodb://127.0.0.1/test2"); 
 			MongoClient client = new MongoClient(uri);
 			db = client.getDB(uri.getDatabase());	
 			jongo = new Jongo(db);
@@ -200,12 +207,17 @@ public class MongoAccess {
 	}
 	
 	public static void update(String table, ObjectId id, String c) {
-		collec = jongo.getCollection(table);	
-		String mod = String.format("{$set : %s}",c);
-	
-		System.out.println(mod);
 		
-		collec.update("{_id : #}", id).with(mod);
+		if (! "{}".equals(c)){
+			collec = jongo.getCollection(table);	
+			String mod = String.format("{$set : %s}",c);
+		
+			System.out.println(mod);
+			
+			collec.update("{_id : #}", id).with(mod);
+		}
+		
+		
 	}
 
 

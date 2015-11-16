@@ -31,4 +31,7 @@ public class Normalize {
 		return s.replace('"', ' ');
 	}
 	
+	public static String normalizeStringField(String s) {
+		return s.replace('"', '\'');
+	}
 }
