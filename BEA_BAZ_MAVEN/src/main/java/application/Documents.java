@@ -562,8 +562,8 @@ public class Documents {
 	            //For each row, iterate through all the columns
 	            Iterator<Cell> cellIterator = row.cellIterator();
 	
-	            while (cellIterator.hasNext())
-	            {
+	            while (cellIterator.hasNext()){
+	            	
 	                Cell cell = cellIterator.next();
 	                
 	                // le premier passage est 'à vide'
@@ -607,38 +607,42 @@ public class Documents {
 
 		            utils.MongoAccess.save("oeuvre", o);
 	            }
- 
-	            titres = false; // après le premier passage ce ne sera plus un titre
 
         	}
-        	ot = new OeuvreTraitee();
-            ot.setOeuvre(o);
-            ot.setCommande(commande_);
-            ot.setProgressionOeuvreTraitee(Progression.TODO_);
-            ot.setAlterations(alterations);
+        	
+        	if (! titres){
+        	
+	        	ot = new OeuvreTraitee();
+	            ot.setOeuvre(o);
+	            ot.setCommande(commande_);
+	            ot.setProgressionOeuvreTraitee(Progression.TODO_);
+	            ot.setAlterations(alterations);
+	            
+	            utils.MongoAccess.save("oeuvreTraitee", ot);
+	            
+	            ArrayList<ObjectId> traitementsEnCours = new ArrayList<>();
+	            
+	            for (Traitement t : commande_.getTraitements_attendus()) {
+	            	
+	            	TacheTraitement tt = new TacheTraitement();
+	            	tt.setTraitement(t);
+	            	tt.setOeuvreTraiteeId(ot.get_id());
+	            	tt.setCommandeId(commande_.get_id());
+	    			tt.setCreated_at(Date.from(Instant.now()));
+	            	tt.setFait_(Progression.TODO_);
+	            	tt.setNom(t.getNom());
+	            	
+	            	utils.MongoAccess.save("tacheTraitement", tt);
+	
+	            	traitementsEnCours.add(tt.get_id());
+	            	
+	    		}
+	            ot.setTraitementsAttendus(traitementsEnCours);
+	            
+	            utils.MongoAccess.update("oeuvreTraitee", ot);
+        	}
             
-            utils.MongoAccess.save("oeuvreTraitee", ot);
-            
-            ArrayList<ObjectId> traitementsEnCours = new ArrayList<>();
-            
-            for (Traitement t : commande_.getTraitements_attendus()) {
-            	
-            	TacheTraitement tt = new TacheTraitement();
-            	tt.setTraitement(t);
-            	tt.setOeuvreTraiteeId(ot.get_id());
-            	tt.setCommandeId(commande_.get_id());
-    			tt.setCreated_at(Date.from(Instant.now()));
-            	tt.setFait_(Progression.TODO_);
-            	tt.setNom(t.getNom());
-            	
-            	utils.MongoAccess.save("tacheTraitement", tt);
-
-            	traitementsEnCours.add(tt.get_id());
-            	
-    		}
-            ot.setTraitementsAttendus(traitementsEnCours);
-            
-            utils.MongoAccess.update("oeuvreTraitee", ot);
+            titres = false; // après le premier passage ce ne sera plus un titre
 	     }
         
         //////////////////////////////////////////////////////////////////////////////////////////////////:

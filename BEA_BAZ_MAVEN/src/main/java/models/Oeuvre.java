@@ -54,12 +54,19 @@ public class Oeuvre extends Commun{
 	@Override
 	public String getNom(){
 		
-		try {
-			return String.format("%04d - %s", Integer.parseInt(getCote_archives_6s() != "" ? getCote_archives_6s() : "0") , titre_de_l_oeuvre);
+		if(getCote_archives_6s().equals("SN")){
+			return String.format("   SN - %s" , titre_de_l_oeuvre);
 		}
-		catch (NumberFormatException nfe) {
-			return String.format("%04d - %s", Integer.parseInt(getCote_archives_6s() != "" ? getCote_archives_6s().split("\\.")[0] : "0") , titre_de_l_oeuvre);
+		else {
+			try {
+				return String.format("%04d - %s", Integer.parseInt(getCote_archives_6s() != "" ? getCote_archives_6s() : "0") , titre_de_l_oeuvre);
+			}
+			catch (NumberFormatException nfe) {
+				return String.format("%04d - %s", Integer.parseInt(getCote_archives_6s() != "" ? getCote_archives_6s().split("\\.")[0] : "0") , titre_de_l_oeuvre);
+			}
 		}
+		
+		
 		
 	}
 	
