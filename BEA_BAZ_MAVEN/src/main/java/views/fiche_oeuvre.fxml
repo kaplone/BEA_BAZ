@@ -54,7 +54,7 @@
                         <Insets />
                      </VBox.margin>
                   </ListView>
-                  <Button fx:id="nouveau_traitement11" mnemonicParsing="false" onAction="#onNouveauTraitementButton" text="Nouveau fichier">
+                  <Button fx:id="nouveau_traitement11" mnemonicParsing="false" text="Nouveau fichier">
                      <VBox.margin>
                         <Insets bottom="10.0" top="10.0" />
                      </VBox.margin>

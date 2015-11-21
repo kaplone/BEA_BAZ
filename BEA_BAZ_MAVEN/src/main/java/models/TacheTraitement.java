@@ -30,8 +30,16 @@ public class TacheTraitement extends Commun{
 	private Produit produitUtilise;
 	private Traitement traitement;
 	private Etat etat;
+	
+	private ArrayList<Produit> produits;
+	private ArrayList<Produit> produitsLies;
     
     private boolean supp; 
+    
+    public TacheTraitement(){
+    	produits = new ArrayList<>();
+    	produitsLies = new ArrayList<>();
+    }
     
     public static void update(TacheTraitement c){
 
@@ -43,6 +51,27 @@ public class TacheTraitement extends Commun{
 		MongoAccess.save("tacheTraitement", c);
 		
 	}
+    
+    public void addProduit(Produit p){
+    	
+    	if (! produitsLies.contains(p)){
+    		produitsLies.add(p);
+    	}
+    	
+    }
+    
+    public void deleteProduit(Produit p){
+    	
+    	Produit produit_ = null;
+    	
+    	for (Produit p_ : produitsLies){
+    		if (p.getNom().equals(p_.getNom())){
+    			produit_ = p_;
+    			produitsLies.remove(p_);
+    			break;
+    		}
+    	} 	
+    }
 
 	public String getFait() {
 		return fait_.toString();
@@ -129,5 +158,18 @@ public class TacheTraitement extends Commun{
 	public void setFait_(Progression p){
 		fait_ = p;
 	}
+
+	public ArrayList<Produit> getProduitsLies() {
+		return produitsLies;
+	}
+
+	public void setProduitsLies(ArrayList<Produit> produitsLies) {
+		this.produitsLies = produitsLies;
+	}
+
+	public void setProduits(ArrayList<Produit> produits) {
+		this.produits = produits;
+	}
+	
 	
 }

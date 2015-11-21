@@ -6,6 +6,7 @@ import org.bson.types.ObjectId;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import enums.EtatFinal;
 import enums.Progression;
 import utils.MongoAccess;
 import javafx.collections.ObservableList;
@@ -21,7 +22,8 @@ public class OeuvreTraitee extends Oeuvre {
 	
 	private Commande commande;
 	
-	private Etat etat;
+	private EtatFinal etat;
+	private String complement_etat;
 	
 	private ArrayList<String> alterations = new ArrayList<>();
 	
@@ -78,7 +80,7 @@ public class OeuvreTraitee extends Oeuvre {
 //	public Etat getEtat() {
 //		return etat;
 //	}
-	public void setEtat(Etat etat) {
+	public void setEtat(EtatFinal etat) {
 		this.etat = etat;
 	}
 	public ArrayList<ObjectId> getFichiers() {
@@ -131,7 +133,7 @@ public class OeuvreTraitee extends Oeuvre {
 	public void setAlterations(ArrayList<String> alterations) {
 		this.alterations = alterations;
 	}
-	public Etat getEtat() {
+	public EtatFinal getEtat() {
 		return etat;
 	}
 	public String getObservations() {
@@ -181,5 +183,11 @@ public class OeuvreTraitee extends Oeuvre {
     		}
     	} 	
     }
+	public String getComplement_etat() {
+		return complement_etat;
+	}
+	public void setComplement_etat(String complement_etat) {
+		this.complement_etat = complement_etat;
+	}
 	
 }

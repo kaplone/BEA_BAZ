@@ -23,6 +23,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -106,6 +107,9 @@ public class Fiche_tache_traitement_controller  implements Initializable{
 	private Label produitUtiliseLabel;
 	@FXML
 	private Label complementTraitementLabel;
+	
+	@FXML
+	private HBox produitsLiesHbox;
 	
 	private boolean edit = false;
 	
@@ -191,14 +195,58 @@ public class Fiche_tache_traitement_controller  implements Initializable{
 	@FXML
 	public void onProduitSelect(){
 		
-		produitSelectionne = listView_produits.getSelectionModel().getSelectedItem();
+        produitSelectionne = listView_produits.getSelectionModel().getSelectedItem();
 		
 		if (produitSelectionne != null){
 			Main_BEA_BAZ.setDetail(produitSelectionne);
-			traitementSelectionne.setProduitUtilise(produitSelectionne);
+			
+			traitementSelectionne.addProduit(produitSelectionne);
 			traitementSelectionne.update(traitementSelectionne);
+			
+			affichageProduitsUtilises();
 			afficherTraitement();
             
+		}
+		
+	}
+	
+    public void affichageProduitsUtilises(){
+		
+		ImageView iv = new ImageView(new Image(Progression.NULL_.getUsedImage()));
+		iv.setPreserveRatio(true);
+        iv.setSmooth(true);
+        iv.setCache(true);
+        iv.setFitWidth(15);
+		
+		
+		Button b = new Button(produitSelectionne.getNom());
+		Button b2 = new Button("", iv);
+		
+		b2.setOnAction((event) -> deleteProduitLie((Button)event.getSource()));
+
+		produitsLiesHbox.getChildren().add(b);
+		produitsLiesHbox.getChildren().add(b2);
+		HBox.setMargin(b2, new Insets(0,10,0,0));
+	}
+    
+    public void deleteProduitLie(Button e){
+		
+		int index = produitsLiesHbox.getChildren().indexOf(e);
+		
+		System.out.println("nom produit : " + ((Button) produitsLiesHbox.getChildren().get(index -1)).getText());
+		
+		Produit produit = MongoAccess.request("produit", "nom",  ((Button) produitsLiesHbox.getChildren().get(index -1)).getText()).as(Produit.class);
+		
+		produitsLiesHbox.getChildren().remove(index -1, index +1);
+		
+		traitementSelectionne.deleteProduit(produit);
+		
+		TacheTraitement.update(traitementSelectionne);
+		
+		produitsLiesHbox.getChildren().clear();
+		for (Produit p : traitementSelectionne.getProduitsLies()){
+			produitSelectionne = p;
+			affichageProduitsUtilises();
 		}
 		
 	}
@@ -537,7 +585,13 @@ public class Fiche_tache_traitement_controller  implements Initializable{
 		System.out.println(traitementSelectionne.getTraitement().getNom_complet());
 		
 		t_label.setText(traitementSelectionne.getTraitement().getNom_complet());
-		produitUtiliseLabel.setText(traitementSelectionne.getProduitUtilise() != null ? traitementSelectionne.getProduitUtilise().getNom_complet() : "Aucun produit utilisé");
+		
+		produitsLiesHbox.getChildren().clear();
+		for (Produit p : traitementSelectionne.getProduitsLies()){
+			produitSelectionne = p;
+			affichageProduitsUtilises();
+		}
+		
 		rafraichirAffichage();
     }
     
@@ -612,7 +666,7 @@ public class Fiche_tache_traitement_controller  implements Initializable{
 		}
 		
 		
-	
+	    afficherTraitement();
 		afficherProgression();
 		afficherTraitementsAssocies();
 		afficherProduits();

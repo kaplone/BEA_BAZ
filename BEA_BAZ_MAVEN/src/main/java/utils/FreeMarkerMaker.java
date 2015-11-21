@@ -49,9 +49,6 @@ public class FreeMarkerMaker {
     //public static File  getLogo(OeuvreTraitee ot)
     public static File  getLogo(ArrayList<Fichier> af)
     {
-        //return new File("/home/kaplone/Desktop/BEABASE/Béa base/P1140344.JPG" );
-        //return Main_BEA_BAZ.getCommande().getModele().getCheminVersModel().getParent().resolve("P1140344.JPG").toFile();
-
 		//return MongoAccess.request("fichier", ot.getFichiers().get(ot.getFichiers().size() -2)).as(Fichier.class).next().getFichierLie();
         return new File(af.get(af.size() -2).getFichierLie());
     }
@@ -117,6 +114,7 @@ public class FreeMarkerMaker {
 		      context.put("inscriptions", o.getInscriptions_au_verso() != null ? o.getInscriptions_au_verso() : "");
 		      
 		      context.put("etat_final", ot.getEtat() != null ? ot.getEtat().toString() : "");
+		      context.put("complement_etat", ot.getComplement_etat() != null ? ot.getComplement_etat().toString() : "");
 		      
 		      
 		      ArrayList<String> traitementsEffectues = new ArrayList<>();
@@ -129,7 +127,14 @@ public class FreeMarkerMaker {
 		    	  if(tt.getFait_() == Progression.FAIT_){
 		    		  
 		    		  traitementsEffectues.add(tt.getTraitement().getNom_complet() + (tt.getComplement() == null ? "" : " " + tt.getComplement().getNom_complet()));  
-		    		  produitsAppliques.add(tt.getProduitUtilise() == null ? "" : tt.getProduitUtilise().getNom_complet());
+		    		  
+		    		  if (tt.getProduitsLies() != null){
+		    			  for (Produit p : tt.getProduitsLies()){
+		    				  produitsAppliques.add(p.getNom_complet());
+		    			  }
+		    		  }
+
+		    		  
 		    		  
 		    	  }
 		      }

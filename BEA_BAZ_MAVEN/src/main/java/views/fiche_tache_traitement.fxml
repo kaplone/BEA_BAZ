@@ -104,8 +104,8 @@
                   <Label fx:id="commande_label" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                   <Label text="Produit utilisé :" GridPane.rowIndex="4" />
                   <Label text="Complément du traitement :" GridPane.rowIndex="3" />
-                  <Label fx:id="produitUtiliseLabel" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                   <Label fx:id="complementTraitementLabel" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                  <HBox fx:id="produitsLiesHbox" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                </children>
             </GridPane>
             <HBox alignment="CENTER_LEFT" prefHeight="55.0" prefWidth="711.0">
