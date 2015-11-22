@@ -189,7 +189,7 @@
                               <ToggleGroup fx:id="toutFaits" />
                            </toggleGroup>
                         </RadioButton>
-                        <RadioButton mnemonicParsing="false" selected="true" text="Faits" toggleGroup="$toutFaits">
+                        <RadioButton fx:id="fait_radioButton" mnemonicParsing="false" selected="true" text="Faits" toggleGroup="$toutFaits">
                            <HBox.margin>
                               <Insets left="10.0" right="10.0" />
                            </HBox.margin>

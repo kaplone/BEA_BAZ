@@ -203,6 +203,7 @@ public class Fiche_auteur_controller  implements Initializable{
     	nom_auteur_textField.setEditable(true);
     	nom_complet_auteur_textField.setEditable(true);
 		remarques_auteur_textArea.setEditable(true);
+
     }
     
     public void onAnnulerButton() {
@@ -340,6 +341,7 @@ public class Fiche_auteur_controller  implements Initializable{
 			
 		   Auteur.save(auteurSelectionne);
 		   //afficherClient();
+		   rafraichirAffichage();
 		   onAnnulerEditButton();
 		}
     	

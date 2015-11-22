@@ -9,6 +9,8 @@ import java.util.stream.Collectors;
 
 import org.jongo.MongoCursor;
 
+import enums.Progression;
+import utils.FreeMarkerMaker;
 import utils.MongoAccess;
 import models.Auteur;
 import models.Client;
@@ -28,6 +30,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
+import javafx.scene.control.RadioButton;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
@@ -87,6 +90,9 @@ public class Fiche_commande_controller  implements Initializable{
 	private DatePicker dateDebutProjetPicker;
 	@FXML
 	private DatePicker dateFinProjetPicker;
+	
+	@FXML
+	private RadioButton fait_radioButton;
 	
 	@FXML
 	private ChoiceBox<Model> modelChoiceBox;
@@ -251,7 +257,8 @@ public class Fiche_commande_controller  implements Initializable{
 		commande.setDateFinProjet(dateFinProjetPicker.getValue());
 		commande.setRemarques(remarques_client.getText());
 		commande.setNom(nomCommandeTextField.getText());
-		commande.setModele(modelChoiceBox.getSelectionModel().getSelectedItem());
+		model = modelChoiceBox.getSelectionModel().getSelectedItem();
+		commande.setModele(model);
 		commande.setAuteur(auteursChoiceBox.getSelectionModel().getSelectedItem());
 		
 		Main_BEA_BAZ.setModel((Model) modelChoiceBox.getSelectionModel().getSelectedItem());
@@ -291,6 +298,7 @@ public class Fiche_commande_controller  implements Initializable{
 	    afficherModeles();
 	    afficherAuteurs();
 	    afficherOeuvres();
+
 	}
 	
 	public void afficherCommande(){
@@ -339,6 +347,8 @@ public class Fiche_commande_controller  implements Initializable{
 		
 		loadCommande(commande);
 		
+		modelChoiceBox.getSelectionModel().select(commande.getModele());
+		
 	}
 	
     @FXML
@@ -364,7 +374,31 @@ public class Fiche_commande_controller  implements Initializable{
     @FXML
     public void onVersModeleButton(){}
 	@FXML
-    public void onExporterToutButton(){}
+    public void onExporterToutButton(){
+		
+		MongoCursor<OeuvreTraitee> oeuvresAExporterCursor;
+		
+		if(fait_radioButton.isSelected()){
+			oeuvresAExporterCursor = MongoAccess.request("oeuvreTraitee", Progression.FAIT_, commande).as(OeuvreTraitee.class);
+		}
+		else {
+			oeuvresAExporterCursor = MongoAccess.request("oeuvreTraitee", commande).as(OeuvreTraitee.class);
+		}
+		
+		ArrayList<OeuvreTraitee> oeuvresAExporter = new ArrayList<>();
+		
+		while (oeuvresAExporterCursor.hasNext()){
+			oeuvresAExporter.add(oeuvresAExporterCursor.next());
+		}
+		
+		for ( OeuvreTraitee ot : oeuvresAExporter){
+			
+			Oeuvre o = ot.getOeuvre();
+			FreeMarkerMaker.odt2pdf(o, ot);
+		}
+		
+		 
+	}
 	@FXML
     public void onRapportsButton(){}
 	@FXML

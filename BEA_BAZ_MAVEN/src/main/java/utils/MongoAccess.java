@@ -26,6 +26,8 @@ import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
 
 import enums.Classes;
+import enums.EtatFinal;
+import enums.Progression;
 
 public class MongoAccess {
 	
@@ -147,6 +149,17 @@ public class MongoAccess {
 		Find find = null;
 		collec = jongo.getCollection(table);
 		find = collec.find("{commande :  #}", commande.get_id());
+
+		return find;
+	}
+    
+    public static Find request(String table, Progression progres, Commande commande) {	
+    	
+    	System.out.println(progres.name());
+		
+		Find find = null;
+		collec = jongo.getCollection(table);
+		find = collec.find("{commande._id :  #, progressionOeuvreTraitee : #}", commande.get_id(), progres.name());
 
 		return find;
 	}
