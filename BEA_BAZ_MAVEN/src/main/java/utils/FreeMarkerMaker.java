@@ -126,7 +126,7 @@ public class FreeMarkerMaker {
 		    	  
 		    	  if(tt.getFait_() == Progression.FAIT_){
 		    		  
-		    		  traitementsEffectues.add(tt.getTraitement().getNom_complet() + (tt.getComplement() == null ? "" : " " + tt.getComplement().getNom_complet()));  
+		    		  traitementsEffectues.add(tt.getTraitement().getNom_complet() + (tt.getComplement() == null ? "" : " " + tt.getComplement()));  
 		    		  
 		    		  if (tt.getProduitsLies() != null){
 		    			  for (Produit p : tt.getProduitsLies()){
@@ -173,7 +173,7 @@ public class FreeMarkerMaker {
 		    		                "83 500 La Seyne-sur-Mer");
 		      
 		      context.put("commande", "RESTAURATION DE DOCUMENTS D'ARCHIVES FONDS CHARLY\n" + 
-		                              "524 caricatures réalisées à la gouache, à l'aquarelle et au feutre");
+		                              "525 caricatures réalisées à la gouache, à l'aquarelle et au feutre");
 		      
 		      System.out.println("__03");
 
@@ -181,13 +181,8 @@ public class FreeMarkerMaker {
 		      context.put("image_oeuvre", getLogo(listeFichiers));
 
 		      // 3) Generate report by merging Java model with the Docx
-		      
-		      //OutputStream out = new FileOutputStream(new File(String.format("/home/kaplone/Desktop/BEABASE/tests/%s_freemarker.odt", o.getCote_archives_6s())));
-		      
-		      Path p = Main_BEA_BAZ.getCommande().getModele().getCheminVersModel().getParent().resolve(String.format("%s_freemarker.odt", o.getCote_archives_6s()));
-		      System.out.println(p);
-		      
-		      OutputStream out = new FileOutputStream(Main_BEA_BAZ.getCommande().getModele().getCheminVersModel().getParent().resolve(String.format("%s_freemarker.odt", o.getCote_archives_6s())).toFile());
+
+		      OutputStream out = new FileOutputStream(Main_BEA_BAZ.getCommande().getModele().getCheminVersModel().getParent().resolve(String.format("%s.odt", o.getCote_archives_6s())).toFile());
 		      
 		      System.out.println("__04");
 		      report.process(context, out);
@@ -195,7 +190,7 @@ public class FreeMarkerMaker {
 		      System.out.println("__05");
 
 		      //OutputStream out2 = new FileOutputStream(new File(String.format("/home/kaplone/Desktop/BEABASE/tests/%s_freemarker.pdf", o.getCote_archives_6s())));
-		      OutputStream out2 = new FileOutputStream(Main_BEA_BAZ.getCommande().getModele().getCheminVersModel().getParent().resolve(String.format("%s_freemarker.pdf", o.getCote_archives_6s())).toFile());
+		      OutputStream out2 = new FileOutputStream(Main_BEA_BAZ.getCommande().getModele().getCheminVersModel().getParent().resolve(String.format("%s.pdf", o.getCote_archives_6s())).toFile());
               // 1) Create options ODT 2 PDF to select well converter form the registry
               Options options = Options.getFrom(DocumentKind.ODT).to(ConverterTypeTo.PDF);
 

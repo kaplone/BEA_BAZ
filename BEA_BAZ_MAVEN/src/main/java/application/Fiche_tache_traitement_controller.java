@@ -58,8 +58,6 @@ public class Fiche_tache_traitement_controller  implements Initializable{
 	@FXML
 	private ListView<Produit> listView_produits;
 	@FXML
-	private Button nouveau_traitement;
-	@FXML
 	private Button nouveau_detail;
 	@FXML
 	private Button mise_a_jour_traitement;
@@ -90,6 +88,9 @@ public class Fiche_tache_traitement_controller  implements Initializable{
 	private TextArea remarques_traitement_textArea;
 	
 	@FXML
+	private TextField complement_textField;
+	
+	@FXML
 	private RadioButton fait_radio;
 	@FXML
 	private RadioButton todo_radio;
@@ -111,14 +112,19 @@ public class Fiche_tache_traitement_controller  implements Initializable{
 	@FXML
 	private HBox produitsLiesHbox;
 	
+	@FXML
+	private ListView tous_les_traitements_listView;
+	
 	private boolean edit = false;
 	
 	MongoCursor<TacheTraitement> traitementCursor;
 	MongoCursor<Produit> detailCursor ;
+	MongoCursor<Traitement> tousLesTraitementsCursor;
 	TacheTraitement traitementSelectionne;
 	Produit produitSelectionne;
 	
 	ArrayList<TacheTraitement> liste_tachesTraitements;
+	ObservableList<Traitement> liste_tous_les_traitements;
 	
 	Progression progres;
 	
@@ -313,7 +319,6 @@ public class Fiche_tache_traitement_controller  implements Initializable{
     	remarques_traitement_textArea.setText("");
     	//nom_traitement_textField.setPromptText("saisir le nom du nouveau traitement");
     	remarques_traitement_textArea.setPromptText("éventuelles remarques");
-    	nouveau_traitement.setVisible(false);
     	
     	traitementSelectionne = new TacheTraitement();
     	
@@ -334,7 +339,6 @@ public class Fiche_tache_traitement_controller  implements Initializable{
     	remarques_traitement_textArea.setText("");
     	//nom_traitement_textField.setPromptText("");
     	remarques_traitement_textArea.setPromptText("");
-    	nouveau_traitement.setText("Nouveau traitement");
     	rafraichirAffichage();
     	traitements_associes_tableView.getSelectionModel().select(traitementSelectionne);
     	affichageInfos();
@@ -344,8 +348,12 @@ public class Fiche_tache_traitement_controller  implements Initializable{
     public void rafraichirAffichage(){
     	
     	nom_traitement_label.setText(traitementSelectionne.getNom());
-    	//nom_traitement_textField.setText(traitementSelectionne.getNom_complet());
+    	complement_textField.setText(traitementSelectionne.getComplement());
     	remarques_traitement_textArea.setText(traitementSelectionne.getRemarques());
+    	
+    	editer.setVisible(true);
+        mise_a_jour_traitement.setVisible(false);
+		annuler.setVisible(false);
     	
     }
     
@@ -370,9 +378,7 @@ public class Fiche_tache_traitement_controller  implements Initializable{
     	annuler.setVisible(false);
     	editer.setVisible(true);
     	mise_a_jour_traitement.setVisible(false);
-    	//nom_traitement_textField.setEditable(false);
 		remarques_traitement_textArea.setEditable(false);
-		nouveau_traitement.setVisible(true);
 		rafraichirAffichage();
 		traitements_associes_tableView.getSelectionModel().select(traitementSelectionne);
     	affichageInfos();
@@ -388,42 +394,26 @@ public class Fiche_tache_traitement_controller  implements Initializable{
     		traitementSelectionne = new TacheTraitement();
     	}
     	
-    	
-    	
-//    	traitementSelectionne.setNom(nom_traitement_textField.getText());
-//    	traitementSelectionne.setRemarques(remarques_traitement_textArea.getText());
-//    	
-//    	annuler.setVisible(false);
-//    	editer.setVisible(true);
-//    	mise_a_jour_traitement.setVisible(false);
-//    	nom_traitement_textField.setEditable(false);
-//		remarques_traitement_textArea.setEditable(false);
-//		
-//		if (edit) {
-//			Traitement.update(traitementSelectionne);
-//			afficherTraitement();
-//			rafraichirAffichage();
-//			onAnnulerEditButton();
-//		}
-//		else {
-//			
-//			System.out.println(traitementSelectionne);
-//			
-//		   Traitement.save(traitementSelectionne);
-//		   afficherTraitement();
-//		   onAnnulerEditButton();
-//		}
+    	traitementSelectionne.setComplement(complement_textField.getText());
+    	traitementSelectionne.setRemarques(remarques_traitement_textArea.getText());
+		
+		if (edit) {
+			TacheTraitement.update(traitementSelectionne);
+			afficherTraitement();
+			onAnnulerEditButton();
+		}
+		else {
+			
+		   TacheTraitement.save(traitementSelectionne);
+		   afficherTraitement();
+		   onAnnulerEditButton();
+		}
     	
     }
     
     public void afficherTraitements(){
 
-		remarques_traitement_textArea.setEditable(false);
-        editer.setVisible(true);
-        mise_a_jour_traitement.setVisible(false);
-		annuler.setVisible(false);
 		fiche_traitement_label.setText("FICHE TACHE TRAITEMENT :");
-		//nom_traitement_textField.setDisable(true);
 		remarques_traitement_textArea.setDisable(true);
 		
         liste_traitements.clear();
@@ -439,9 +429,7 @@ public class Fiche_tache_traitement_controller  implements Initializable{
     		traitements_associes_tableView.setItems(liste_traitements);	
     		
     		rafraichirAffichage();
-    	}
-		
-		
+    	}		
     }
     
     @FXML
@@ -628,8 +616,6 @@ public class Fiche_tache_traitement_controller  implements Initializable{
 		
 		traitementSelectionne = Main_BEA_BAZ.getTacheTraitementEdited();
 
-		//nom_traitement_textField.setEditable(false);
-		remarques_traitement_textArea.setEditable(false);
         editer.setVisible(true);
         mise_a_jour_traitement.setVisible(false);
 		annuler.setVisible(false);
@@ -642,6 +628,10 @@ public class Fiche_tache_traitement_controller  implements Initializable{
 				
 		liste_tachesTraitements = new ArrayList<>();
 		
+		complement_textField.textProperty().addListener((observable, oldValue, newValue) -> {
+			onEditerTraitementButton();
+		});
+		
 		ot = MongoAccess.request("oeuvreTraitee", traitementSelectionne.getOeuvreTraiteeId()).as(OeuvreTraitee.class).next();
 		commande = ot.getCommande();
 		traitementSource = traitementSelectionne.getTraitement();
@@ -652,6 +642,7 @@ public class Fiche_tache_traitement_controller  implements Initializable{
 		
 		liste_traitements = FXCollections.observableArrayList();
 		liste_produits  = FXCollections.observableArrayList();
+		liste_tous_les_traitements = FXCollections.observableArrayList();
 		
 		
 		currentStage = Main_BEA_BAZ.getStage();
@@ -665,29 +656,21 @@ public class Fiche_tache_traitement_controller  implements Initializable{
 			
 		}
 		
+        tousLesTraitementsCursor = MongoAccess.request("traitement").as(Traitement.class);
+		
+		while (tousLesTraitementsCursor.hasNext()){
+			liste_tous_les_traitements.add(tousLesTraitementsCursor.next());
+		}
+		
+		tous_les_traitements_listView.setItems(liste_tous_les_traitements);
+		
 		
 	    afficherTraitement();
 		afficherProgression();
 		afficherTraitementsAssocies();
 		afficherProduits();
 		rafraichirAffichage();
-		
-		
-//		if (traitementSelectionne != null){
-//			
-//			detailCursor = MongoAccess.request("produit", traitementSelectionne).as(Produit.class);
-//			
-//			while (detailCursor.hasNext()){
-//				Produit enplus = detailCursor.next();
-//				liste_details.add(enplus);
-//			}
-//			
-//			listView_produits.setItems(liste_details);
-//		}
-        
-		
-		
-	
+
 	}
 
 }

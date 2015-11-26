@@ -28,21 +28,16 @@
                   <Insets bottom="10.0" top="10.0" />
                </VBox.margin>
             </Button>
-            <Label text="Compléments">
+            <Label text="Traitements">
                <VBox.margin>
                   <Insets bottom="10.0" top="10.0" />
                </VBox.margin>
             </Label>
-            <ListView prefHeight="308.0" prefWidth="288.0">
+            <ListView fx:id="tous_les_traitements_listView" prefHeight="308.0" prefWidth="288.0">
                <VBox.margin>
                   <Insets bottom="10.0" top="10.0" />
                </VBox.margin>
             </ListView>
-            <Button mnemonicParsing="false" text="Nouveau complément">
-               <VBox.margin>
-                  <Insets bottom="10.0" top="10.0" />
-               </VBox.margin>
-            </Button>
          </children>
          <BorderPane.margin>
             <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
@@ -104,8 +99,8 @@
                   <Label fx:id="commande_label" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                   <Label text="Produit utilisé :" GridPane.rowIndex="4" />
                   <Label text="Complément du traitement :" GridPane.rowIndex="3" />
-                  <Label fx:id="complementTraitementLabel" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                   <HBox fx:id="produitsLiesHbox" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                  <TextField fx:id="complement_textField" promptText="Complément éventuel du traitement" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                </children>
             </GridPane>
             <HBox alignment="CENTER_LEFT" prefHeight="55.0" prefWidth="711.0">

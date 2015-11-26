@@ -16,8 +16,6 @@ public class Traitement extends Commun{
 	
 	private ArrayList<Produit> produits;
 	
-	private ArrayList<Complement> complements;
-	
 	public Traitement(){
 		this.produits = new ArrayList<>();
 	}

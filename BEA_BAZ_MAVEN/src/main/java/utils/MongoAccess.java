@@ -1,6 +1,7 @@
 package utils;
 
 import java.net.UnknownHostException;
+import java.util.regex.Pattern;
 
 import org.bson.types.ObjectId;
 import org.jongo.Distinct;
@@ -15,6 +16,7 @@ import models.Auteur;
 import models.Client;
 import models.Commande;
 import models.Commun;
+import models.Fichier;
 import models.Model;
 import models.Settings;
 import models.Traitement;
@@ -187,6 +189,28 @@ public class MongoAccess {
 		FindOne one = null;
 		collec = jongo.getCollection(table);
 		one = collec.findOne(String.format("{\"%s\" : \"%s\"}", field, valeur));
+
+		return one;
+	}
+	
+    public static FindOne request(String table, String field, String valeur, boolean regex) {	
+		
+		FindOne one = null;
+		collec = jongo.getCollection(table);
+		
+		String query = String.format("{%s : #}", field);
+		String reg = String.format(".*%s.PR.1.JPG", valeur);
+		
+		System.out.println(query);
+		System.out.println(reg);
+		
+		
+		one = collec.findOne(query, Pattern.compile(reg));
+		//{$regex: #}}", "jo.*"
+		
+		System.out.println(one);
+		System.out.println(one.as(Fichier.class));
+		System.out.println(one.as(Fichier.class).getFichierLie());
 
 		return one;
 	}

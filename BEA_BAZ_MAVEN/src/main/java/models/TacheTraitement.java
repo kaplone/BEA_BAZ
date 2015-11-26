@@ -26,10 +26,10 @@ public class TacheTraitement extends Commun{
 	private Date date;
 	private ObjectId oeuvreTraiteeId;
 	private ObjectId commandeId;
-	private Complement complement;
 	private Produit produitUtilise;
 	private Traitement traitement;
 	private Etat etat;
+	private String complement;
 	
 	private ArrayList<Produit> produits;
 	private ArrayList<Produit> produitsLies;
@@ -103,10 +103,10 @@ public class TacheTraitement extends Commun{
 	public void setCommandeId(ObjectId commandeId) {
 		this.commandeId = commandeId;
 	}
-	public Complement getComplement() {
+	public String getComplement() {
 		return complement;
 	}
-	public void setComplement(Complement complement) {
+	public void setComplement(String complement) {
 		this.complement = complement;
 	}
     

@@ -129,6 +129,9 @@ public class Fiche_oeuvre_controller  implements Initializable{
 	@FXML
 	private ListView<Technique> techniques_listView;
 	
+	@FXML
+	private ImageView preview_imageView;
+	
 	
 	@FXML
 	private GridPane grid;
@@ -301,14 +304,23 @@ public class Fiche_oeuvre_controller  implements Initializable{
 			}
 		}
 		
+		Fichier fichierSelectionne = MongoAccess.request("fichier", "fichierLie", oeuvreSelectionne.getCote_archives_6s(), true).as(Fichier.class);
+		
+		System.out.println(fichierSelectionne.getFichierLie().toString());
+		
+		preview_imageView.setImage(new Image(String.format("file:%s" ,fichierSelectionne.getFichierLie().toString())));
+		
 		etat_final_choiceBox.getSelectionModel().select(oeuvreTraiteeSelectionne.getEtat());
 		complement_etat_textArea.setText(oeuvreTraiteeSelectionne.getComplement_etat());
 		
-		
+		editer.setVisible(true);
+        mise_a_jour_oeuvre.setVisible(false);
+		annuler.setVisible(false);
 
 		afficherAuteurs();
 		afficherTraitements();
 		afficherFichiers();
+		
 	}
 	
 	public void afficherTraitements(){
