@@ -149,7 +149,7 @@ public class TacheTraitement extends Commun{
 	
 	public String getNom_complet(){
 		
-		return traitement.getNom_complet();
+		return traitement.getNom_complet() + this.getComplement() != null ? " " + this.getComplement() : "";
 	}
 	
 	public Progression getFait_(){

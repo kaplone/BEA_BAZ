@@ -183,7 +183,7 @@ public class Fiche_technique_controller  implements Initializable{
 		}
 	}
 	
-    private void affichageInfos(Technique techniqueSelectionne){
+    private void affichageInfos(){
 
     	
     	nom_technique_textField.setText(techniqueSelectionne.getNom());
@@ -203,13 +203,14 @@ public class Fiche_technique_controller  implements Initializable{
     	}	
     }
     
-    public void onNouveauProduitButton() {
+    public void onNouvelle_techniqueButton() {
     	
     	mise_a_jour_technique.setText("Enregistrer");
     	nom_technique_textField.setText("");
+    	nom_complet_technique_textField.setText("");
     	remarques_technique_textArea.setText("");
     	nom_technique_textField.setPromptText("saisir le nom affiché du nouveau traitement");
-    	nom_technique_textField.setPromptText("saisir le nom complet du nouveau traitement");
+    	nom_complet_technique_textField.setPromptText("saisir le nom complet du nouveau traitement");
     	remarques_technique_textArea.setPromptText("éventuelles remarques");
     	nouvelle_technique.setVisible(false);
     	
@@ -241,7 +242,7 @@ public class Fiche_technique_controller  implements Initializable{
     	nouvelle_technique.setText("Nouveau traitement");
     	rafraichirAffichage();
     	listView_techniques.getSelectionModel().select(techniqueSelectionne);
-    	affichageInfos(techniqueSelectionne);
+    	affichageInfos();
     	
     }
     
@@ -270,6 +271,7 @@ public class Fiche_technique_controller  implements Initializable{
     	mise_a_jour_technique.setVisible(true);
     	nom_technique_textField.setEditable(true);
     	nom_complet_technique_textField.setEditable(true);
+    	nom_complet_technique_textField.setEditable(true);
 		remarques_technique_textArea.setEditable(true);
 		
 		edit = true;
@@ -289,7 +291,6 @@ public class Fiche_technique_controller  implements Initializable{
 		nouvelle_technique.setVisible(true);
 		rafraichirAffichage();
 		listView_techniques.getSelectionModel().select(techniqueSelectionne);
-    	affichageInfos(techniqueSelectionne);
     	
     	edit = false;
     	
@@ -304,16 +305,13 @@ public class Fiche_technique_controller  implements Initializable{
     	
     	techniqueSelectionne.setNom(nom_technique_textField.getText());
     	techniqueSelectionne.setRemarques(remarques_technique_textArea.getText());
+    	techniqueSelectionne.setNom_complet(nom_complet_technique_textField.getText());
     	
-    	annuler.setVisible(false);
-    	editer.setVisible(true);
-    	mise_a_jour_technique.setVisible(false);
-    	nom_technique_textField.setEditable(false);
-		remarques_technique_textArea.setEditable(false);
+    	listView_techniques.getSelectionModel().select(techniqueSelectionne);
 		
 		if (edit) {
 			Technique.update(techniqueSelectionne);
-			afficherProduit();
+			afficherTechnique();
 			rafraichirAffichage();
 			onAnnulerEditButton();
 		}
@@ -322,13 +320,12 @@ public class Fiche_technique_controller  implements Initializable{
 			System.out.println(techniqueSelectionne);
 			
 		   Technique.save(techniqueSelectionne);
-		   afficherProduit();
 		   onAnnulerEditButton();
 		}
     	
     }
     
-    public void afficherProduit(){
+    public void afficherTechnique(){
 
 		remarques_technique_textArea.setEditable(false);
 		nom_complet_technique_textField.setEditable(false);
@@ -338,17 +335,25 @@ public class Fiche_technique_controller  implements Initializable{
 		annuler.setVisible(false);
 		
 		fiche_technique_label.setText("FICHE PRODUIT :");
+		
+		System.out.println(nom_technique_label);
+		System.out.println(techniqueSelectionne);
+		System.out.println(techniqueSelectionne.getNom());
+		
 		nom_technique_label.setText(techniqueSelectionne.getNom());
 		nom_technique_textField.setText(techniqueSelectionne.getNom());
 		nom_complet_technique_textField.setText(techniqueSelectionne.getNom_complet());
 		remarques_technique_textArea.setText(techniqueSelectionne.getRemarques());
-		//rafraichirAffichage();
     }
     
-    public void onProduitSelect(){
+    public void onTechniqueSelect(){
     	
     	techniqueSelectionne = listView_techniques.getSelectionModel().getSelectedItem();
-    	afficherProduit();	
+    	
+    	if(techniqueSelectionne != null){
+    		afficherTechnique();
+    	}
+    		
     }   
     
 	@Override
@@ -380,6 +385,13 @@ public class Fiche_technique_controller  implements Initializable{
 		}
 		
 		listView_techniques.setItems(liste_techniques);
+		
+		listView_techniques.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+			onTechniqueSelect();
+		});
+		
+		listView_techniques.getSelectionModel().select(0);
+		techniqueSelectionne = listView_techniques.getSelectionModel().getSelectedItem();
 
 	}
 

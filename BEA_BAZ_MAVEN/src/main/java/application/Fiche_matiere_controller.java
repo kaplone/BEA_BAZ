@@ -203,13 +203,14 @@ public class Fiche_matiere_controller  implements Initializable{
     	}	
     }
     
-    public void onNouveauProduitButton() {
+    public void onNouvelle_matiereButton() {
     	
     	mise_a_jour_matiere.setText("Enregistrer");
     	nom_matiere_textField.setText("");
+    	nom_complet_matiere_textField.setText("");
     	remarques_matiere_textArea.setText("");
     	nom_matiere_textField.setPromptText("saisir le nom affiché du nouveau traitement");
-    	nom_matiere_textField.setPromptText("saisir le nom complet du nouveau traitement");
+    	nom_complet_matiere_textField.setPromptText("saisir le nom complet du nouveau traitement");
     	remarques_matiere_textArea.setPromptText("éventuelles remarques");
     	nouvelle_matiere.setVisible(false);
     	
@@ -289,7 +290,6 @@ public class Fiche_matiere_controller  implements Initializable{
 		nouvelle_matiere.setVisible(true);
 		rafraichirAffichage();
 		listView_matieres.getSelectionModel().select(matiereSelectionne);
-    	affichageInfos(matiereSelectionne);
     	
     	edit = false;
     	
@@ -304,16 +304,14 @@ public class Fiche_matiere_controller  implements Initializable{
     	
     	matiereSelectionne.setNom(nom_matiere_textField.getText());
     	matiereSelectionne.setRemarques(remarques_matiere_textArea.getText());
+    	matiereSelectionne.setNom_complet(nom_complet_matiere_textField.getText());
     	
-    	annuler.setVisible(false);
-    	editer.setVisible(true);
-    	mise_a_jour_matiere.setVisible(false);
-    	nom_matiere_textField.setEditable(false);
-		remarques_matiere_textArea.setEditable(false);
+    	listView_matieres.getSelectionModel().select(matiereSelectionne);
+
 		
 		if (edit) {
 			Matiere.update(matiereSelectionne);
-			afficherProduit();
+			afficherMatiere();
 			rafraichirAffichage();
 			onAnnulerEditButton();
 		}
@@ -322,13 +320,13 @@ public class Fiche_matiere_controller  implements Initializable{
 			System.out.println(matiereSelectionne);
 			
 		   Matiere.save(matiereSelectionne);
-		   afficherProduit();
+		   afficherMatiere();
 		   onAnnulerEditButton();
 		}
     	
     }
     
-    public void afficherProduit(){
+    public void afficherMatiere(){
 
 		remarques_matiere_textArea.setEditable(false);
 		nom_complet_matiere_textField.setEditable(false);
@@ -346,10 +344,14 @@ public class Fiche_matiere_controller  implements Initializable{
     }
 
     @FXML
-    public void onProduitSelect(){
+    public void onMatiereSelect(){
     	
     	matiereSelectionne = listView_matieres.getSelectionModel().getSelectedItem();
-    	afficherProduit();	
+    	
+    	if(matiereSelectionne != null){
+    		afficherMatiere();
+    	}
+    		
     }   
 
 	@Override
@@ -382,6 +384,13 @@ public class Fiche_matiere_controller  implements Initializable{
 		}
 		
 		listView_matieres.setItems(liste_matieres);
+		
+		listView_matieres.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+			onMatiereSelect();
+		});
+		
+		listView_matieres.getSelectionModel().select(0);
+		matiereSelectionne = listView_matieres.getSelectionModel().getSelectedItem();
 
 	}
 

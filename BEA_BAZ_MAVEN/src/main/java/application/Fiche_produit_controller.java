@@ -297,6 +297,7 @@ public class Fiche_produit_controller  implements Initializable{
     	
     	produitSelectionne.setNom(nom_produit_textField.getText());
     	produitSelectionne.setRemarques(remarques_produit_textArea.getText());
+    	produitSelectionne.setNom_complet(nom_complet_produit_textField.getText());
     	
     	annuler.setVisible(false);
     	editer.setVisible(true);

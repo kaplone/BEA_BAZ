@@ -17,7 +17,7 @@
          <children>
             <Pane prefHeight="50.0" prefWidth="889.0">
                <children>
-                  <Label fx:id="fiche_traitement_label" layoutX="35.0" layoutY="6.0" text="FICHE TECHNIQUE :">
+                  <Label fx:id="fiche_technique_label" layoutX="35.0" layoutY="6.0" text="FICHE TECHNIQUE :">
                      <font>
                         <Font size="31.0" />
                      </font>
@@ -170,7 +170,7 @@
                   <Insets bottom="10.0" top="10.0" />
                </VBox.margin>
             </ListView>
-            <Button fx:id="nouveau_produit" mnemonicParsing="false" onAction="#onNouveauProduitButton" text="Nouvelle technique">
+            <Button fx:id="nouvelle_technique" mnemonicParsing="false" onAction="#onNouvelle_techniqueButton" text="Nouvelle technique">
                <VBox.margin>
                   <Insets bottom="10.0" top="10.0" />
                </VBox.margin>

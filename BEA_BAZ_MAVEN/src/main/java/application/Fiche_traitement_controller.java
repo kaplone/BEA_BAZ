@@ -403,12 +403,7 @@ public class Fiche_traitement_controller  implements Initializable{
     	
     	traitementSelectionne.setNom(nom_traitement_textField.getText());
     	traitementSelectionne.setRemarques(remarques_traitement_textArea.getText());
-    	
-    	annuler.setVisible(false);
-    	editer.setVisible(true);
-    	mise_a_jour_traitement.setVisible(false);
-    	nom_traitement_textField.setEditable(false);
-		remarques_traitement_textArea.setEditable(false);
+    	traitementSelectionne.setNom_complet(nom_complet_traitement_textField.getText());
 		
 		if (edit) {
 			Traitement.update(traitementSelectionne);

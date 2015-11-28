@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 import org.bson.types.ObjectId;
 import org.jongo.MongoCursor;
@@ -125,6 +126,8 @@ public class Fiche_tache_traitement_controller  implements Initializable{
 	
 	ArrayList<TacheTraitement> liste_tachesTraitements;
 	ObservableList<Traitement> liste_tous_les_traitements;
+	
+	ObservableList<TacheTraitement> obs_tt;
 	
 	Progression progres;
 	
@@ -532,7 +535,7 @@ public class Fiche_tache_traitement_controller  implements Initializable{
 		
 		//ObservableList<TacheTraitement> obs_tt = FXCollections.observableArrayList(liste_tachesTraitements);
 		
-		ObservableList<TacheTraitement> obs_tt = FXCollections.observableArrayList();
+		obs_tt = FXCollections.observableArrayList();
 		
 		for (ObjectId ta_id : ot.getTraitementsAttendus()){
 			obs_tt.add(MongoAccess.request("tacheTraitement", ta_id).as(TacheTraitement.class).next());
@@ -567,11 +570,7 @@ public class Fiche_tache_traitement_controller  implements Initializable{
 		//nom_traitement_textField.setDisable(true);
 		remarques_traitement_textArea.setDisable(true);
 		nom_traitement_label.setText(traitementSelectionne.getNom());
-		
-		System.out.println(traitementSelectionne);
-		System.out.println(traitementSelectionne.getTraitement());
-		System.out.println(traitementSelectionne.getTraitement().getNom_complet());
-		
+
 		t_label.setText(traitementSelectionne.getTraitement().getNom_complet());
 		
 		produitsLiesHbox.getChildren().clear();
@@ -604,6 +603,25 @@ public class Fiche_tache_traitement_controller  implements Initializable{
     	liste_produits.clear();
     	liste_produits.addAll(traitementSelectionne.getTraitement().getProduits());
     	listView_produits.setItems(liste_produits);
+    }
+    
+    public void onTous_les_traitementsSelect(Traitement traitement){
+    	
+    	TacheTraitement tt = new TacheTraitement();
+    	
+    	tt.setCommandeId(Main_BEA_BAZ.getCommande().get_id());
+    	tt.setFait_(Progression.TODO_);
+    	tt.setOeuvreTraiteeId(Main_BEA_BAZ.getOeuvre().get_id());
+    	tt.setTraitement(traitement);
+    	tt.setNom(traitement.getNom());
+    	
+    	MongoAccess.insert("tacheTraitement", tt);
+    	
+    	obs_tt.add(tt);
+    	
+    	ot.setTraitementsAttendus(new ArrayList<ObjectId>(obs_tt.stream().map(a -> a.get_id()).collect(Collectors.toList())));
+    	
+    	MongoAccess.update("oeuvreTraitee", ot);
     }
 
 
@@ -663,6 +681,10 @@ public class Fiche_tache_traitement_controller  implements Initializable{
 		}
 		
 		tous_les_traitements_listView.setItems(liste_tous_les_traitements);
+		
+		tous_les_traitements_listView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+			onTous_les_traitementsSelect((Traitement) newValue);
+		});
 		
 		
 	    afficherTraitement();
