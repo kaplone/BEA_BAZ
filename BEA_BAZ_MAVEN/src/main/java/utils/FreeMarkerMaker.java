@@ -95,8 +95,15 @@ public class FreeMarkerMaker {
 		      
 		      FieldsMetadata metadata = report.createFieldsMetadata();
 		      metadata.addFieldAsImage( "image_oeuvre", "image_oeuvre");
-//		      metadata.addFieldAsList("fichiers.nom");
-//              metadata.addFieldAsList("fichiers.legende");
+		      
+		    //  OLD PAI
+		 
+		      metadata.addFieldAsList("fichiers.nom");
+              metadata.addFieldAsList("fichiers.legende");
+		      
+		   // NEW API
+	        //  metadata.load( "fichiers", Fichier.class, true );
+		      
 		      report.setFieldsMetadata(metadata);
 		      
 		      System.out.println("__01");
