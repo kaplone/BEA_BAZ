@@ -1,19 +1,14 @@
 package models;
 
-import java.util.ArrayList;
-
-import javafx.scene.image.ImageView;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.bson.types.ObjectId;
-import org.jongo.marshall.jackson.oid.MongoObjectId;
-
 import utils.MongoAccess;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-import enums.Progression;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Oeuvre extends Commun{
@@ -33,18 +28,15 @@ public class Oeuvre extends Commun{
 	
 	private ObjectId auteur;
 	
-	private ArrayList<Matiere> matieresUtilisees;
-	private ArrayList<Technique> techniquesUtilisees;
+	private Map<String, ObjectId> matieresUtilisees_id;
+	private Map<String, ObjectId> techniquesUtilisees_id;
 	
 	private String etat_current;
 	
-	@JsonIgnore
-	private ImageView etat;
-//	
-//	public Oeuvre(){
-//		matieresUtilisees = new ArrayList<>();
-//		techniquesUtilisees = new ArrayList<>();
-//	}
+	public Oeuvre(){
+		matieresUtilisees_id = new HashMap<>();
+		techniquesUtilisees_id = new HashMap<>();
+	}
 	
 	@Override
 	public String toString(){
@@ -83,24 +75,17 @@ public class Oeuvre extends Commun{
     
     public void addMatiere(Matiere m){
     	
-    	if (matieresUtilisees == null){
-    		matieresUtilisees = new ArrayList<>();
-    	}
-    	
-    	else if (! matieresUtilisees.contains(m)){
-    		matieresUtilisees.add(m);
+        if (! matieresUtilisees_id.keySet().contains(m.getNom())){
+    		matieresUtilisees_id.put(m.getNom(), m.get_id());
     	}
     	
     }
     
     public void deleteMatiere(Matiere m){
     	
-    	Matiere matiere_ = null;
-    	
-    	for (Matiere m_ : matieresUtilisees){
-    		if (m.getNom().equals(m_.getNom())){
-    			matiere_ = m_;
-    			matieresUtilisees.remove(m_);
+    	for (String m_ : matieresUtilisees_id.keySet()){
+    		if (m.getNom().equals(m_)){
+    			matieresUtilisees_id.remove(m_);
     			break;
     		}
     	} 	
@@ -108,24 +93,18 @@ public class Oeuvre extends Commun{
     
     public void addTechnique(Technique t){
     	
-    	if (techniquesUtilisees == null){
-    		techniquesUtilisees = new ArrayList<>();
-    	}
-    	
-    	else if (! techniquesUtilisees.contains(t)){
-    		techniquesUtilisees.add(t);
+
+    	if (! techniquesUtilisees_id.keySet().contains(t.getNom())){
+    		techniquesUtilisees_id.put(t.getNom(), t.get_id());
     	}
     	
     }
     
     public void deleteTechnique(Technique t){
-    	
-    	Technique technique_ = null;
-    	
-    	for (Technique t_ : techniquesUtilisees){
-    		if (t.getNom().equals(t_.getNom())){
-    			technique_ = t_;
-    			techniquesUtilisees.remove(t_);
+
+    	for (String t_ : techniquesUtilisees_id.keySet()){
+    		if (t.getNom().equals(t_)){
+    			techniquesUtilisees_id.remove(t_);
     			break;
     		}
     	} 	
@@ -145,10 +124,6 @@ public class Oeuvre extends Commun{
 
 	public void setCote_archives_6s(String cote_archives_6s) {
 		this.cote_archives_6s = cote_archives_6s;
-	}
-
-	public void setEtat(ImageView etat) {
-		this.etat = etat;
 	}
 
 	public String getVille() {
@@ -239,22 +214,59 @@ public class Oeuvre extends Commun{
 		this.etat_current = etat_current;
 	}
 
-	public ArrayList<Matiere> getMatieresUtilisees() {
-		return matieresUtilisees;
+	public Set<String> getMatieresUtilisees_names() {
+		return matieresUtilisees_id.keySet();
 	}
 
-	public void setMatieresUtilisees(ArrayList<Matiere> matieresUtilisees) {
-		this.matieresUtilisees = matieresUtilisees;
+	public void AddMatiereUtilisee(Matiere matiereUtilisee) {
+		this.matieresUtilisees_id.put(matiereUtilisee.getNom(), matiereUtilisee.get_id());
 	}
 
-	public ArrayList<Technique> getTechniquesUtilisees() {
-		return techniquesUtilisees;
+	public Set<String> getTechniquesUtilisees_names() {
+		return techniquesUtilisees_id.keySet();
 	}
 
-	public void setTechniquesUtilisees(ArrayList<Technique> techniquesUtilisees) {
-		this.techniquesUtilisees = techniquesUtilisees;
+	public void addTechniqueUtilisee(Technique techniqueUtilisee) {
+		this.techniquesUtilisees_id.put(techniqueUtilisee.getNom(), techniqueUtilisee.get_id());
+	}
+
+	public Map<String, ObjectId> getMatieresUtilisees_id() {
+		return matieresUtilisees_id;
+	}
+
+	public void setMatieresUtilisees_id(Map<String, ObjectId> matieresUtilisees_id) {
+		this.matieresUtilisees_id = matieresUtilisees_id;
+	}
+
+	public Map<String, ObjectId> getTechniquesUtilisees_id() {
+		return techniquesUtilisees_id;
+	}
+
+	public void setTechniquesUtilisees_id(Map<String, ObjectId> techniquesUtilisees_id) {
+		this.techniquesUtilisees_id = techniquesUtilisees_id;
 	}
 	
+	public String getTechniquesUtilisees_noms_complets(){
+		
+		return getTechniquesUtilisees_id().entrySet()
+                                          .stream()
+                                          .map(a -> MongoAccess.request("technique", a.getValue())
+                                                               .as(Technique.class)
+                                                               .next()
+                                                               .getNom_complet())
+                                          .collect(Collectors.joining(", "));
+	}
+	
+    public String getMatieresUtilisees_noms_complets(){
+		
+		return getMatieresUtilisees_id().entrySet()
+                                        .stream()
+                                        .map(a -> MongoAccess.request("matiere", a.getValue())
+                                                             .as(Matiere.class)
+                                                             .next()
+                                                             .getNom_complet())
+                                        .collect(Collectors.joining(", "));
+	}
 	
 
 	

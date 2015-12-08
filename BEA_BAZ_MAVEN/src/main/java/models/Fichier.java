@@ -1,7 +1,8 @@
 package models;
 
-import java.io.File;
 import java.nio.file.Paths;
+
+import org.bson.types.ObjectId;
 
 import utils.MongoAccess;
 
@@ -10,6 +11,8 @@ public class Fichier extends Commun{
 	private String fichierLie;
 	
 	private String legende;
+	
+	private ObjectId oeuvre_id;
 	
 	public static void update(Fichier c){
 
@@ -48,6 +51,14 @@ public class Fichier extends Commun{
 	@Override
 	public String getNom(){
 		return Paths.get(this.fichierLie).getFileName().toString();
+	}
+
+	public ObjectId getOeuvre_id() {
+		return oeuvre_id;
+	}
+
+	public void setOeuvre_id(ObjectId oeuvre_id) {
+		this.oeuvre_id = oeuvre_id;
 	}
 	
 

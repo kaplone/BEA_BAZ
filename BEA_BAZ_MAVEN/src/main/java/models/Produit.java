@@ -1,14 +1,8 @@
 package models;
 
-import java.util.ArrayList;
-
-import org.bson.types.ObjectId;
-import org.jongo.marshall.jackson.oid.MongoObjectId;
-
 import utils.MongoAccess;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Produit extends Commun {

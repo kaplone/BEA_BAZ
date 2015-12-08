@@ -9,26 +9,20 @@ import org.jongo.Find;
 import org.jongo.FindOne;
 import org.jongo.Jongo;
 import org.jongo.MongoCollection;
-import org.jongo.MongoCursor;
-import org.jongo.Update;
 
 import models.Auteur;
 import models.Client;
 import models.Commande;
 import models.Commun;
 import models.Fichier;
-import models.Model;
 import models.Settings;
 import models.Traitement;
 
-import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
-import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
 
 import enums.Classes;
-import enums.EtatFinal;
 import enums.Progression;
 
 public class MongoAccess {
@@ -43,13 +37,13 @@ public class MongoAccess {
 		LoadConfig.loadSettings();
 	
 		try {
-//			MongoClientURI uri  = new MongoClientURI(String.format("mongodb://%s:%s@%s:%s/%s", 
-//					                                 Settings.getLogin(),
-//					                                 Settings.getPass(),
-//					                                 Settings.getAdresse(),
-//					                                 Settings.getPort(),
-//					                                 Settings.getBase())); 
-			MongoClientURI uri  = new MongoClientURI("mongodb://127.0.0.1/test2"); 
+			MongoClientURI uri  = new MongoClientURI(String.format("mongodb://%s:%s@%s:%s/%s", 
+					                                 Settings.getLogin(),
+					                                 Settings.getPass(),
+					                                 Settings.getAdresse(),
+					                                 Settings.getPort(),
+					                                 Settings.getBase())); 
+			//MongoClientURI uri  = new MongoClientURI("mongodb://127.0.0.1/test2"); 
 			MongoClient client = new MongoClient(uri);
 			db = client.getDB(uri.getDatabase());	
 			jongo = new Jongo(db);

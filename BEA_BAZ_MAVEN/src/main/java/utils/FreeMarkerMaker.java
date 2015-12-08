@@ -20,6 +20,7 @@ import com.sun.javafx.iio.ImageStorage;
 
 import application.Main_BEA_BAZ;
 import models.Fichier;
+import models.Model;
 import models.Oeuvre;
 import models.OeuvreTraitee;
 import models.Produit;
@@ -60,13 +61,11 @@ public class FreeMarkerMaker {
 		      //InputStream in = new FileInputStream(new File("/home/kaplone/Desktop/BEABASE/Béa base/modele_rapport_v2_freemarker.odt"));
 		      //InputStream in = new FileInputStream(new File("C:\\Users\\USER\\Desktop\\BEABAZ\\modele_rapport_v2_freemarker.odt"));
 
-			  System.out.println(Main_BEA_BAZ.getCommande().getModele().getCheminVersModel().toString());  
+			  System.out.println(Main_BEA_BAZ.getCommande().getModel().getCheminVersModel().toString());  
 			  
               ArrayList<Fichier> listeFichiers = new ArrayList<>();
 		      
-		      for (ObjectId fichier_id : ot.getFichiers()){
-		    	  
-		    	  listeFichiers.add(MongoAccess.request("fichier", fichier_id).as(Fichier.class).next());
+		      for (Fichier fichier : ot.getFichiers()){
 		    	  
 		    	  listeFichiers.sort(new Comparator<Fichier>() {
 
@@ -84,10 +83,10 @@ public class FreeMarkerMaker {
 			  InputStream in;
 			  
 			  if (img.getHeight() > img.getWidth()){
-				  in = new FileInputStream(Main_BEA_BAZ.getCommande().getModeleVertical().toFile());
+				  in = new FileInputStream(Main_BEA_BAZ.getCommande().getModel().getModeleVertical().toFile());
 			  }
 			  else{
-				  in = new FileInputStream(Main_BEA_BAZ.getCommande().getModele().getCheminVersModel().toFile());
+				  in = new FileInputStream(Main_BEA_BAZ.getCommande().getModel().getCheminVersModel().toFile());
 			  }
 
 		      IXDocReport report = XDocReportRegistry.getRegistry().loadReport(in,TemplateEngineKind.Freemarker);
@@ -112,12 +111,9 @@ public class FreeMarkerMaker {
 		      context.put("inventaire", o.getCote_archives_6s());
 		      context.put("titre", o.getTitre_de_l_oeuvre() != null ? o.getTitre_de_l_oeuvre() : "");
 		      context.put("dimensions", o.getDimensions() != null ? o.getDimensions() : "");
-		      context.put("technique", o.getTechniquesUtilisees() != null ? o.getTechniquesUtilisees().stream()
-                                                                                                      .map(a -> a.getNom_complet())
-                                                                                                      .collect(Collectors.joining(", ")) : "");
-		      context.put("matiere", o.getMatieresUtilisees() != null ? o.getMatieresUtilisees().stream()
-		    		                                                                            .map(a -> a.getNom_complet())
-		    		                                                                            .collect(Collectors.joining(", ")) : "");
+		      context.put("technique", o.getTechniquesUtilisees_noms_complets());
+		      context.put("matiere", o.getMatieresUtilisees_noms_complets());
+
 		      context.put("inscriptions", o.getInscriptions_au_verso() != null ? o.getInscriptions_au_verso() : "");
 		      
 		      context.put("etat_final", ot.getEtat() != null ? ot.getEtat().toString() : "");

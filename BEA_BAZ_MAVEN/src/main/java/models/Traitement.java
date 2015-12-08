@@ -1,23 +1,23 @@
 package models;
 
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
-import org.jongo.marshall.jackson.oid.MongoObjectId;
+import org.bson.types.ObjectId;
 
 import utils.MongoAccess;
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Traitement extends Commun{
 
 	private String nom_complet;
 	
-	private ArrayList<Produit> produits;
+	private Map<String, ObjectId> produits;
 	
 	public Traitement(){
-		this.produits = new ArrayList<>();
+		this.produits = new HashMap<>();
 	}
 	
 	public static void update(Traitement t){
@@ -39,19 +39,16 @@ public class Traitement extends Commun{
     
     public void addProduit(Produit p){
     	
-    	if (! produits.contains(p)){
-    		produits.add(p);
+    	if (! produits.keySet().contains(p.getNom())){
+    		produits.put(p.getNom(), p.get_id());
     	}
     	
     }
     
     public void deleteProduit(Produit p){
     	
-    	Produit produit_ = null;
-    	
-    	for (Produit p_ : produits){
-    		if (p.getNom().equals(p_.getNom())){
-    			produit_ = p_;
+    	for (String p_ : produits.keySet()){
+    		if (p.getNom().equals(p_)){
     			produits.remove(p_);
     			break;
     		}
@@ -66,11 +63,7 @@ public class Traitement extends Commun{
 		this.nom_complet = detail;
 	}
 
-	public ArrayList<Produit> getProduits() {
-		return produits;
-	}
-
-	public void setProduits(ArrayList<Produit> complements) {
-		this.produits = complements;
+	public Set<String> getProduits_names() {
+		return produits.keySet();
 	}
 }

@@ -1,44 +1,29 @@
 package models;
 
-import java.util.ArrayList;
 import java.util.Date;
-
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 import org.bson.types.ObjectId;
-
 import utils.MongoAccess;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
-import enums.EtatFinal;
 import enums.Progression;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class TacheTraitement extends Commun{
 	
 	private Progression fait_;
-	
-//	@JsonIgnore
-//	private ImageView icone_progression;
-	
 	private Date date;
-	private ObjectId oeuvreTraiteeId;
-	private ObjectId commandeId;
-	private Produit produitUtilise;
-	private Traitement traitement;
-	private Etat etat;
+	private ObjectId traitement_id;
 	private String complement;
-	
-	private ArrayList<Produit> produits;
-	private ArrayList<Produit> produitsLies;
+	private Map<String, ObjectId> produitsLies;
     
     private boolean supp; 
     
     public TacheTraitement(){
-    	produits = new ArrayList<>();
-    	produitsLies = new ArrayList<>();
+    	produitsLies = new HashMap<>();
     }
     
     public static void update(TacheTraitement c){
@@ -54,19 +39,16 @@ public class TacheTraitement extends Commun{
     
     public void addProduit(Produit p){
     	
-    	if (! produitsLies.contains(p)){
-    		produitsLies.add(p);
+    	if (! produitsLies.keySet().contains(p.getNom())){
+    		produitsLies.put(p.getNom(), p.get_id());
     	}
     	
     }
     
     public void deleteProduit(Produit p){
-    	
-    	Produit produit_ = null;
-    	
-    	for (Produit p_ : produitsLies){
-    		if (p.getNom().equals(p_.getNom())){
-    			produit_ = p_;
+
+    	for (String p_ : produitsLies.keySet()){
+    		if (p.getNom().equals(p_)){
     			produitsLies.remove(p_);
     			break;
     		}
@@ -83,47 +65,23 @@ public class TacheTraitement extends Commun{
 	public void setDate(Date date) {
 		this.date = date;
 	}
-    
-	public ObjectId getOeuvreTraiteeId() {
-		return oeuvreTraiteeId;
-	}
-	public void setOeuvreTraiteeId(ObjectId oeuvreTraiteeId) {
-		this.oeuvreTraiteeId = oeuvreTraiteeId;
-	}
-	
-	public Etat getEtat() {
-		return etat;
-	}
-	public void setEtat(Etat etat) {
-		this.etat = etat;
-	}
-	public ObjectId getCommandeId() {
-		return commandeId;
-	}
-	public void setCommandeId(ObjectId commandeId) {
-		this.commandeId = commandeId;
-	}
+
 	public String getComplement() {
 		return complement;
 	}
 	public void setComplement(String complement) {
 		this.complement = complement;
 	}
-    
-	public ArrayList<Produit> getProduits() {
-		return getTraitement().getProduits();
+
+	public ObjectId getTraitement_id() {
+		return traitement_id;
 	}
-	public Produit getProduitUtilise() {
-		return this.produitUtilise;
+	public void setTraitement_id(ObjectId traitement) {
+		this.traitement_id = traitement;
 	}
-	public void setProduitUtilise(Produit produit) {
-		this.produitUtilise = produit;
-	}
-	public Traitement getTraitement() {
-		return traitement;
-	}
-	public void setTraitement(Traitement traitement) {
-		this.traitement = traitement;
+	
+	public Traitement getTraitement(){
+		return MongoAccess.request("traitement", traitement_id).as(Traitement.class).next();
 	}
 	
 	public ImageView getIcone_progression() {
@@ -148,8 +106,7 @@ public class TacheTraitement extends Commun{
 	}
 	
 	public String getNom_complet(){
-		
-		return traitement.getNom_complet() + this.getComplement() != null ? " " + this.getComplement() : "";
+		return this.getTraitement().getNom_complet() + this.getComplement() != null ? " " + this.getComplement() : "";
 	}
 	
 	public Progression getFait_(){
@@ -159,17 +116,12 @@ public class TacheTraitement extends Commun{
 		fait_ = p;
 	}
 
-	public ArrayList<Produit> getProduitsLies() {
-		return produitsLies;
+	public Set<String> getProduitsLies_names() {
+		return produitsLies.keySet();
 	}
 
-	public void setProduitsLies(ArrayList<Produit> produitsLies) {
-		this.produitsLies = produitsLies;
+	public void addProduitLie(Produit produitLie) {
+		this.produitsLies.put(produitLie.getNom(), produitLie.get_id());
 	}
 
-	public void setProduits(ArrayList<Produit> produits) {
-		this.produits = produits;
-	}
-	
-	
 }

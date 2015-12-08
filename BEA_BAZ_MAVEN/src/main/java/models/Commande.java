@@ -1,27 +1,19 @@
 package models;
 
-import java.nio.file.Path;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.ArrayList;
 import java.util.Date;
-
-import javafx.collections.ObservableList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 import org.bson.types.ObjectId;
-import org.jongo.marshall.jackson.oid.MongoObjectId;
 
 import utils.MongoAccess;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.datatype.jsr310.ser.*;
-import com.fasterxml.jackson.datatype.jsr310.deser.*;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Commande  extends Commun{
@@ -39,16 +31,18 @@ public class Commande  extends Commun{
 	private Date dateDebutProjet;
 
 	private Date dateFinProjet;
-
-	private Client client;
 	
-	private Model modele;
+	private ObjectId modele_id;
 	
-	private Auteur auteur;
+	private ObjectId auteur_id;
 	
-	private ArrayList<ObjectId> oeuvresTraitees;
-	private ArrayList<Traitement> traitements_attendus;
-	private ArrayList<Traitement> tous_les_traitements;
+	private Map<String, ObjectId> oeuvresTraitees_id;
+	private Map<String, ObjectId> traitements_attendus_id;
+	
+	public Commande(){
+		oeuvresTraitees_id = new HashMap<>();
+		traitements_attendus_id = new HashMap<>();
+	}
 	
 	public static void update(Commande c){
 
@@ -115,37 +109,21 @@ public class Commande  extends Commun{
 		Date res = Date.from(instant);
 		this.dateFinProjet = res;
 	}
-	
-	public Client getClient() {
-		return client;
+
+	public Set<String> getOeuvresTraitees_names() {
+		return oeuvresTraitees_id.keySet();
 	}
 
-	public void setClient(Client client) {
-		this.client = client;
+	public void addOeuvreTraitee(OeuvreTraitee oeuvreTraitee) {
+		this.oeuvresTraitees_id.put(oeuvreTraitee.toString(), oeuvreTraitee.get_id());
 	}
 
-	public ArrayList<ObjectId> getOeuvresTraitees() {
-		return oeuvresTraitees;
+	public Set<String> getTraitements_attendus_names() {
+		return traitements_attendus_id.keySet();
 	}
 
-	public void setOeuvresTraitees(ArrayList<ObjectId> oeuvresTraitees) {
-		this.oeuvresTraitees = oeuvresTraitees;
-	}
-
-	public ArrayList<Traitement> getTraitements_attendus() {
-		return traitements_attendus;
-	}
-
-	public void setTraitements_attendus(ArrayList<Traitement> traitements_attendus2) {
-		this.traitements_attendus = traitements_attendus2;
-	}
-
-	public ArrayList<Traitement> getTous_les_traitements() {
-		return tous_les_traitements;
-	}
-
-	public void setTous_les_traitements(ArrayList<Traitement> tous_les_traitements) {
-		this.tous_les_traitements = tous_les_traitements;
+	public void addTraitement_attendu(Traitement traitement_attendu) {
+		this.traitements_attendus_id.put(traitement_attendu.getNom(), traitement_attendu.get_id());
 	}
 
 	public String getNom_affichage() {
@@ -184,32 +162,28 @@ public class Commande  extends Commun{
 		this.dateFinProjet = dateFinProjet;
 	}
 
-	public Model getModele() {
-		return modele;
+	public ObjectId getModele_id() {
+		return modele_id;
+	}
+
+	public void setModele_id(ObjectId modele) {
+		this.modele_id = modele;
+	}
+
+	public ObjectId getAuteur_id() {
+		return auteur_id;
+	}
+
+	public void setAuteur_id(ObjectId auteur) {
+		this.auteur_id = auteur;
 	}
 	
-	public Path getModeleVertical() {
-		
-		Path base = modele.getCheminVersModel().getParent();
-		String name = modele.getCheminVersModel().getFileName().toString();
-		
-		String nameVertical = name.split("\\.")[0] + "_vertical." + name.split("\\.")[1];
-		
-		
-		return base.resolve(nameVertical);
-	}
-
-	public void setModele(Model modele) {
-		this.modele = modele;
-	}
-
-	public Auteur getAuteur() {
-		return auteur;
-	}
-
-	public void setAuteur(Auteur auteur) {
-		this.auteur = auteur;
+	public Model getModel(){
+		return MongoAccess.request("model", modele_id).as(Model.class).next();
 	}
 	
+	public Auteur getAuteur(){
+		return MongoAccess.request("auteur", auteur_id).as(Auteur.class).next();
+	}
 
 }

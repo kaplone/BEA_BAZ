@@ -32,4 +32,15 @@ public class Model extends Commun{
 		this.cheminVersModelSTR = cheminVersModelSTR;
 	}
 
+	public Path getModeleVertical() {
+		
+		Path base = Paths.get(cheminVersModelSTR).getParent();
+		String name = Paths.get(cheminVersModelSTR).getFileName().toString();
+		
+		String nameVertical = name.split("\\.")[0] + "_vertical." + name.split("\\.")[1];
+		
+		
+		return base.resolve(nameVertical);
+	}
+
 }

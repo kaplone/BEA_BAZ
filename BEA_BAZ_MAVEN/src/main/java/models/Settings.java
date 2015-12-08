@@ -13,11 +13,11 @@ public class Settings {
 	}
 		
 	public Settings(String adresse, String login, String pass, String port, String base) {
-		this.adresse = adresse;
-		this.login = login;
-		this.pass = pass;
-		this.port = port;
-		this.base = base;
+		Settings.adresse = adresse;
+		Settings.login = login;
+		Settings.pass = pass;
+		Settings.port = port;
+		Settings.base = base;
 	}
 
 	public static String getAdresse() {

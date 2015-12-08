@@ -1,7 +1,6 @@
 package models;
 
 import java.util.Date;
-
 import org.bson.types.ObjectId;
 
 public class Commun {

@@ -1,15 +1,11 @@
 package models;
 
-import java.util.ArrayList;
-
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 import org.bson.types.ObjectId;
-import org.jongo.marshall.jackson.oid.MongoObjectId;
-
 import utils.MongoAccess;
-
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Client extends Commun{
@@ -20,29 +16,26 @@ public class Client extends Commun{
 	private String adresse_cp;
 	private String adresse_ville;
 	private String remarques;
+
+	private Map<String, ObjectId> commandes_id;
 	
-	
-	private ArrayList<ObjectId> commandes;
+	public Client(){
+		commandes_id = new HashMap<>();
+	}
 
 	public static void update(Client c){
-
 		MongoAccess.update("client", c);
 	}
 	
-    public static void save(Client c){
-		
-		MongoAccess.save("client", c);
-		
+    public static void save(Client c){	
+		MongoAccess.save("client", c);	
 	}
     
     public Client get(){
-		
-		return this;
-		
+		return this;	
 	}
     
-    public String toString(){
-    	
+    public String toString(){	
     	return this.getNom();
     }
 
@@ -54,12 +47,12 @@ public class Client extends Commun{
 		this.remarques = remarques;
 	}
 
-	public ArrayList<ObjectId> getCommandes() {
-		return commandes;
+	public Set<String> getCommandes_names() {
+		return commandes_id.keySet();
 	}
 
-	public void setCommandes(ArrayList<ObjectId> commandes) {
-		this.commandes = commandes;
+	public void add_commande_id(Commande commande) {
+		this.commandes_id.put(commande.getNom_affichage(), commande.get_id());
 	}
 
 	public String getAdresse_rue() {
