@@ -18,6 +18,7 @@ import utils.MongoAccess;
 import utils.Walk;
 import models.Client;
 import models.Commande;
+import models.Messages;
 import models.Oeuvre;
 import models.OeuvreTraitee;
 import models.TacheTraitement;
@@ -235,158 +236,15 @@ public class Fiche_commande_import_controller  implements Initializable{
 	
 	
 	@FXML
-	public void onEditerButton(){
-		
-		importCommandeButton.setDisable(true);
-		dateCommandePicker.setEditable(true);
-		dateDebutProjetPicker.setEditable(true);
-		dateFinProjetPicker.setEditable(true);
-		remarques_client.setEditable(true);
-        editer.setVisible(false);
-        mise_a_jour_commande.setText("Mise à jour");
-        mise_a_jour_commande.setVisible(true);
-		annuler.setVisible(true);
-		rapportsButton.setVisible(false);
-		commandeExportVbox.setVisible(false);
-		versRapportButton.setVisible(false);
-		
-		versModelesButton.setVisible(false);
-		versTraitementsButton.setVisible(false);
-		versFichiersButton.setVisible(false);
-		versProduitsButton.setVisible(false);
-		versAuteursButton.setVisible(false);
-		
-		fiche_commande_label.setText("FICHE COMMANDE :");
-		nom_commande_label.setText(commande.getNom());
-		nomCommandeTextField.setDisable(false);
-		edit = true;
-		
-	}
+	public void onEditerButton(){}
 	
 	@FXML
-	public void onAnnulerButton(){
-		
-		importCommandeButton.setDisable(false);
-		dateCommandePicker.setEditable(false);
-		dateDebutProjetPicker.setEditable(false);
-		dateFinProjetPicker.setEditable(false);
-		remarques_client.setEditable(false);
-        editer.setVisible(true);
-        mise_a_jour_commande.setVisible(false);
-		annuler.setVisible(false);
-		fiche_commande_label.setText("FICHE COMMANDE :");
-		nomCommandeTextField.setDisable(true);
-		
-		
-		if (edit) {
-			afficherCommande();
-		}
-		else {
-			onVersClientButton();
-		}
-		edit = false;
-	}
+	public void onAnnulerButton(){}
 	
 	@FXML
-	public void onMiseAJourButton(){
-		
-		if (commande == null){
-			commande = new Commande();
-		}
-		else{
-			commande = Main_BEA_BAZ.getCommande(); 
-		}
-		
-		traitements_attendus.clear();
-		
-		
-		commande.setClient(client);
-		commande.setDateCommande(dateCommandePicker.getValue());
-		commande.setDateDebutProjet(dateDebutProjetPicker.getValue());
-		commande.setDateFinProjet(dateFinProjetPicker.getValue());
-		commande.setRemarques(remarques_client.getText());
-		commande.setNom(nomCommandeTextField.getText());
-		
-		traitements_attendus.clear();
-		
-		for (Node cb : traitementGrid.getChildren()){
-			
-			ChoiceBox<Traitement> cbox = (ChoiceBox<Traitement>) cb;
-			Traitement t = cbox.getValue();
-
-			if (t != null && 
-				!traitements_attendus.stream().map(a -> a.get_id().toString()).collect(Collectors.toList()).contains(t.get_id().toString())){
-
-				traitements_attendus.add(((ChoiceBox<Traitement>) cb).getValue());
-			}
-			
-		}
-		
-		commande.setTraitements_attendus(traitements_attendus);
-		
-		Main_BEA_BAZ.setCommande(commande);
-		
-		if (edit) {
-			Commande.update(commande);
-			afficherCommande();
-		}
-		else {
-		   Commande.save(commande);
-		   onVersClientButton();
-		}
-		edit = false;
-	}
+	public void onMiseAJourButton(){}
 	
-	public void afficherCommande(){
-		
-		versModelesButton.setVisible(true);
-		versTraitementsButton.setVisible(true);
-		versFichiersButton.setVisible(true);
-		versProduitsButton.setVisible(true);
-		versAuteursButton.setVisible(true);
-		
-		importCommandeButton.setDisable(false);
-		dateCommandePicker.setEditable(false);
-		dateDebutProjetPicker.setEditable(false);
-		dateFinProjetPicker.setEditable(false);
-		remarques_client.setEditable(false);
-        editer.setVisible(true);
-        mise_a_jour_commande.setVisible(false);
-		annuler.setVisible(false);
-		fiche_commande_label.setText("FICHE COMMANDE :");
-		nomClientLabel.setText(client.getNom());
-		nomCommandeTextField.setDisable(true);
-		nomClientLabel.setText(client.getNom());
-		
-		if (commandeSelectionne != null){
-			afficherOeuvres();
-		}
-
-		//listView_oeuvres.setItems(liste_oeuvres);
-		
-		try {
-		
-			for (ChoiceBox<Traitement> cbt : traitements_selectionnes){
-				cbt.setItems(null);
-				cbt.getSelectionModel().clearSelection();
-			}
-		}
-		catch (NullPointerException npe){
-			
-		}
-        
-        int i = 0;
-
-		for (Traitement t : commande.getTraitements_attendus()){
-			traitements_selectionnes.get(i).setItems(FXCollections.observableArrayList(commande.getTraitements_attendus()));;
-			traitements_selectionnes.get(i).getSelectionModel().select(i);
-			i++;
-		}
-
-		
-		//loadCommande(commande);
-		
-	}
+	public void afficherCommande(){}
 	
     protected File chooseExport(){
 		
@@ -422,27 +280,7 @@ public class Fiche_commande_import_controller  implements Initializable{
 			e.printStackTrace();
 		}
 	}
-	
-//	Service<String> imageLoadingService = new Service<String>(){
-//
-//	  @Override
-//	  protected Task<String> createTask() {
-//		  
-//		  Task<String> imageLoadingTask = new Task<String>(){
-//
-//			  @Override
-//			  protected String call() throws Exception {
-//
-//			    return "";
-//			  }
-//			};
-//		return imageLoadingTask;
-//
-//	  }	
-//	};
-	
-	
-	
+
     @FXML
     public void onVersOeuvreButton(){}
     @FXML
@@ -456,10 +294,7 @@ public class Fiche_commande_import_controller  implements Initializable{
     public void onRapportsButton(){}
 	
 	public void afficherOeuvres(){
-		
-		//oeuvresTraitees = MongoAccess.distinct("tacheTraitement", "oeuvreTraitee", "commande._id", commandeSelectionne.get_id()).as(OeuvreTraitee.class);
-		
-		
+
 		oeuvresTraiteesCursor = MongoAccess.request("oeuvreTraitee", commandeSelectionne).as(OeuvreTraitee.class);
 		
 		while (oeuvresTraiteesCursor.hasNext()){
@@ -528,9 +363,9 @@ public class Fiche_commande_import_controller  implements Initializable{
 		bindLabel = new SimpleStringProperty("En attente d'import ...");
 		message_label.textProperty().bind(bindLabel);
 		
-		commande = Main_BEA_BAZ.getCommande();
-		commandeSelectionne = Main_BEA_BAZ.getCommande();
-		client = Main_BEA_BAZ.getClient();
+		commande = Messages.getCommande();
+		commandeSelectionne = Messages.getCommande();
+		client = Messages.getClient();
 
 		versClientButton.setVisible(true);
 		versCommandeButton.setVisible(false);
@@ -548,70 +383,12 @@ public class Fiche_commande_import_controller  implements Initializable{
 		hbox_2.setVisible(false);
 		hbox_3.setVisible(false);
 		
-		currentStage = Main_BEA_BAZ.getStage();
+		currentStage = Messages.getStage();
 		
 		liste_oeuvres = FXCollections.observableArrayList();
-//		observableTraitements = FXCollections.observableArrayList();
-//		
-//		traitements_attendus = new ArrayList<>();
+
 		traitements_selectionnes = new ArrayList<>();
 		oeuvresTraitees = new ArrayList<>();
-//		
-//		MongoCursor<Traitement> mgCursor = MongoAccess.request("traitement").as(Traitement.class);
-//		
-//		while (mgCursor.hasNext()){
-//			observableTraitements.addAll(mgCursor.next());
-//		}
-//		
-//		
-//		for (Node cb : traitementGrid.getChildren()){
-//			
-//			((ChoiceBox<Traitement>) cb).setItems(observableTraitements);
-//			traitements_selectionnes.add(((ChoiceBox<Traitement>) cb));
-//		}
-        
-		if (commande != null) {
-			
-			//afficherCommande();
-			
-		}
-		else { 
-			
-			importCommandeButton.setDisable(true);
-			dateCommandePicker.setEditable(true);
-			dateDebutProjetPicker.setEditable(true);
-			dateFinProjetPicker.setEditable(true);
-			remarques_client.setEditable(true);
-	        editer.setVisible(false);
-	        mise_a_jour_commande.setText("Créer");
-	        mise_a_jour_commande.setVisible(true);
-			annuler.setVisible(true);
-			rapportsButton.setVisible(false);
-			commandeExportVbox.setVisible(false);
-			versRapportButton.setVisible(false);
-			
-			versModelesButton.setVisible(false);
-			versTraitementsButton.setVisible(false);
-			versFichiersButton.setVisible(false);
-			versProduitsButton.setVisible(false);
-			versAuteursButton.setVisible(false);
-			
-			fiche_commande_label.setText("FICHE COMMANDE (nouvelle commande) :");
-			nom_commande_label.setText("");
 
-			try {
-			    nomClientLabel.setText(client.getNom());
-			    nomCommandeTextField.setText(client.getNom() + "_" + LocalDate.now());
-			}
-			catch (NullPointerException npe) {
-				
-			}
-		}
 	}
-	
-	public static StringProperty getBindLabel() {
-		return bindLabel;
-	}
-
-
 }

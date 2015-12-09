@@ -9,6 +9,7 @@ import utils.MongoAccess;
 import models.Auteur;
 import models.Client;
 import models.Commande;
+import models.Messages;
 import models.Traitement;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -156,7 +157,7 @@ public class Fiche_auteur_controller  implements Initializable{
 			if (listView_auteur.getSelectionModel().getSelectedItem().getNom() != null){
 
 				auteurSelectionne = listView_auteur.getSelectionModel().getSelectedItem();
-				Main_BEA_BAZ.setAuteur(auteurSelectionne);		
+				Messages.setAuteur(auteurSelectionne);		
 				affichageInfos(auteurSelectionne);
 				editer.setVisible(true);
     		}
@@ -352,7 +353,7 @@ public class Fiche_auteur_controller  implements Initializable{
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 
-		auteur = Main_BEA_BAZ.getAuteur();
+		auteur = Messages.getAuteur();
 
 		nom_auteur_textField.setEditable(false);
 		nom_complet_auteur_textField.setEditable(false);
@@ -368,7 +369,7 @@ public class Fiche_auteur_controller  implements Initializable{
 		versAuteursButton.setVisible(false);
 		editer.setVisible(false);
 		
-		if (Main_BEA_BAZ.getCommande() != null){
+		if (Messages.getCommande() != null){
 			versCommandeButton.setVisible(true);
 		}
 		else {
@@ -377,7 +378,7 @@ public class Fiche_auteur_controller  implements Initializable{
 		
 		liste_auteurs = FXCollections.observableArrayList();
 		
-		currentStage = Main_BEA_BAZ.getStage();
+		currentStage = Messages.getStage();
 		
 		auteurCursor = MongoAccess.request("auteur").as(Auteur.class);
 		

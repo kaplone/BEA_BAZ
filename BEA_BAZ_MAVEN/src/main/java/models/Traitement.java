@@ -66,4 +66,13 @@ public class Traitement extends Commun{
 	public Set<String> getProduits_names() {
 		return produits.keySet();
 	}
+
+	public Map<String, ObjectId> getProduits() {
+		return produits;
+	}
+
+	public void setProduits(Map<String, ObjectId> produits) {
+		this.produits = produits;
+	}
+	
 }

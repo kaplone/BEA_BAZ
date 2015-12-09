@@ -12,6 +12,7 @@ import utils.MongoAccess;
 import models.Model;
 import models.Client;
 import models.Commande;
+import models.Messages;
 import models.Traitement;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -153,7 +154,7 @@ public class Fiche_modele_controller  implements Initializable{
 	public void onModelSelect(){
 		
 		modelSelectionne = listView_model.getSelectionModel().getSelectedItem();
-		Main_BEA_BAZ.setModel(modelSelectionne);		
+		Messages.setModel(modelSelectionne);		
 		affichageInfos(modelSelectionne);
 		
 	}
@@ -165,7 +166,7 @@ public class Fiche_modele_controller  implements Initializable{
     	remarques_model_textArea.setText(modelSelectionne.getRemarques());
     	file_path_textField.setText(modelSelectionne.getCheminVersModelSTR());
     	
-    	model = Main_BEA_BAZ.getModel();    	
+    	model = Messages.getModel();    	
     	
     }
     
@@ -341,7 +342,7 @@ protected File chooseExport(){
 		versRapportButton.setVisible(false);
 		versModelesButton.setVisible(false);
 		
-		if (Main_BEA_BAZ.getCommande() != null){
+		if (Messages.getCommande() != null){
 			versCommandeButton.setVisible(true);
 		}
 		else {
@@ -352,7 +353,7 @@ protected File chooseExport(){
 		
 		liste_models = FXCollections.observableArrayList();
 		
-		currentStage = Main_BEA_BAZ.getStage();
+		currentStage = Messages.getStage();
 		
 		modelCursor = MongoAccess.request("model").as(Model.class);
 		

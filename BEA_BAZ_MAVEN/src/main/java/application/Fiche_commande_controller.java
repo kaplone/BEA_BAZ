@@ -15,6 +15,7 @@ import utils.MongoAccess;
 import models.Auteur;
 import models.Client;
 import models.Commande;
+import models.Messages;
 import models.Model;
 import models.Oeuvre;
 import models.OeuvreTraitee;
@@ -187,7 +188,28 @@ public class Fiche_commande_controller  implements Initializable{
 		currentStage.setScene(fiche_technique_scene);
     }
     @FXML
+    public void onVersCommandeButton(){}
+    @FXML
+    public void onVersOeuvreButton(){}
+    
+    @FXML
+    public void onImporterButton(){
+    	Scene fiche_commande_import_scene = new Scene((Parent) JfxUtils.loadFxml("/views/fiche_commande_import.fxml"), 1275, 722);
+		fiche_commande_import_scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+		
+		currentStage.setScene(fiche_commande_import_scene);
+    }
+    @FXML
     public void onVersFichiersButton(){}
+    @FXML
+    public void onVersTraitementButton(){
+		Scene fiche_traitement_scene = new Scene((Parent) JfxUtils.loadFxml("/views/fiche_traitement.fxml"), 1275, 722);
+		fiche_traitement_scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+		
+		currentStage.setScene(fiche_traitement_scene);
+    }
+    @FXML
+    public void onVersModeleButton(){}
 	
 	@FXML
 	public void onEditerButton(){
@@ -248,21 +270,21 @@ public class Fiche_commande_controller  implements Initializable{
 			commande = new Commande();
 		}
 		else{
-			commande = Main_BEA_BAZ.getCommande(); 
+			commande = Messages.getCommande(); 
 		}		
-		
-		commande.setClient(client);
+
 		commande.setDateCommande(dateCommandePicker.getValue());
 		commande.setDateDebutProjet(dateDebutProjetPicker.getValue());
 		commande.setDateFinProjet(dateFinProjetPicker.getValue());
 		commande.setRemarques(remarques_client.getText());
 		commande.setNom(nomCommandeTextField.getText());
 		model = modelChoiceBox.getSelectionModel().getSelectedItem();
-		commande.setModele(model);
-		commande.setAuteur(auteursChoiceBox.getSelectionModel().getSelectedItem());
+		commande.setModele_id(model.get_id());
+		auteur = auteursChoiceBox.getSelectionModel().getSelectedItem();
+		commande.setAuteur_id(auteur.get_id());
 		
-		Main_BEA_BAZ.setModel((Model) modelChoiceBox.getSelectionModel().getSelectedItem());
-		Main_BEA_BAZ.setAuteur((Auteur) auteursChoiceBox.getSelectionModel().getSelectedItem());
+		Messages.setModel(model);
+		Messages.setAuteur(auteur);
 		
         traitements_attendus.clear();
 		
@@ -274,18 +296,13 @@ public class Fiche_commande_controller  implements Initializable{
 			if (t != null && 
 				!traitements_attendus.stream().map(a -> a.get_id().toString()).collect(Collectors.toList()).contains(t.get_id().toString())){
 				
-				traitements_attendus.add(((ChoiceBox<Traitement>) cb).getValue());
+				Traitement traitement_attendu = ((ChoiceBox<Traitement>) cb).getValue();
+				
+				traitements_attendus.add(traitement_attendu);
+				commande.addTraitement_attendu(traitement_attendu);
 			}
 			
 		}
-		
-		commande.setTraitements_attendus(traitements_attendus);
-		
-		auteur = auteursChoiceBox.getSelectionModel().getSelectedItem();
-		
-		Main_BEA_BAZ.setCommande(commande);
-		Main_BEA_BAZ.setModel(model);
-		Main_BEA_BAZ.setAuteur(auteur);
 		
 		if (edit) {
 			Commande.update(commande);
@@ -316,63 +333,26 @@ public class Fiche_commande_controller  implements Initializable{
 		nomCommandeTextField.setDisable(true);
 		nomClientLabel.setText(client.getNom());
 		
-		if (commandeSelectionne != null){
-			
-			afficherOeuvres();
-			
-//			oeuvresCursor = MongoAccess.request("oeuvre", commandeSelectionne).as(Oeuvre.class);
-//			
-//			while (oeuvresCursor.hasNext()){
-//				liste_oeuvres.add(oeuvresCursor.next());
-//			}
-//			oeuvres_nom_colonne.setCellValueFactory(new PropertyValueFactory<Oeuvre, String>("nom"));
-		}
-		
+
 		for (ChoiceBox<Traitement> cbt : traitements_selectionnes){
 			cbt.getSelectionModel().clearSelection();
 		}
-		
-		//listView_oeuvres.setItems(liste_oeuvres);
         
         int i = 0;
         
-        ObservableList<Traitement> menuList = FXCollections.observableArrayList(commande.getTraitements_attendus());
+        ObservableList<Traitement> menuList = FXCollections.observableArrayList(traitements_attendus);
         menuList.add(null);
 
-		for (Traitement t : commande.getTraitements_attendus()){
+		for (Traitement t : traitements_attendus){
 			traitements_selectionnes.get(i).setItems(menuList);
 			traitements_selectionnes.get(i).getSelectionModel().select(i);
 			i++;
 		}
 		
 		loadCommande(commande);
-		
-		modelChoiceBox.getSelectionModel().select(commande.getModele());
-		
 	}
 	
-    @FXML
-    public void onVersCommandeButton(){}
-    @FXML
-    public void onVersOeuvreButton(){}
-    @FXML
-    public void onImporterButton(){
-    	Scene fiche_commande_import_scene = new Scene((Parent) JfxUtils.loadFxml("/views/fiche_commande_import.fxml"), 1275, 722);
-		fiche_commande_import_scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
-		
-		currentStage.setScene(fiche_commande_import_scene);
-    }
-    @FXML
-    public void onVersFichierButton(){}
-    @FXML
-    public void onVersTraitementButton(){
-		Scene fiche_traitement_scene = new Scene((Parent) JfxUtils.loadFxml("/views/fiche_traitement.fxml"), 1275, 722);
-		fiche_traitement_scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
-		
-		currentStage.setScene(fiche_traitement_scene);
-    }
-    @FXML
-    public void onVersModeleButton(){}
+    
 	@FXML
     public void onExporterToutButton(){
 		
@@ -411,8 +391,7 @@ public class Fiche_commande_controller  implements Initializable{
 		dateFinProjetPicker.setValue(c.getDateFinProjet());
 		remarques_client.setText(c.getRemarques());
 		nom_commande_label.setText(c.getNom());
-		nomCommandeTextField.setText(c.getNom());
-		
+		nomCommandeTextField.setText(c.getNom());		
 	}
 	
 	public void afficherAuteurs(){
@@ -506,14 +485,10 @@ public class Fiche_commande_controller  implements Initializable{
     
     public void onOeuvreSelect(){
     	
-    	Main_BEA_BAZ.setOeuvre((OeuvreTraitee) tableOeuvre.getSelectionModel().getSelectedItem());
-    	Main_BEA_BAZ.setOeuvre_index(tableOeuvre.getSelectionModel().getSelectedIndex());
+    	Messages.setOeuvre((OeuvreTraitee) tableOeuvre.getSelectionModel().getSelectedItem());
+    	Messages.setOeuvre_index(tableOeuvre.getSelectionModel().getSelectedIndex());
     	
     	OeuvreTraitee oeuvreSelectionne = (OeuvreTraitee) tableOeuvre.getSelectionModel().getSelectedItem();
-    	
-    	System.out.println("********* " + oeuvreSelectionne);
-		System.out.println("********* " + oeuvreSelectionne.getCote_archives_6s());
-		System.out.println("********* " + oeuvreSelectionne.getTitre_de_l_oeuvre());
     	
     	Scene fiche_oeuvre_scene = new Scene((Parent) JfxUtils.loadFxml("/views/fiche_oeuvre.fxml"), 1275, 722);
 		fiche_oeuvre_scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
@@ -525,30 +500,24 @@ public class Fiche_commande_controller  implements Initializable{
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		
-		commande = Main_BEA_BAZ.getCommande();
-		client = Main_BEA_BAZ.getClient();
+		commande = Messages.getCommande();
+		client = Messages.getClient();
 		
         if (commande != null) {
 			
-        	model = commande.getModele();
-    		auteur = commande.getAuteur();
+        	model = MongoAccess.request("model", commande.getModele_id()).as(Model.class).next();
+        	Messages.setModel(model);
+    		auteur = MongoAccess.request("auteur", commande.getAuteur_id()).as(Auteur.class).next();
+    		Messages.setAuteur(auteur);
 			
 		}
 		else {
 			model = null;
 			auteur = null;
 		}
-		
-		
+			
 		index = 0;
 	    i = 0;
-		
-		if (model != null){
-			Main_BEA_BAZ.setModel(model);
-		}
-		if (auteur != null){
-			Main_BEA_BAZ.setAuteur(auteur);
-		}
 
 		versClientButton.setVisible(true);
 		versCommandeButton.setVisible(false);
@@ -561,7 +530,7 @@ public class Fiche_commande_controller  implements Initializable{
 		versProduitsButton.setVisible(true);
 		versAuteursButton.setVisible(true);
 		
-		currentStage = Main_BEA_BAZ.getStage();
+		currentStage = Messages.getStage();
 		
 		liste_oeuvres = FXCollections.observableArrayList();
 		observableTraitements = FXCollections.observableArrayList();
@@ -576,6 +545,7 @@ public class Fiche_commande_controller  implements Initializable{
 		
 		afficherAuteurs();
 		
+		afficherModeles();		
         
 		if (commande != null) {
 			
@@ -619,11 +589,5 @@ public class Fiche_commande_controller  implements Initializable{
 				
 			}
 		}
-		
-		afficherModeles();
-		
-		
-
 	}
-
 }

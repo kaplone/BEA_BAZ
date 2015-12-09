@@ -12,6 +12,7 @@ import utils.MongoAccess;
 import models.Client;
 import models.Commande;
 import models.Matiere;
+import models.Messages;
 import models.Produit;
 import models.TacheTraitement;
 import models.Traitement;
@@ -375,7 +376,7 @@ public class Fiche_matiere_controller  implements Initializable{
 
 		liste_matieres  = FXCollections.observableArrayList();
 		
-		currentStage = Main_BEA_BAZ.getStage();
+		currentStage = Messages.getStage();
 		
         matiereCursor = MongoAccess.request("matiere").as(Matiere.class);
 		

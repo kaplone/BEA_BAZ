@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 import org.jongo.FindOne;
 import org.jongo.MongoCursor;
@@ -11,6 +12,7 @@ import org.jongo.MongoCursor;
 import enums.Progression;
 import utils.MongoAccess;
 import models.Commande;
+import models.Messages;
 import models.Produit;
 import models.Traitement;
 import javafx.collections.FXCollections;
@@ -45,7 +47,7 @@ public class Fiche_traitement_controller  implements Initializable{
 	@FXML
 	private ListView<Traitement> listView_traitements;
 	@FXML
-	private ListView<Produit> listView_produits;
+	private ListView<String> listView_produits;
 	@FXML
 	private Button nouveau_traitement;
 	@FXML
@@ -80,13 +82,15 @@ public class Fiche_traitement_controller  implements Initializable{
 	
 	@FXML
 	private HBox produitsLiesHbox;
-	
+
 	private boolean edit = false;
+	
+	ObservableList<String> liste_noms_produits;
 	
 	MongoCursor<Traitement> traitementCursor;
 	MongoCursor<Produit> detailCursor ;
 	Traitement traitementSelectionne;
-	Produit produitSelectionne;
+	String produitSelectionne;
 	
 	Stage currentStage;
 
@@ -157,19 +161,18 @@ public class Fiche_traitement_controller  implements Initializable{
 	public void onTraitementSelect(){
 		
 		traitementSelectionne = listView_traitements.getSelectionModel().getSelectedItem();
-		Main_BEA_BAZ.setTraitement(traitementSelectionne);
+		Messages.setTraitement(traitementSelectionne);
 		affichageInfos();	
 		affichageProduits();
 		
 		
 		produitsLiesHbox.getChildren().clear();
-		for (Produit p : traitementSelectionne.getProduits()){
-			produitSelectionne = p;
-			affichageProduitsUtilises();
+		for (String p : traitementSelectionne.getProduits_names()){
+			affichageProduitUtilise(p);
 		}
 	}
 	
-	public void affichageProduitsUtilises(){
+	public void affichageProduitUtilise(String p){
 		
 		ImageView iv = new ImageView(new Image(Progression.NULL_.getUsedImage()));
 		iv.setPreserveRatio(true);
@@ -178,7 +181,7 @@ public class Fiche_traitement_controller  implements Initializable{
         iv.setFitWidth(15);
 		
 		
-		Button b = new Button(produitSelectionne.getNom());
+		Button b = new Button(p);
 		Button b2 = new Button("", iv);
 		
 		b2.setOnAction((event) -> deleteProduitLie((Button)event.getSource()));
@@ -194,17 +197,15 @@ public class Fiche_traitement_controller  implements Initializable{
 		produitSelectionne = listView_produits.getSelectionModel().getSelectedItem();
 		
 		if (produitSelectionne != null){
-			Main_BEA_BAZ.setDetail(produitSelectionne);
+			Messages.setNom_produit(produitSelectionne);
 			
-			traitementSelectionne.addProduit(produitSelectionne);
+			traitementSelectionne.addProduit(MongoAccess.request("produit", traitementSelectionne.getProduits().get(produitSelectionne)).as(Produit.class).next());
 			Traitement.update(traitementSelectionne);
 			
-			affichageProduitsUtilises();
+			affichageProduitUtilise(produitSelectionne);
 
 		}
-		
-		
-		
+	
 	}
 	
 	public void deleteProduitLie(Button e){
@@ -222,9 +223,9 @@ public class Fiche_traitement_controller  implements Initializable{
 		Traitement.update(traitementSelectionne);
 		
 		produitsLiesHbox.getChildren().clear();
-		for (Produit p : traitementSelectionne.getProduits()){
+		for (String p : traitementSelectionne.getProduits_names()){
 			produitSelectionne = p;
-			affichageProduitsUtilises();
+			affichageProduitUtilise(p);
 		}
 		
 	}
@@ -295,10 +296,14 @@ public class Fiche_traitement_controller  implements Initializable{
     		MongoCursor<Produit> produitsCursor = MongoAccess.request("produit").as(Produit.class);
     		
     		while (produitsCursor.hasNext()){
-    			liste_produits.add(produitsCursor.next());
+    			
+    			Produit p_temp = produitsCursor.next();
+    			
+    			liste_produits.add(p_temp);
+    			liste_noms_produits.add(p_temp.getNom());
     		}
     		
-			listView_produits.setItems(liste_produits);		
+			listView_produits.setItems(liste_noms_produits);		
     	}
     }
     
@@ -464,7 +469,7 @@ public class Fiche_traitement_controller  implements Initializable{
     @FXML
     public void onAjoutProduit(){
     	
-    	//Main_BEA_BAZ.setTacheTraitementEdited(listView_traitements.getSelectionModel().getSelectedItem());
+    	//Messages.setTacheTraitementEdited(listView_traitements.getSelectionModel().getSelectedItem());
     	
     	Scene fiche_produit_scene = new Scene((Parent) JfxUtils.loadFxml("/views/fiche_produit.fxml"), 1275, 722);
 		fiche_produit_scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
@@ -475,9 +480,11 @@ public class Fiche_traitement_controller  implements Initializable{
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		
-		Main_BEA_BAZ.setTacheTraitementEdited(null);
+		Messages.setTacheTraitementEdited(null);
 
-		traitementSelectionne = Main_BEA_BAZ.getTraitement();
+		traitementSelectionne = Messages.getTraitement();
+		
+		liste_noms_produits = FXCollections.observableArrayList();
 
 		nom_traitement_textField.setEditable(false);
 		nom_complet_traitement_textField.setEditable(false);
@@ -498,7 +505,7 @@ public class Fiche_traitement_controller  implements Initializable{
 		liste_traitements = FXCollections.observableArrayList();
 		liste_produits  = FXCollections.observableArrayList();
 		
-		currentStage = Main_BEA_BAZ.getStage();
+		currentStage = Messages.getStage();
 		
 		traitementCursor = MongoAccess.request("traitement").as(Traitement.class);
 		
@@ -509,23 +516,7 @@ public class Fiche_traitement_controller  implements Initializable{
 		listView_traitements.setItems(liste_traitements);
 		
 		affichageProduits();
-		
-		
-//		if (traitementSelectionne != null){
-//			
-//			detailCursor = MongoAccess.request("produit", traitementSelectionne).as(Produit.class);
-//			
-//			while (detailCursor.hasNext()){
-//				Produit enplus = detailCursor.next();
-//				liste_produits.add(enplus);
-//			}
-//			
-//			listView_produits.setItems(liste_produits);
-//		}
-//        
-//		
-		
-	
+
 	}
 
 }

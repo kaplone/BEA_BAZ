@@ -92,11 +92,6 @@
                         <Insets left="50.0" />
                      </HBox.margin>
                   </Button>
-                  <Button fx:id="lier_button" mnemonicParsing="false" onAction="#on_lier_button" text="Lier le produit">
-                     <HBox.margin>
-                        <Insets left="10.0" />
-                     </HBox.margin>
-                  </Button>
                </children>
             </HBox>
          </children>

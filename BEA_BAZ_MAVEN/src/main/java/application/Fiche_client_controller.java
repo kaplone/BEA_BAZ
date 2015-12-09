@@ -9,6 +9,7 @@ import utils.MongoAccess;
 import models.Auteur;
 import models.Client;
 import models.Commande;
+import models.Messages;
 import models.Traitement;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -133,8 +134,8 @@ public class Fiche_client_controller  implements Initializable{
 	@FXML
 	public void onAjoutCommande(){
 		
-		Main_BEA_BAZ.setCommande(null);
-		Main_BEA_BAZ.setClient(clientSelectionne);
+		Messages.setCommande(null);
+		Messages.setClient(clientSelectionne);
 		
 		Scene fiche_commande_scene = new Scene((Parent) JfxUtils.loadFxml("/views/fiche_commande.fxml"), 1275, 722);
 		fiche_commande_scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
@@ -148,7 +149,7 @@ public class Fiche_client_controller  implements Initializable{
 	public void onClientSelect(){
 		
 		clientSelectionne = listView_client.getSelectionModel().getSelectedItem();
-		Main_BEA_BAZ.setClient(clientSelectionne);
+		Messages.setClient(clientSelectionne);
 		affichageInfos();
 		
 	}
@@ -157,7 +158,7 @@ public class Fiche_client_controller  implements Initializable{
 	public void onCommandeSelect(){
 		
 		commandeSelectionne = listView_commandes.getSelectionModel().getSelectedItem();
-		Main_BEA_BAZ.setCommande(commandeSelectionne);
+		Messages.setCommande(commandeSelectionne);
 		
 		Scene fiche_commande_scene = new Scene((Parent) JfxUtils.loadFxml("/views/fiche_commande.fxml"), 1275, 722);
 		fiche_commande_scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
@@ -325,7 +326,6 @@ public class Fiche_client_controller  implements Initializable{
 		
 		if (edit) {
 			Client.update(clientSelectionne);
-			//afficherClient();
 			rafraichirAffichage();
 			onAnnulerEditButton();
 		}
@@ -334,7 +334,6 @@ public class Fiche_client_controller  implements Initializable{
 			System.out.println(clientSelectionne);
 			
 		   Client.save(clientSelectionne);
-		   //afficherClient();
 		   onAnnulerEditButton();
 		}
     	
@@ -344,10 +343,9 @@ public class Fiche_client_controller  implements Initializable{
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		
-		commande = Main_BEA_BAZ.getCommande();
-		client = Main_BEA_BAZ.getClient();
-		
-		Main_BEA_BAZ.setAuteur(null);
+		currentStage = Messages.getStage();
+		client = Messages.getClient();
+		Messages.setCommande(null);
 
 		nom_client_textField.setEditable(false);
 		nom_complet_client_textField.setEditable(false);
@@ -366,8 +364,6 @@ public class Fiche_client_controller  implements Initializable{
 		
 		liste_clients = FXCollections.observableArrayList();
 		liste_commandes  = FXCollections.observableArrayList();
-		
-		currentStage = Main_BEA_BAZ.getStage();
 		
 		clientCursor = MongoAccess.request("client").as(Client.class);
 		
@@ -414,7 +410,7 @@ public class Fiche_client_controller  implements Initializable{
 			clientSelectionne = client;
 		}
 		
-		Main_BEA_BAZ.setClient(clientSelectionne);
+		Messages.setClient(clientSelectionne);
 
 		affichageInfos();
 

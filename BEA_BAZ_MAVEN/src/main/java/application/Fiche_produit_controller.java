@@ -11,6 +11,7 @@ import org.jongo.MongoCursor;
 import utils.MongoAccess;
 import models.Client;
 import models.Commande;
+import models.Messages;
 import models.Produit;
 import models.TacheTraitement;
 import models.Traitement;
@@ -43,8 +44,6 @@ public class Fiche_produit_controller  implements Initializable{
 	@FXML
 	private Button nouveau_produit;
 	@FXML
-	private Button nouveau_detail;
-	@FXML
 	private Button mise_a_jour_traitement;
 	@FXML
 	private Button annuler;
@@ -64,8 +63,6 @@ public class Fiche_produit_controller  implements Initializable{
 	private Button versFichierButton;
 	@FXML
 	private Button versProduitsButton;
-	@FXML
-	private Button lier_button;
 	@FXML
 	private Button importerButton;
 	@FXML
@@ -351,30 +348,15 @@ public class Fiche_produit_controller  implements Initializable{
     public void onProduitSelect(){
     	
     	produitSelectionne = listView_produits.getSelectionModel().getSelectedItem();
-    	Main_BEA_BAZ.setDetail(produitSelectionne);
+    	Messages.setProduit(produitSelectionne);
     	afficherProduit();	
     }   
-    @FXML
-    public void on_lier_button(){
-    	
-    	System.out.println(produitSelectionne);
-    	System.out.println(traitementSelectionne);
-    	
-    	if (traitementSelectionne.getProduits().size() != 0 && ! traitementSelectionne.getProduits().stream().map(a -> a.getNom_complet()).collect(Collectors.toList()).contains(produitSelectionne.getNom_complet())){
-    		traitementSelectionne.getProduits().add(produitSelectionne);
-    		TacheTraitement.update(traitementSelectionne);
-    	}
-    	else if (traitementSelectionne.getProduits().size() == 0){
-    		traitementSelectionne.getProduits().add(produitSelectionne);
-    		TacheTraitement.update(traitementSelectionne);
-    	}
-    }
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 
-		produitSelectionne = Main_BEA_BAZ.getDetail();
-		traitementSelectionne = Main_BEA_BAZ.getTacheTraitementEdited();
+		produitSelectionne = Messages.getProduit();
+		traitementSelectionne = Messages.getTacheTraitementEdited();
 
 		nom_produit_textField.setEditable(false);
 		nom_complet_produit_textField.setEditable(false);
@@ -390,19 +372,10 @@ public class Fiche_produit_controller  implements Initializable{
 		
 		file_path_textField.setVisible(false);
 		importerButton.setVisible(false);
-		
-		if (traitementSelectionne != null){
-			nom_traitement_label.setText("Edition pour " + traitementSelectionne.getNom());
-			lier_button.setVisible(true);
-		}
-		else {
-			nom_traitement_label.setText("");
-			lier_button.setVisible(false);
-		}
 
 		liste_produits  = FXCollections.observableArrayList();
 		
-		currentStage = Main_BEA_BAZ.getStage();
+		currentStage = Messages.getStage();
 		
         produitCursor = MongoAccess.request("produit").as(Produit.class);
 		

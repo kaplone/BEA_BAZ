@@ -10,6 +10,7 @@ import org.jongo.MongoCursor;
 
 import utils.MongoAccess;
 import models.Fichier;
+import models.Messages;
 import models.Client;
 import models.Commande;
 import models.Traitement;
@@ -138,7 +139,7 @@ public class Fiche_fichier_controller  implements Initializable{
 	public void onFichierSelect(){
 		
 		fichierSelectionne = fichiers_listView.getSelectionModel().getSelectedItem();
-		Main_BEA_BAZ.setFichier(fichierSelectionne);		
+		Messages.setFichier(fichierSelectionne);		
 		affichageInfos();
 		
 	}
@@ -307,7 +308,7 @@ protected File chooseExport(){
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 
-		fichier = Main_BEA_BAZ.getFichier();
+		fichier = Messages.getFichier();
 		
 		if (fichier != null){
 			nom_fichier_textField.setEditable(false);
@@ -332,9 +333,9 @@ protected File chooseExport(){
 		
 		versModelsButton.setVisible(false);
 
-		currentStage = Main_BEA_BAZ.getStage();
+		currentStage = Messages.getStage();
 		
-		liste_fichiers = Main_BEA_BAZ.getObservableFichiers();
+		liste_fichiers = Messages.getObservableFichiers();
 		fichiers_listView.setItems(liste_fichiers);
 		
 		int index = 0;

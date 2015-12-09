@@ -22,7 +22,6 @@ import javafx.beans.property.StringProperty;
 import models.Auteur;
 import models.Client;
 import models.Commande;
-import models.Etat;
 import models.Matiere;
 import models.Model;
 import models.Oeuvre;
@@ -124,6 +123,7 @@ public class Documents {
 		        	catch (NullPointerException mpe){
 		        		
 		                p = new Produit();
+		                
 		                string_produit = "";
 		                string_produit_liste.clear();
 		                update = false;
@@ -131,9 +131,11 @@ public class Documents {
 		        	}
 		        	
 		        	if (update) {
-		        		
+		        		p.setUpdated_at(new Date());
 		        	}
 		        	else{
+		        		
+		        		p.setCreated_at(new Date());
 			            
 			            //For each row, iterate through all the columns
 			            Iterator<Cell> cellIterator = row.cellIterator();
@@ -207,9 +209,11 @@ public class Documents {
 	        	}
 	        	
 	        	if (update) {
-	        		
+	        		t.setUpdated_at(new Date());
 	        	}
 	        	else{
+	        		
+	        		t.setCreated_at(new Date());
 		            
 		            //For each row, iterate through all the columns
 		            Iterator<Cell> cellIterator = row.cellIterator();
@@ -276,7 +280,7 @@ public class Documents {
 	
 	        	catch (NullPointerException mpe){
 	        		
-	                t = new Traitement();
+	                te = new Technique();
 	                string_technique = "";
 	                string_technique_liste.clear();
 	                update = false;
@@ -284,9 +288,11 @@ public class Documents {
 	        	}
 	        	
 	        	if (update) {
-	        		
+	        		te.setUpdated_at(new Date());
 	        	}
 	        	else{
+	        		
+	        		te.setCreated_at(new Date());
 		            
 		            //For each row, iterate through all the columns
 		            Iterator<Cell> cellIterator = row.cellIterator();
@@ -361,9 +367,11 @@ public class Documents {
 	        	}
 	        	
 	        	if (update) {
-	        		
+	        		m.setUpdated_at(new Date());
 	        	}
 	        	else{
+	        		
+	        		m.setCreated_at(new Date());
 		            
 		            //For each row, iterate through all the columns
 		            Iterator<Cell> cellIterator = row.cellIterator();

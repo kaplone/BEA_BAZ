@@ -11,6 +11,7 @@ import org.jongo.MongoCursor;
 import utils.MongoAccess;
 import models.Client;
 import models.Commande;
+import models.Messages;
 import models.Produit;
 import models.TacheTraitement;
 import models.Technique;
@@ -376,7 +377,7 @@ public class Fiche_technique_controller  implements Initializable{
 
 		liste_techniques  = FXCollections.observableArrayList();
 		
-		currentStage = Main_BEA_BAZ.getStage();
+		currentStage = Messages.getStage();
 		
         techniqueCursor = MongoAccess.request("technique").as(Technique.class);
 		
