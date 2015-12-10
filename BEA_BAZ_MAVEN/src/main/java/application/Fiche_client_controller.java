@@ -148,8 +148,27 @@ public class Fiche_client_controller  implements Initializable{
 	@FXML
 	public void onClientSelect(){
 		
+		
+		
 		clientSelectionne = listView_client.getSelectionModel().getSelectedItem();
 		Messages.setClient(clientSelectionne);
+		
+		Messages.setAuteur(null);
+		Messages.setCommande(null);
+		Messages.setCommandes_id(null);
+		Messages.setFichier(null);
+		Messages.setFichiers_id(null);
+		Messages.setModel(null);
+		Messages.setObservablOeuvresTraitees(null);
+		Messages.setOeuvre(null);
+		Messages.setOeuvre_index(0);
+		Messages.setOeuvresTraitees_id(null);
+		Messages.setOeuvreTraitee(null);
+		Messages.setTacheTraitement(null);
+		Messages.setTacheTraitements_id(null);
+		Messages.setTraitementsAttendus(null);
+		Messages.setTraitementsAttendus_id(null);
+		
 		affichageInfos();
 		
 	}
@@ -159,6 +178,20 @@ public class Fiche_client_controller  implements Initializable{
 		
 		commandeSelectionne = listView_commandes.getSelectionModel().getSelectedItem();
 		Messages.setCommande(commandeSelectionne);
+		
+		Messages.setAuteur(null);
+		Messages.setFichier(null);
+		Messages.setFichiers_id(null);
+		Messages.setModel(null);
+		Messages.setObservablOeuvresTraitees(null);
+		Messages.setOeuvre(null);
+		Messages.setOeuvre_index(0);
+		Messages.setOeuvresTraitees_id(null);
+		Messages.setOeuvreTraitee(null);
+		Messages.setTacheTraitement(null);
+		Messages.setTacheTraitements_id(null);
+		Messages.setTraitementsAttendus(null);
+		Messages.setTraitementsAttendus_id(null);
 		
 		Scene fiche_commande_scene = new Scene((Parent) JfxUtils.loadFxml("/views/fiche_commande.fxml"), 1275, 722);
 		fiche_commande_scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());

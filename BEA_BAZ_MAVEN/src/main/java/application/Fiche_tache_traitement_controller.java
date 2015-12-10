@@ -14,6 +14,7 @@ import enums.Progression;
 import fr.opensagres.xdocreport.template.velocity.internal.Foreach;
 import utils.MongoAccess;
 import models.Commande;
+import models.Messages;
 import models.OeuvreTraitee;
 import models.Produit;
 import models.TacheTraitement;
@@ -197,7 +198,7 @@ public class Fiche_tache_traitement_controller  implements Initializable{
 	public void onTraitementSelect(){
 		
 		traitementSelectionne = traitements_associes_tableView.getSelectionModel().getSelectedItem();
-		Main_BEA_BAZ.setTacheTraitementEdited(traitementSelectionne);
+		Messages.setTacheTraitementEdited(traitementSelectionne);
 		affichageInfos();	
 	}
 	
@@ -207,7 +208,7 @@ public class Fiche_tache_traitement_controller  implements Initializable{
         produitSelectionne = listView_produits.getSelectionModel().getSelectedItem();
 		
 		if (produitSelectionne != null){
-			Main_BEA_BAZ.setDetail(produitSelectionne);
+			Messages.setDetail(produitSelectionne);
 			
 			traitementSelectionne.addProduit(produitSelectionne);
 			traitementSelectionne.update(traitementSelectionne);
@@ -446,7 +447,7 @@ public class Fiche_tache_traitement_controller  implements Initializable{
     @FXML
     public void onAjoutProduit(){
     	
-    	//Main_BEA_BAZ.setTacheTraitementEdited(listView_traitements.getSelectionModel().getSelectedItem());
+    	//Messages.setTacheTraitementEdited(listView_traitements.getSelectionModel().getSelectedItem());
     	
     	Scene fiche_produit_scene = new Scene((Parent) JfxUtils.loadFxml("/views/fiche_produit.fxml"), 1275, 722);
 		fiche_produit_scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
@@ -507,7 +508,7 @@ public class Fiche_tache_traitement_controller  implements Initializable{
     public void afficherTraitementsAssocies(){
     	
     	if (traitementSelectionne == null){
-    		traitementSelectionne = Main_BEA_BAZ.getTacheTraitement();
+    		traitementSelectionne = Messages.getTacheTraitement();
     	}
     	
 //    	liste_tachesTraitements.clear();
@@ -551,7 +552,7 @@ public class Fiche_tache_traitement_controller  implements Initializable{
     public void onTraitementAssocieSelect(){
     	
     	traitementSelectionne = traitements_associes_tableView.getSelectionModel().getSelectedItem();
-    	Main_BEA_BAZ.setTacheTraitement(traitementSelectionne);
+    	Messages.setTacheTraitement(traitementSelectionne);
     	afficherTraitementsAssocies();
     	afficherProgression();
     	afficherTraitement();
@@ -609,9 +610,9 @@ public class Fiche_tache_traitement_controller  implements Initializable{
     	
     	TacheTraitement tt = new TacheTraitement();
     	
-    	tt.setCommandeId(Main_BEA_BAZ.getCommande().get_id());
+    	tt.setCommandeId(Messages.getCommande().get_id());
     	tt.setFait_(Progression.TODO_);
-    	tt.setOeuvreTraiteeId(Main_BEA_BAZ.getOeuvre().get_id());
+    	tt.setOeuvreTraiteeId(Messages.getOeuvre().get_id());
     	tt.setTraitement(traitement);
     	tt.setNom(traitement.getNom());
     	
@@ -632,7 +633,7 @@ public class Fiche_tache_traitement_controller  implements Initializable{
 		coche_todo.setImage(new Image(Progression.TODO_.getUsedImage()));
 		coche_so.setImage(new Image(Progression.NULL_.getUsedImage()));
 		
-		traitementSelectionne = Main_BEA_BAZ.getTacheTraitementEdited();
+		traitementSelectionne = Messages.getTacheTraitementEdited();
 
         editer.setVisible(true);
         mise_a_jour_traitement.setVisible(false);
@@ -663,7 +664,7 @@ public class Fiche_tache_traitement_controller  implements Initializable{
 		liste_tous_les_traitements = FXCollections.observableArrayList();
 		
 		
-		currentStage = Main_BEA_BAZ.getStage();
+		currentStage = Messages.getStage();
 
 		traitementCursor = MongoAccess.request("tacheTraitement").as(TacheTraitement.class);
 		

@@ -1,6 +1,7 @@
 package models;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -23,6 +24,7 @@ public class OeuvreTraitee extends Commun {
 	private ArrayList<String> alterations;
 	
 	private ArrayList<Fichier> fichiers;
+	private Map<String, ObjectId> fichiers_id;
 	
 	private Progression progressionOeuvreTraitee;
 	
@@ -50,6 +52,12 @@ public class OeuvreTraitee extends Commun {
 	public ArrayList<Fichier> getFichiers() {
 		return fichiers;
 	}
+	public Collection<ObjectId> getFichiers_id() {
+		return fichiers_id.values();
+	}
+	public Set<String> getFichiers_names() {
+		return fichiers_id.keySet();
+	}
 	public void setFichiers(ArrayList<Fichier> fichiers) {
 		this.fichiers = fichiers;
 	}
@@ -63,6 +71,9 @@ public class OeuvreTraitee extends Commun {
 	}
 	public Set<String> getTraitementsAttendus_names() {
 		return traitementsAttendus_id.keySet();
+	}
+	public Collection<ObjectId> getTraitementsAttendus_id() {
+		return traitementsAttendus_id.values();
 	}
 	public void addTraitementAttendu(Traitement traitementAttendu) {
 		this.traitementsAttendus_id.put(traitementAttendu.getNom(), traitementAttendu.get_id());

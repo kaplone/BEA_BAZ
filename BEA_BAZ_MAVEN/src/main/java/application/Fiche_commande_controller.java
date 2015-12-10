@@ -485,8 +485,16 @@ public class Fiche_commande_controller  implements Initializable{
     
     public void onOeuvreSelect(){
     	
-    	Messages.setOeuvre((OeuvreTraitee) tableOeuvre.getSelectionModel().getSelectedItem());
+    	Messages.setOeuvreTraitee((OeuvreTraitee) tableOeuvre.getSelectionModel().getSelectedItem());
     	Messages.setOeuvre_index(tableOeuvre.getSelectionModel().getSelectedIndex());
+    	
+    	Messages.setAuteur(null);
+		Messages.setFichier(null);
+		Messages.setFichiers_id(null);
+		Messages.setModel(null);
+		Messages.setOeuvre(null);
+		Messages.setTacheTraitement(null);
+		Messages.setTacheTraitements_id(null);
     	
     	OeuvreTraitee oeuvreSelectionne = (OeuvreTraitee) tableOeuvre.getSelectionModel().getSelectedItem();
     	

@@ -73,37 +73,37 @@ public class Oeuvre extends Commun{
 		
 	}
     
-    public void addMatiere(Matiere m){
+    public void addMatiere(String m, ObjectId oid){
     	
-        if (! matieresUtilisees_id.keySet().contains(m.getNom())){
-    		matieresUtilisees_id.put(m.getNom(), m.get_id());
+        if (! matieresUtilisees_id.keySet().contains(m)){
+    		matieresUtilisees_id.put(m, oid);
     	}
     	
     }
     
-    public void deleteMatiere(Matiere m){
+    public void deleteMatiere(String m){
     	
     	for (String m_ : matieresUtilisees_id.keySet()){
-    		if (m.getNom().equals(m_)){
+    		if (m.equals(m_)){
     			matieresUtilisees_id.remove(m_);
     			break;
     		}
     	} 	
     }
     
-    public void addTechnique(Technique t){
+    public void addTechnique(String t, ObjectId oid){
     	
 
-    	if (! techniquesUtilisees_id.keySet().contains(t.getNom())){
-    		techniquesUtilisees_id.put(t.getNom(), t.get_id());
+    	if (! techniquesUtilisees_id.keySet().contains(t)){
+    		techniquesUtilisees_id.put(t, oid);
     	}
     	
     }
     
-    public void deleteTechnique(Technique t){
+    public void deleteTechnique(String t){
 
     	for (String t_ : techniquesUtilisees_id.keySet()){
-    		if (t.getNom().equals(t_)){
+    		if (t.equals(t_)){
     			techniquesUtilisees_id.remove(t_);
     			break;
     		}

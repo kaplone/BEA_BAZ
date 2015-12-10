@@ -479,8 +479,6 @@ public class Fiche_traitement_controller  implements Initializable{
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		
-		Messages.setTacheTraitementEdited(null);
 
 		traitementSelectionne = Messages.getTraitement();
 		

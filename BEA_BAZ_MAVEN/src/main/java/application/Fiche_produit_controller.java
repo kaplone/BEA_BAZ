@@ -356,7 +356,6 @@ public class Fiche_produit_controller  implements Initializable{
 	public void initialize(URL location, ResourceBundle resources) {
 
 		produitSelectionne = Messages.getProduit();
-		traitementSelectionne = Messages.getTacheTraitementEdited();
 
 		nom_produit_textField.setEditable(false);
 		nom_complet_produit_textField.setEditable(false);
