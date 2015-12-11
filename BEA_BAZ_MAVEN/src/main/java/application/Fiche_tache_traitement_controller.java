@@ -44,11 +44,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 public class Fiche_tache_traitement_controller  implements Initializable{
-	
-	@FXML
-	private ObservableList<TacheTraitement> liste_traitements;
-	@FXML
-	private ObservableList<Produit> liste_produits;
+
 	@FXML
 	private TableView<TacheTraitement> traitements_associes_tableView;
 	@FXML
@@ -58,7 +54,7 @@ public class Fiche_tache_traitement_controller  implements Initializable{
 	@FXML
 	private TextField file_path_textField;
 	@FXML
-	private ListView<Produit> listView_produits;
+	private ListView<String> listView_produits;
 	@FXML
 	private Button nouveau_detail;
 	@FXML
@@ -115,15 +111,19 @@ public class Fiche_tache_traitement_controller  implements Initializable{
 	private HBox produitsLiesHbox;
 	
 	@FXML
-	private ListView tous_les_traitements_listView;
+	private ListView<String> tous_les_traitements_listView;
 	
 	private boolean edit = false;
+	
+	private ObservableList<String> liste_traitements;
+
+	private ObservableList<String> liste_produits;
 	
 	MongoCursor<TacheTraitement> traitementCursor;
 	MongoCursor<Produit> detailCursor ;
 	MongoCursor<Traitement> tousLesTraitementsCursor;
 	TacheTraitement traitementSelectionne;
-	Produit produitSelectionne;
+	private Produit produitSelectionne;
 	
 	ArrayList<TacheTraitement> liste_tachesTraitements;
 	ObservableList<Traitement> liste_tous_les_traitements;
@@ -191,14 +191,14 @@ public class Fiche_tache_traitement_controller  implements Initializable{
 	}	
 
 	@FXML
-	public void onAjoutTraitement(){
-	}
-
-	@FXML
 	public void onTraitementSelect(){
 		
 		traitementSelectionne = traitements_associes_tableView.getSelectionModel().getSelectedItem();
-		Messages.setTacheTraitementEdited(traitementSelectionne);
+		Messages.setTacheTraitement(traitementSelectionne);
+
+		Messages.setTraitementsAttendus(null);
+		Messages.setTraitementsAttendus_id(null);
+		
 		affichageInfos();	
 	}
 	
@@ -208,7 +208,7 @@ public class Fiche_tache_traitement_controller  implements Initializable{
         produitSelectionne = listView_produits.getSelectionModel().getSelectedItem();
 		
 		if (produitSelectionne != null){
-			Messages.setDetail(produitSelectionne);
+			Messages.setNom_produit(produitSelectionne);
 			
 			traitementSelectionne.addProduit(produitSelectionne);
 			traitementSelectionne.update(traitementSelectionne);
