@@ -78,6 +78,9 @@ public class OeuvreTraitee extends Commun {
 	public void addTraitementAttendu(Traitement traitementAttendu) {
 		this.traitementsAttendus_id.put(traitementAttendu.getNom(), traitementAttendu.get_id());
 	}
+	public void addTraitementAttendu(String nom, ObjectId id) {
+		this.traitementsAttendus_id.put(nom, id);
+	}
 
 	public ImageView getIcone_progression() {
 		
@@ -117,5 +120,22 @@ public class OeuvreTraitee extends Commun {
 		
 		return MongoAccess.request("oeuvre", oeuvre_id).as(Oeuvre.class).next();
 	}
+
+	public ObjectId getOeuvre_id() {
+		return oeuvre_id;
+	}
+
+	public void setOeuvre_id(ObjectId oeuvre_id) {
+		this.oeuvre_id = oeuvre_id;
+	}
+
+	public void setTraitementsAttendus_id(Map<String, ObjectId> traitementsAttendus_id) {
+		this.traitementsAttendus_id = traitementsAttendus_id;
+	}
+
+	public void setFichiers_id(Map<String, ObjectId> fichiers_id) {
+		this.fichiers_id = fichiers_id;
+	}
+	
 	
 }

@@ -33,6 +33,9 @@ public class Messages {
 	private static List<TacheTraitement> traitementsAttendus;
 	private static Map<String, ObjectId> traitementsAttendus_id;
 	
+	private static List<TacheTraitement> traitementsLies;
+	private static Map<String, ObjectId> traitementslies_id;
+	
 	private static Produit produit;
 	private static String nom_produit;
 	private static Map<String, ObjectId> produits_id;
@@ -319,6 +322,26 @@ public class Messages {
 
 	public static void setObservableFichiers(ObservableList<Fichier> observableFichiers) {
 		Messages.observableFichiers = observableFichiers;
+	}
+
+
+	public static List<TacheTraitement> getTraitementsLies() {
+		return traitementsLies;
+	}
+
+
+	public static void setTraitementsLies(List<TacheTraitement> traitementsLies) {
+		Messages.traitementsLies = traitementsLies;
+	}
+
+
+	public static Map<String, ObjectId> getTraitementslies_id() {
+		return traitementslies_id;
+	}
+
+
+	public static void setTraitementslies_id(Map<String, ObjectId> traitementslies_id) {
+		Messages.traitementslies_id = traitementslies_id;
 	}
     
 }

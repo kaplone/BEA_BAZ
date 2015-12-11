@@ -1,5 +1,6 @@
 package models;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -41,6 +42,16 @@ public class TacheTraitement extends Commun{
     	
     	if (! produitsLies.keySet().contains(p.getNom())){
     		produitsLies.put(p.getNom(), p.get_id());
+    	}
+    	
+    }
+    
+    public void addProduit(String p){
+    	
+    	Produit p_ = MongoAccess.request("produit", "nom", p).as(Produit.class);
+    	
+    	if (! produitsLies.keySet().contains(p)){
+    		produitsLies.put(p, p_.get_id());
     	}
     	
     }
@@ -119,9 +130,23 @@ public class TacheTraitement extends Commun{
 	public Set<String> getProduitsLies_names() {
 		return produitsLies.keySet();
 	}
+	
+	public  Collection<ObjectId> getProduitsLies_id() {
+		return produitsLies.values();
+	}
 
 	public void addProduitLie(Produit produitLie) {
 		this.produitsLies.put(produitLie.getNom(), produitLie.get_id());
 	}
+
+	public Map<String, ObjectId> getProduitsLies() {
+		return produitsLies;
+	}
+
+	public void setProduitsLies(Map<String, ObjectId> produitsLies) {
+		this.produitsLies = produitsLies;
+	}
+	
+	
 
 }

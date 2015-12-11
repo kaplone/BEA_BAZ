@@ -4,7 +4,9 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import org.bson.types.ObjectId;
@@ -112,33 +114,32 @@ public class Fiche_tache_traitement_controller  implements Initializable{
 	
 	@FXML
 	private ListView<String> tous_les_traitements_listView;
-	
-	private boolean edit = false;
-	
 	private ObservableList<String> liste_traitements;
-
+	
 	private ObservableList<String> liste_produits;
 	
-	MongoCursor<TacheTraitement> traitementCursor;
-	MongoCursor<Produit> detailCursor ;
-	MongoCursor<Traitement> tousLesTraitementsCursor;
-	TacheTraitement traitementSelectionne;
-	private Produit produitSelectionne;
-	
-	ArrayList<TacheTraitement> liste_tachesTraitements;
-	ObservableList<Traitement> liste_tous_les_traitements;
-	
-	ObservableList<TacheTraitement> obs_tt;
-	
-	Progression progres;
-	
-	Stage currentStage;
+	private boolean edit = false;
 
-	Produit detail;
+	private MongoCursor<TacheTraitement> traitementCursor;
+	private MongoCursor<Traitement> tousLesTraitementsCursor;
+	private Map<String, ObjectId> tousLesTraitements_id;
 	
-	Traitement traitementSource;
-	OeuvreTraitee ot;
-	Commande commande;
+	private TacheTraitement traitementSelectionne;
+	private String produitSelectionne;
+	
+	private ArrayList<TacheTraitement> liste_tachesTraitements;
+	private ObservableList<TacheTraitement> observable_liste_tachestraitements_lies;
+
+	
+	private Progression progres;
+	
+	private Stage currentStage;
+
+	private Produit detail;
+	
+	private Traitement traitementSource;
+	private OeuvreTraitee ot;
+	private Commande commande;
 	
 	private File file;
 	
@@ -229,7 +230,7 @@ public class Fiche_tache_traitement_controller  implements Initializable{
         iv.setFitWidth(15);
 		
 		
-		Button b = new Button(produitSelectionne.getNom());
+		Button b = new Button(produitSelectionne);
 		Button b2 = new Button("", iv);
 		
 		b2.setOnAction((event) -> deleteProduitLie((Button)event.getSource()));
@@ -254,8 +255,7 @@ public class Fiche_tache_traitement_controller  implements Initializable{
 		TacheTraitement.update(traitementSelectionne);
 		
 		produitsLiesHbox.getChildren().clear();
-		for (Produit p : traitementSelectionne.getProduitsLies()){
-			produitSelectionne = p;
+		for (String p : traitementSelectionne.getProduitsLies_names()){
 			affichageProduitsUtilises();
 		}
 		
@@ -310,30 +310,10 @@ public class Fiche_tache_traitement_controller  implements Initializable{
     	
     	if (traitementSelectionne != null){
     		
-            liste_produits.addAll(traitementSelectionne.getProduits());
+            liste_produits.addAll(traitementSelectionne.getProduitsLies_names());
 			
 			listView_produits.setItems(liste_produits);		
     	}	
-    }
-    
-    public void onNouveauTraitementButton() {
-    	
-    	mise_a_jour_traitement.setText("Enregistrer");
-    	//nom_traitement_textField.setText("");
-    	remarques_traitement_textArea.setText("");
-    	//nom_traitement_textField.setPromptText("saisir le nom du nouveau traitement");
-    	remarques_traitement_textArea.setPromptText("éventuelles remarques");
-    	
-    	traitementSelectionne = new TacheTraitement();
-    	
-    	edit = false;
-    	annuler.setVisible(true);
-    	editer.setVisible(false);
-    	mise_a_jour_traitement.setVisible(true);
-    	//nom_traitement_textField.setEditable(true);
-		remarques_traitement_textArea.setEditable(true);
-    	
-    	
     }
     
     public void onAnnulerButton() {
@@ -428,9 +408,11 @@ public class Fiche_tache_traitement_controller  implements Initializable{
     		
     		while (traitementCursor.hasNext()){
     			TacheTraitement enplus = traitementCursor.next();
-    			liste_traitements.add(enplus);
+    			liste_traitements.add(enplus.getNom());
+    			observable_liste_tachestraitements_lies.add(enplus);
+    			
     		}	
-    		traitements_associes_tableView.setItems(liste_traitements);	
+    		traitements_associes_tableView.setItems(observable_liste_tachestraitements_lies);	
     		
     		rafraichirAffichage();
     	}		
@@ -510,40 +492,11 @@ public class Fiche_tache_traitement_controller  implements Initializable{
     	if (traitementSelectionne == null){
     		traitementSelectionne = Messages.getTacheTraitement();
     	}
-    	
-//    	liste_tachesTraitements.clear();
-//    	
-//        traitementCursor = MongoAccess.request("tacheTraitement", "oeuvreTraiteeId", ot.get_id()).as(TacheTraitement.class);
-//        
-//        int indexTraitementAssocie = 0;
-//        int i = 0;
-//		
-//		while (traitementCursor.hasNext()){
-//			
-//			TacheTraitement tta = traitementCursor.next();
-//			liste_tachesTraitements.add(tta);
-//			
-//			if (tta.getNom().equals(traitementSelectionne.getNom())){
-//				indexTraitementAssocie = i;
-//			}
-//			i++;
-//				
-//		}
-		
+
 		traitements_associes_tableColumn.setCellValueFactory(new PropertyValueFactory<TacheTraitement, String>("nom"));
 		traitements_associes_faits_tableColumn.setCellValueFactory(new PropertyValueFactory<TacheTraitement, ImageView>("icone_progression"));
-		//oeuvres_fait_colonne.setCellValueFactory(new PropertyValueFactory<OeuvreTraitee, String>("fait"));
 		
-		//ObservableList<TacheTraitement> obs_tt = FXCollections.observableArrayList(liste_tachesTraitements);
-		
-		obs_tt = FXCollections.observableArrayList();
-		
-		for (ObjectId ta_id : ot.getTraitementsAttendus()){
-			obs_tt.add(MongoAccess.request("tacheTraitement", ta_id).as(TacheTraitement.class).next());
-		}
-		
-
-		traitements_associes_tableView.setItems(obs_tt);
+		traitements_associes_tableView.setItems(observable_liste_tachestraitements_lies);
 		
 		//traitements_associes_tableView.getSelectionModel().select(indexTraitementAssocie);
 		traitements_associes_tableView.isFocused();
@@ -575,8 +528,7 @@ public class Fiche_tache_traitement_controller  implements Initializable{
 		t_label.setText(traitementSelectionne.getTraitement().getNom_complet());
 		
 		produitsLiesHbox.getChildren().clear();
-		for (Produit p : traitementSelectionne.getProduitsLies()){
-			produitSelectionne = p;
+		for (String p : traitementSelectionne.getProduitsLies_names()){
 			affichageProduitsUtilises();
 		}
 		
@@ -602,25 +554,23 @@ public class Fiche_tache_traitement_controller  implements Initializable{
     
     public void afficherProduits(){
     	liste_produits.clear();
-    	liste_produits.addAll(traitementSelectionne.getTraitement().getProduits());
+    	liste_produits.addAll(traitementSelectionne.getTraitement().getProduits().keySet());
     	listView_produits.setItems(liste_produits);
     }
     
-    public void onTous_les_traitementsSelect(Traitement traitement){
+    public void onTous_les_traitementsSelect(String traitement){
     	
     	TacheTraitement tt = new TacheTraitement();
     	
-    	tt.setCommandeId(Messages.getCommande().get_id());
     	tt.setFait_(Progression.TODO_);
-    	tt.setOeuvreTraiteeId(Messages.getOeuvre().get_id());
-    	tt.setTraitement(traitement);
-    	tt.setNom(traitement.getNom());
+    	tt.setTraitement_id(tousLesTraitements_id.get(traitement));
+    	tt.setNom(traitement);
     	
-    	MongoAccess.insert("tacheTraitement", tt);
+    	//MongoAccess.insert("tacheTraitement", tt);
     	
-    	obs_tt.add(tt);
+    	observable_liste_tachestraitements_lies.add(tt);
     	
-    	ot.setTraitementsAttendus(new ArrayList<ObjectId>(obs_tt.stream().map(a -> a.get_id()).collect(Collectors.toList())));
+    	ot.addTraitementAttendu(traitement, tousLesTraitements_id.get(traitement));
     	
     	MongoAccess.update("oeuvreTraitee", ot);
     }
@@ -633,7 +583,7 @@ public class Fiche_tache_traitement_controller  implements Initializable{
 		coche_todo.setImage(new Image(Progression.TODO_.getUsedImage()));
 		coche_so.setImage(new Image(Progression.NULL_.getUsedImage()));
 		
-		traitementSelectionne = Messages.getTacheTraitementEdited();
+		traitementSelectionne = Messages.getTacheTraitement();
 
         editer.setVisible(true);
         mise_a_jour_traitement.setVisible(false);
@@ -651,8 +601,8 @@ public class Fiche_tache_traitement_controller  implements Initializable{
 			onEditerTraitementButton();
 		});
 		
-		ot = MongoAccess.request("oeuvreTraitee", traitementSelectionne.getOeuvreTraiteeId()).as(OeuvreTraitee.class).next();
-		commande = ot.getCommande();
+		ot = Messages.getOeuvreTraitee();
+		commande = Messages.getCommande();
 		traitementSource = traitementSelectionne.getTraitement();
 		
 		ot_label.setText(ot.getNom());
@@ -661,30 +611,37 @@ public class Fiche_tache_traitement_controller  implements Initializable{
 		
 		liste_traitements = FXCollections.observableArrayList();
 		liste_produits  = FXCollections.observableArrayList();
-		liste_tous_les_traitements = FXCollections.observableArrayList();
-		
-		
+		observable_liste_tachestraitements_lies = FXCollections.observableArrayList();
+	
 		currentStage = Messages.getStage();
 
-		traitementCursor = MongoAccess.request("tacheTraitement").as(TacheTraitement.class);
-		
-		try {
-		    produitUtiliseLabel.setText(traitementSelectionne.getProduitUtilise().getNom_complet());
-		}
-		catch (NullPointerException npe){
+		if (Messages.getTraitements_id() == null){
 			
+			traitementCursor = MongoAccess.request("tacheTraitement").as(TacheTraitement.class);
+			tousLesTraitementsCursor = MongoAccess.request("traitement").as(Traitement.class);
+			
+			tousLesTraitements_id = new TreeMap<>();
+			
+			while (tousLesTraitementsCursor.hasNext()){
+				
+				Traitement t = tousLesTraitementsCursor.next();
+				
+				liste_traitements.add(t.getNom());
+				tousLesTraitements_id.put(t.getNom(), t.get_id());
+			}
+			
+			Messages.setTraitements_id(tousLesTraitements_id);
 		}
-		
-        tousLesTraitementsCursor = MongoAccess.request("traitement").as(Traitement.class);
-		
-		while (tousLesTraitementsCursor.hasNext()){
-			liste_tous_les_traitements.add(tousLesTraitementsCursor.next());
+		else {
+			tousLesTraitements_id = Messages.getTraitements_id();
+			liste_traitements.addAll(tousLesTraitements_id.keySet());
 		}
+        
 		
-		tous_les_traitements_listView.setItems(liste_tous_les_traitements);
+		tous_les_traitements_listView.setItems(liste_traitements);
 		
 		tous_les_traitements_listView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-			onTous_les_traitementsSelect((Traitement) newValue);
+			onTous_les_traitementsSelect((String) newValue);
 		});
 		
 		

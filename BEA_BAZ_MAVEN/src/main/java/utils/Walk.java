@@ -148,13 +148,13 @@ public class Walk {
 			System.out.println(oeuvreConcernee);
 			System.out.println(oeuvreConcernee.getNom());
 			
-			Fiche_commande_import_controller.getBindLabel().set("Images en cours : " + path.getFileName().toString());
+			//Fiche_commande_import_controller.getBindLabel().set("Images en cours : " + path.getFileName().toString());
 			
 			if (oeuvreConcernee.getFichiers() == null){
-				oeuvreConcernee.setFichiers(new ArrayList<ObjectId>());
+				oeuvreConcernee.setFichiers(new ArrayList<Fichier>());
 			}
 			
-			oeuvreConcernee.getFichiers().add(fichier.get_id());
+			oeuvreConcernee.getFichiers().add(fichier);
 			
 			OeuvreTraitee.update(oeuvreConcernee);
 		}

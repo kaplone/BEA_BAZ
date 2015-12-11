@@ -37,13 +37,13 @@ public class MongoAccess {
 		LoadConfig.loadSettings();
 	
 		try {
-			MongoClientURI uri  = new MongoClientURI(String.format("mongodb://%s:%s@%s:%s/%s", 
-					                                 Settings.getLogin(),
-					                                 Settings.getPass(),
-					                                 Settings.getAdresse(),
-					                                 Settings.getPort(),
-					                                 Settings.getBase())); 
-			//MongoClientURI uri  = new MongoClientURI("mongodb://127.0.0.1/test2"); 
+//			MongoClientURI uri  = new MongoClientURI(String.format("mongodb://%s:%s@%s:%s/%s", 
+//					                                 Settings.getLogin(),
+//					                                 Settings.getPass(),
+//					                                 Settings.getAdresse(),
+//					                                 Settings.getPort(),
+//					                                 Settings.getBase())); 
+			MongoClientURI uri  = new MongoClientURI("mongodb://127.0.0.1/test3"); 
 			MongoClient client = new MongoClient(uri);
 			db = client.getDB(uri.getDatabase());	
 			jongo = new Jongo(db);

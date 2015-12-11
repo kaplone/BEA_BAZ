@@ -19,10 +19,12 @@ import java.util.stream.Collectors;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.collections.ObservableList;
 import models.Auteur;
 import models.Client;
 import models.Commande;
 import models.Matiere;
+import models.Messages;
 import models.Model;
 import models.Oeuvre;
 import models.OeuvreTraitee;
@@ -38,6 +40,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.bson.types.ObjectId;
+import org.jongo.MongoCursor;
 import org.jongo.marshall.MarshallingException;
 import org.jongo.marshall.jackson.JacksonMapper;
 import org.jongo.marshall.jackson.oid.MongoObjectId;
@@ -55,6 +58,11 @@ public class Documents {
 	private static Commande commande;
 	private static ObjectId commande_id;
 	private static ArrayList<String> alterations ;
+	
+	private static MongoCursor<TacheTraitement> traitementCursor;
+	private static MongoCursor<Traitement> tousLesTraitementsCursor;
+	private static Map<String, ObjectId> tousLesTraitements_id;
+	private static ObservableList<String> liste_traitements;
 	
 	private static StringProperty bindedLabel = new SimpleStringProperty(); 
 
@@ -439,8 +447,32 @@ public class Documents {
 	    return true;
 	}
 	
+	
+	
 
 	public static void read(File file_, Commande commande_) throws IOException {
+		
+        if (Messages.getTraitements_id() == null){
+			
+			traitementCursor = MongoAccess.request("tacheTraitement").as(TacheTraitement.class);
+			tousLesTraitementsCursor = MongoAccess.request("traitement").as(Traitement.class);
+			
+			tousLesTraitements_id = new TreeMap<>();
+			
+			while (tousLesTraitementsCursor.hasNext()){
+				
+				Traitement t = tousLesTraitementsCursor.next();
+				
+				liste_traitements.add(t.getNom());
+				tousLesTraitements_id.put(t.getNom(), t.get_id());
+			}
+			
+			Messages.setTraitements_id(tousLesTraitements_id);
+		}
+		else {
+			tousLesTraitements_id = Messages.getTraitements_id();
+			liste_traitements.addAll(tousLesTraitements_id.keySet());
+		}
 		
 		commande_id = commande_.get_id();
 		commande = commande_;
@@ -621,8 +653,7 @@ public class Documents {
         	if (! titres){
         	
 	        	ot = new OeuvreTraitee();
-	            ot.setOeuvre(o);
-	            ot.setCommande(commande_);
+	            ot.setOeuvre_id(o.get_id());
 	            ot.setProgressionOeuvreTraitee(Progression.TODO_);
 	            ot.setAlterations(alterations);
 	            
@@ -630,23 +661,22 @@ public class Documents {
 	            
 	            ArrayList<ObjectId> traitementsEnCours = new ArrayList<>();
 	            
-	            for (Traitement t : commande_.getTraitements_attendus()) {
+	            for (String t : commande_.getTraitements_attendus_names()) {
 	            	
 	            	TacheTraitement tt = new TacheTraitement();
-	            	tt.setTraitement(t);
-	            	tt.setOeuvreTraiteeId(ot.get_id());
-	            	tt.setCommandeId(commande_.get_id());
-	    			tt.setCreated_at(Date.from(Instant.now()));
 	            	tt.setFait_(Progression.TODO_);
-	            	tt.setNom(t.getNom());
+	            	tt.setTraitement_id(tousLesTraitements_id.get(t));
+	            	tt.setNom(t);
+
+	            	
+	            	ot.addTraitementAttendu(t, tousLesTraitements_id.get(t));
 	            	
 	            	utils.MongoAccess.save("tacheTraitement", tt);
 	
 	            	traitementsEnCours.add(tt.get_id());
 	            	
 	    		}
-	            ot.setTraitementsAttendus(traitementsEnCours);
-	            
+    
 	            utils.MongoAccess.update("oeuvreTraitee", ot);
         	}
             
@@ -770,20 +800,17 @@ public class Documents {
 	
 	public static void listeDesTachesTraitement(Oeuvre oeuvre){
 		
-		commande = Main_BEA_BAZ.getCommande();
+		commande = Messages.getCommande();
 		
 		System.out.println("nom : " +oeuvre.getNom());
-		Fiche_commande_import_controller.getBindLabel().set("Import en cours : " + oeuvre.getNom());
+		//Fiche_commande_import_controller.getBindLabel().set("Import en cours : " + oeuvre.getNom());
 		
 		//ArrayList<TacheTraitement> listeDesTaches = new ArrayList<>();
 		
-		for (Traitement t : commande.getTraitements_attendus()){
+		for (String t : commande.getTraitements_attendus_names()){
 			
 			TacheTraitement tt = new TacheTraitement();
-			tt.setCommandeId(commande.get_id());
-			tt.setTraitement(t);
 			tt.setCreated_at(Date.from(Instant.now()));
-			tt.setOeuvreTraiteeId(oeuvre.get_id());
 			tt.setFait_(Progression.TODO_);
 			
 			MongoAccess.save("tacheTraitement", tt);
