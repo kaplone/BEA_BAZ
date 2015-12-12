@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import models.Auteur;
 import models.Client;
@@ -450,7 +451,9 @@ public class Documents {
 	
 	
 
-	public static void read(File file_, Commande commande_) throws IOException {
+	public static void read(File file_) throws IOException {
+		
+		liste_traitements = FXCollections.observableArrayList();
 		
         if (Messages.getTraitements_id() == null){
 			
@@ -474,8 +477,7 @@ public class Documents {
 			liste_traitements.addAll(tousLesTraitements_id.keySet());
 		}
 		
-		commande_id = commande_.get_id();
-		commande = commande_;
+		commande_id = Messages.getCommande_id();
 		
 		boolean titres = true;
 		boolean update = false;
@@ -661,7 +663,7 @@ public class Documents {
 	            
 	            ArrayList<ObjectId> traitementsEnCours = new ArrayList<>();
 	            
-	            for (String t : commande_.getTraitements_attendus_names()) {
+	            for (String t : Messages.getTraitementsAttendus_id().keySet()) {
 	            	
 	            	TacheTraitement tt = new TacheTraitement();
 	            	tt.setFait_(Progression.TODO_);
@@ -800,7 +802,7 @@ public class Documents {
 	
 	public static void listeDesTachesTraitement(Oeuvre oeuvre){
 		
-		commande = Messages.getCommande();
+		commande = MongoAccess.request("commande", Messages.getCommande_id()).as(Commande.class).next();
 		
 		System.out.println("nom : " +oeuvre.getNom());
 		//Fiche_commande_import_controller.getBindLabel().set("Import en cours : " + oeuvre.getNom());

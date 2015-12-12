@@ -86,6 +86,14 @@ public class Client extends Commun{
 	public void setNom_complet(String nom_complet) {
 		this.nom_complet = nom_complet;
 	}
+
+	public Map<String, ObjectId> getCommandes_id() {
+		return commandes_id;
+	}
+
+	public void setCommandes_id(Map<String, ObjectId> commandes_id) {
+		this.commandes_id = commandes_id;
+	}
 	
 	
 	

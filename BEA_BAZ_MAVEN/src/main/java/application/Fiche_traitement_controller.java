@@ -3,9 +3,12 @@ package application;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 
+import org.bson.types.ObjectId;
 import org.jongo.FindOne;
 import org.jongo.MongoCursor;
 
@@ -197,9 +200,8 @@ public class Fiche_traitement_controller  implements Initializable{
 		produitSelectionne = listView_produits.getSelectionModel().getSelectedItem();
 		
 		if (produitSelectionne != null){
-			Messages.setNom_produit(produitSelectionne);
 			
-			traitementSelectionne.addProduit(MongoAccess.request("produit", traitementSelectionne.getProduits().get(produitSelectionne)).as(Produit.class).next());
+			traitementSelectionne.addProduit(produitSelectionne, Messages.getProduits_id().get(produitSelectionne));
 			Traitement.update(traitementSelectionne);
 			
 			affichageProduitUtilise(produitSelectionne);
@@ -289,11 +291,13 @@ public class Fiche_traitement_controller  implements Initializable{
     
     public void affichageProduits(){
     	
-        liste_produits.clear();
+    	liste_produits.clear();
     	
-    	if (traitementSelectionne != null){
-    		
+    	if (Messages.getProduits_id() == null){
+        		
     		MongoCursor<Produit> produitsCursor = MongoAccess.request("produit").as(Produit.class);
+    		
+    		Map<String, ObjectId> p_id = new TreeMap<>();
     		
     		while (produitsCursor.hasNext()){
     			
@@ -301,10 +305,19 @@ public class Fiche_traitement_controller  implements Initializable{
     			
     			liste_produits.add(p_temp);
     			liste_noms_produits.add(p_temp.getNom());
+    			p_id.put(p_temp.getNom(), p_temp.get_id());
     		}
     		
-			listView_produits.setItems(liste_noms_produits);		
+    		Messages.setProduits_id(p_id);
+
     	}
+    	else {
+    		liste_noms_produits.addAll(Messages.getProduits_id().keySet());
+    	}
+    	
+    	listView_produits.setItems(liste_noms_produits);
+    	
+    	
     }
     
     public void onNouveauTraitementButton() {

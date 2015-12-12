@@ -45,6 +45,14 @@ public class Traitement extends Commun{
     	
     }
     
+    public void addProduit(String p, ObjectId id){
+    	
+    	if (! produits.keySet().contains(p)){
+    		produits.put(p, id);
+    	}
+    	
+    }
+    
     public void deleteProduit(Produit p){
     	
     	for (String p_ : produits.keySet()){

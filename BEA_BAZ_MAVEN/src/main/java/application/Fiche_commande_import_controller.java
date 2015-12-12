@@ -159,10 +159,10 @@ public class Fiche_commande_import_controller  implements Initializable{
 	
 	private Stage currentStage;
 	
-	private Commande commande;
-	private Commande commandeSelectionne;
+	private String commande;
+	private String commandeSelectionne;
 	
-	private Client client;
+	private String client;
 	
 	private File file;
 	private File dir;
@@ -273,7 +273,7 @@ public class Fiche_commande_import_controller  implements Initializable{
 	@FXML
 	public void on_import_file_button(){
 		try {
-			Documents.read(file, commandeSelectionne);
+			Documents.read(file);
 			onVersCommandeButton();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -295,7 +295,7 @@ public class Fiche_commande_import_controller  implements Initializable{
 	
 	public void afficherOeuvres(){
 
-		oeuvresTraiteesCursor = MongoAccess.request("oeuvreTraitee", commandeSelectionne).as(OeuvreTraitee.class);
+		oeuvresTraiteesCursor = MongoAccess.request("oeuvreTraitee", "commande_id", Messages.getCommande_id()).as(OeuvreTraitee.class);
 		
 		while (oeuvresTraiteesCursor.hasNext()){
 			oeuvresTraitees.add(oeuvresTraiteesCursor.next());

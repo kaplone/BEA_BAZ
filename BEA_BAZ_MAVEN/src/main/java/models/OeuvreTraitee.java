@@ -14,6 +14,8 @@ import javafx.scene.image.ImageView;
 
 public class OeuvreTraitee extends Commun {
 	
+	private ObjectId commande_id;
+	
 	private ObjectId oeuvre_id;
 	
 	private Map<String, ObjectId> traitementsAttendus_id;
@@ -136,6 +138,15 @@ public class OeuvreTraitee extends Commun {
 	public void setFichiers_id(Map<String, ObjectId> fichiers_id) {
 		this.fichiers_id = fichiers_id;
 	}
+
+	public ObjectId getCommande_id() {
+		return commande_id;
+	}
+
+	public void setCommande_id(ObjectId commande_id) {
+		this.commande_id = commande_id;
+	}
+	
 	
 	
 }

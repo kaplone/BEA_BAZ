@@ -60,8 +60,6 @@ public class FreeMarkerMaker {
 		      // 1) Load Docx file by filling Velocity template engine and cache it to the registry
 		      //InputStream in = new FileInputStream(new File("/home/kaplone/Desktop/BEABASE/Béa base/modele_rapport_v2_freemarker.odt"));
 		      //InputStream in = new FileInputStream(new File("C:\\Users\\USER\\Desktop\\BEABAZ\\modele_rapport_v2_freemarker.odt"));
-
-			  System.out.println(Messages.getCommande().getModel().getCheminVersModel().toString());  
 			  
               ArrayList<Fichier> listeFichiers = new ArrayList<>();
 		      
@@ -83,10 +81,10 @@ public class FreeMarkerMaker {
 			  InputStream in;
 			  
 			  if (img.getHeight() > img.getWidth()){
-				  in = new FileInputStream(Messages.getCommande().getModel().getModeleVertical().toFile());
+				  in = new FileInputStream(Messages.getModel().getModeleVertical().toFile());
 			  }
 			  else{
-				  in = new FileInputStream(Messages.getCommande().getModel().getCheminVersModel().toFile());
+				  in = new FileInputStream(Messages.getModel().getCheminVersModel().toFile());
 			  }
 
 		      IXDocReport report = XDocReportRegistry.getRegistry().loadReport(in,TemplateEngineKind.Freemarker);
@@ -188,7 +186,7 @@ public class FreeMarkerMaker {
 
 		      // 3) Generate report by merging Java model with the Docx
 
-		      OutputStream out = new FileOutputStream(Messages.getCommande().getModel().getCheminVersModel().getParent().resolve(String.format("%s.odt", o.getCote_archives_6s())).toFile());
+		      OutputStream out = new FileOutputStream(Messages.getModel().getCheminVersModel().getParent().resolve(String.format("%s.odt", o.getCote_archives_6s())).toFile());
 		      
 		      System.out.println("__04");
 		      report.process(context, out);
@@ -196,7 +194,7 @@ public class FreeMarkerMaker {
 		      System.out.println("__05");
 
 		      //OutputStream out2 = new FileOutputStream(new File(String.format("/home/kaplone/Desktop/BEABASE/tests/%s_freemarker.pdf", o.getCote_archives_6s())));
-		      OutputStream out2 = new FileOutputStream(Messages.getCommande().getModel().getCheminVersModel().getParent().resolve(String.format("%s.pdf", o.getCote_archives_6s())).toFile());
+		      OutputStream out2 = new FileOutputStream(Messages.getModel().getCheminVersModel().getParent().resolve(String.format("%s.pdf", o.getCote_archives_6s())).toFile());
               // 1) Create options ODT 2 PDF to select well converter form the registry
               Options options = Options.getFrom(DocumentKind.ODT).to(ConverterTypeTo.PDF);
 

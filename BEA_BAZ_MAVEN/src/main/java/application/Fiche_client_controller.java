@@ -1,8 +1,12 @@
 package application;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.TreeMap;
 
+import org.bson.types.ObjectId;
 import org.jongo.MongoCursor;
 
 import utils.MongoAccess;
@@ -29,14 +33,14 @@ import javafx.stage.Stage;
 public class Fiche_client_controller  implements Initializable{
 	
 	@FXML
-	private ObservableList<Client> liste_clients;
+	private ObservableList<String> liste_clients;
 	@FXML
-	private ObservableList<Commande> liste_commandes;
+	private ObservableList<String> liste_commandes;
 	
 	@FXML
-	private ListView<Client> listView_client;
+	private ListView<String> listView_client;
 	@FXML
-	private ListView<Commande> listView_commandes;
+	private ListView<String> listView_commandes;
 	@FXML
 	private TextField nom_client_textField;
 	@FXML
@@ -74,13 +78,17 @@ public class Fiche_client_controller  implements Initializable{
 	
 	MongoCursor<Client> clientCursor;
 	MongoCursor<Commande> commandeCursor ;
-	Client clientSelectionne;
-	Commande commandeSelectionne;
+	String clientSelectionne;
+	String commandeSelectionne;
+	
+	Map <String, ObjectId> clients_id;
+	Map <String, ObjectId> commandes_id;
 	
 	Stage currentStage;
 	
 	Commande commande;
-	Client client;
+	String client;
+	Client c;
 	
 	private boolean edit = false;
 	
@@ -136,7 +144,9 @@ public class Fiche_client_controller  implements Initializable{
 		
 		Messages.setCommande(null);
 		Messages.setClient(clientSelectionne);
-		
+		Messages.setClient_id(clients_id.get(clientSelectionne));
+		Messages.setClients_id(clients_id);
+
 		Scene fiche_commande_scene = new Scene((Parent) JfxUtils.loadFxml("/views/fiche_commande.fxml"), 1275, 722);
 		fiche_commande_scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 		
@@ -147,11 +157,10 @@ public class Fiche_client_controller  implements Initializable{
 
 	@FXML
 	public void onClientSelect(){
-		
-		
-		
+
 		clientSelectionne = listView_client.getSelectionModel().getSelectedItem();
 		Messages.setClient(clientSelectionne);
+		Messages.setClient_id(clients_id.get(clientSelectionne));
 		
 		Messages.setAuteur(null);
 		Messages.setCommande(null);
@@ -178,6 +187,7 @@ public class Fiche_client_controller  implements Initializable{
 		
 		commandeSelectionne = listView_commandes.getSelectionModel().getSelectedItem();
 		Messages.setCommande(commandeSelectionne);
+		Messages.setCommande_id(commandes_id.get(commandeSelectionne));
 		
 		Messages.setAuteur(null);
 		Messages.setFichier(null);
@@ -204,24 +214,19 @@ public class Fiche_client_controller  implements Initializable{
     	
     	liste_commandes.clear();
     	
-    	if (clientSelectionne != null){
+    	if (Messages.getClient() != null){
     		
-    		nom_client_textField.setText(clientSelectionne.getNom());
-    		nom_complet_client_textField.setText(clientSelectionne.getNom_complet());
-        	adresse_voie_textField.setText(clientSelectionne.getAdresse_rue());
-        	adresse_cp_textField.setText(clientSelectionne.getAdresse_cp());
-        	adresse_ville_textField.setText(clientSelectionne.getAdresse_ville());
-        	remarques_client_textArea.setText(clientSelectionne.getRemarques());
+    		c = MongoAccess.request("client", clients_id.get(clientSelectionne)).as(Client.class).next();
     		
-    		commandeCursor = MongoAccess.request("commande", clientSelectionne).as(Commande.class);
+    		nom_client_textField.setText(clientSelectionne);
+    		nom_complet_client_textField.setText(c.getNom_complet());
+        	adresse_voie_textField.setText(c.getAdresse_rue());
+        	adresse_cp_textField.setText(c.getAdresse_cp());
+        	adresse_ville_textField.setText(c.getAdresse_ville());
+        	remarques_client_textArea.setText(c.getRemarques());
     		
-    		while (commandeCursor.hasNext()){
-    			Commande enplus = commandeCursor.next();
-    			
-    			System.out.println(enplus);
-    			System.out.println("_" + enplus.getDateCommande());
-    			liste_commandes.add(enplus);
-    		}
+        	commandes_id = c.getCommandes_id(); 
+    		liste_commandes.addAll(commandes_id.keySet());
     		
     		listView_commandes.setItems(liste_commandes);
     		
@@ -247,8 +252,6 @@ public class Fiche_client_controller  implements Initializable{
     	adresse_ville_textField.setPromptText("ville");
     	remarques_client_textArea.setPromptText("éventuelles remarques");
     	nouveau_client.setVisible(false);
-    	
-    	clientSelectionne = new Client();
     	
     	edit = false;
     	annuler.setVisible(true);
@@ -279,13 +282,16 @@ public class Fiche_client_controller  implements Initializable{
     	
     	liste_clients = FXCollections.observableArrayList();
 		liste_commandes  = FXCollections.observableArrayList();
-		
-		
-		
+		clients_id.clear();
+
 		clientCursor = MongoAccess.request("client").as(Client.class);
 		
 		while (clientCursor.hasNext()){
-			liste_clients.add(clientCursor.next());
+			
+			Client c = clientCursor.next();
+			
+			liste_clients.add(c.getNom());
+			clients_id.put(c.getNom(), c.get_id());
 		}
 		
 		listView_client.setItems(liste_clients);
@@ -336,16 +342,19 @@ public class Fiche_client_controller  implements Initializable{
     @FXML
     public void onMiseAJourClientButton(){
     	
-    	if (clientSelectionne == null){
-    		clientSelectionne = new Client();
+    	if (! edit){
+    		c = new Client();
+    	}
+    	else {
+    		c = MongoAccess.request("client", clients_id.get(clientSelectionne)).as(Client.class).next();
     	}
     	
-    	clientSelectionne.setNom(nom_client_textField.getText());
-    	clientSelectionne.setRemarques(remarques_client_textArea.getText());
-    	clientSelectionne.setNom_complet(nom_complet_client_textField.getText());
-    	clientSelectionne.setAdresse_rue(adresse_voie_textField.getText());
-    	clientSelectionne.setAdresse_cp(adresse_cp_textField.getText());
-    	clientSelectionne.setAdresse_ville(adresse_ville_textField.getText());
+    	c.setNom(nom_client_textField.getText());
+    	c.setRemarques(remarques_client_textArea.getText());
+    	c.setNom_complet(nom_complet_client_textField.getText());
+    	c.setAdresse_rue(adresse_voie_textField.getText());
+    	c.setAdresse_cp(adresse_cp_textField.getText());
+    	c.setAdresse_ville(adresse_ville_textField.getText());
     	
     	annuler.setVisible(false);
     	editer.setVisible(true);
@@ -358,15 +367,14 @@ public class Fiche_client_controller  implements Initializable{
 		remarques_client_textArea.setEditable(false);
 		
 		if (edit) {
-			Client.update(clientSelectionne);
+			
+			Client.update(c);
 			rafraichirAffichage();
 			onAnnulerEditButton();
 		}
 		else {
 			
-			System.out.println(clientSelectionne);
-			
-		   Client.save(clientSelectionne);
+		   Client.save(c);
 		   onAnnulerEditButton();
 		}
     	
@@ -377,8 +385,66 @@ public class Fiche_client_controller  implements Initializable{
 	public void initialize(URL location, ResourceBundle resources) {
 		
 		currentStage = Messages.getStage();
-		client = Messages.getClient();
+		clientSelectionne = Messages.getClient();
 		Messages.setCommande(null);
+		
+		liste_clients = FXCollections.observableArrayList();
+		liste_commandes  = FXCollections.observableArrayList();
+		
+		clients_id = Messages.getClients_id();
+		
+		commandes_id = Messages.getCommandes_id();
+
+		if (clients_id == null){
+			
+			clients_id = new TreeMap<>();
+			
+			ArrayList<Client> clients = new ArrayList<>();
+			clientCursor = MongoAccess.request("client").as(Client.class);
+			
+			int indexClient = 0;
+			int iClient = 0;
+			
+			while (clientCursor.hasNext()){
+				
+				Client c = clientCursor.next();
+				
+				liste_clients.add(c.getNom());
+				clients_id.put(c.getNom(), c.get_id());
+				if (client != null && c.getNom().equals(client)){
+					indexClient = iClient;
+				}
+				iClient ++;	
+			}
+			
+			Messages.setClients_id(clients_id);
+		}
+		else {
+			liste_clients.addAll(Messages.getClients_id().keySet());
+		}
+		
+		listView_client.setItems(liste_clients);
+		
+		if (client != null) {
+			listView_client.getSelectionModel().select(liste_clients.indexOf(client));
+		}
+		else if (liste_clients.size() > 0){
+			listView_client.getSelectionModel().select(0);
+		}
+		
+		
+        if (commandes_id == null){
+        	
+        	if(Messages.getClient_id() != null){
+        	    commandes_id = MongoAccess.request("client", Messages.getClient_id()).as(Client.class).next().getCommandes_id();    
+        	}
+			
+        	Messages.setCommandes_id(commandes_id);
+			
+		}
+		else {
+			liste_commandes.addAll(Messages.getCommandes_id().keySet());
+		}
 
 		nom_client_textField.setEditable(false);
 		nom_complet_client_textField.setEditable(false);
@@ -394,56 +460,15 @@ public class Fiche_client_controller  implements Initializable{
 		versCommandeButton.setVisible(false);
 		versOeuvreButton.setVisible(false);
 		versRapportButton.setVisible(false);
-		
-		liste_clients = FXCollections.observableArrayList();
-		liste_commandes  = FXCollections.observableArrayList();
-		
-		clientCursor = MongoAccess.request("client").as(Client.class);
-		
-		int indexClient = 0;
-		int iClient = 0;
-		
-		while (clientCursor.hasNext()){
-			
-			Client client_ = clientCursor.next();
-			liste_clients.add(client_);
-			if (client != null && client_.getNom().equals(client.getNom())){
-				indexClient = iClient;
-			}
-			iClient ++;
-			
-		}
-		
-		listView_client.setItems(liste_clients);
-		listView_client.getSelectionModel().select(indexClient);
-		
-		
-		if (client == null){
-			listView_client.getSelectionModel().select(0);
-			client = listView_client.getSelectionModel().getSelectedItem();
-		}
-        
-		try {
-		    commandeCursor = MongoAccess.request("commande", client).as(Commande.class);
-		    while (commandeCursor.hasNext()){
-				Commande enplus = commandeCursor.next();
-				liste_commandes.add(enplus);
-			}
-		}
-		catch(NullPointerException npe){
-			
-		}
-		
-		
-		
-		listView_commandes.setItems(liste_commandes);
-		
+
 		if (clientSelectionne == null){
+			listView_client.getSelectionModel().select(0);
+			clientSelectionne = listView_client.getSelectionModel().getSelectedItem();
 			
-			clientSelectionne = client;
+			Messages.setClient(clientSelectionne);
+			Messages.setClient_id(clients_id.get(clientSelectionne));
+
 		}
-		
-		Messages.setClient(clientSelectionne);
 
 		affichageInfos();
 

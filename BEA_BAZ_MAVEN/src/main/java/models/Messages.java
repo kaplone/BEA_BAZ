@@ -12,10 +12,12 @@ public class Messages {
 	
     private static Stage exportStage;
 	
-	private static Client client;
+	private static String client;
+	private static ObjectId client_id;
 	private static Map<String, ObjectId> clients_id;
 	
-	private static Commande commande;
+	private static String commande;
+	private static ObjectId commande_id;
 	private static Map<String, ObjectId> commandes_id;
 	
 	private static Oeuvre oeuvre;
@@ -61,19 +63,19 @@ public class Messages {
 	}
 	
 	
-	public static Commande getCommande() {
+	public static String getCommande() {
 		return commande;
 	}
 
-	public static void setCommande(Commande commande) {
-		Messages.commande = commande;
+	public static void setCommande(String commandeSelectionne) {
+		Messages.commande = commandeSelectionne;
 	}
 	
-	public static Client getClient() {
+	public static String getClient() {
 		return client;
 	}
 
-	public static void setClient(Client client) {
+	public static void setClient(String client) {
 		Messages.client = client;
 	}
 	
@@ -342,6 +344,26 @@ public class Messages {
 
 	public static void setTraitementslies_id(Map<String, ObjectId> traitementslies_id) {
 		Messages.traitementslies_id = traitementslies_id;
+	}
+
+
+	public static ObjectId getCommande_id() {
+		return commande_id;
+	}
+
+
+	public static void setCommande_id(ObjectId commande_id) {
+		Messages.commande_id = commande_id;
+	}
+
+
+	public static ObjectId getClient_id() {
+		return client_id;
+	}
+
+
+	public static void setClient_id(ObjectId client_id) {
+		Messages.client_id = client_id;
 	}
     
 }

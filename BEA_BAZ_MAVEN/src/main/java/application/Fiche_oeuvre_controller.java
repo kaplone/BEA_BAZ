@@ -151,7 +151,7 @@ public class Fiche_oeuvre_controller  implements Initializable{
 	private ObservableList<String> observableAuteurs;
 	private ObservableList<String> observableFichiers;
 	private TacheTraitement traitementSelectionne;
-	private Commande commandeSelectionne;
+	private String commandeSelectionne;
 	
 	private Stage currentStage;
 	private Auteur auteur;
@@ -449,19 +449,9 @@ public class Fiche_oeuvre_controller  implements Initializable{
     }
     
     public void afficherOeuvres(){
+
     	
-//        oeuvres = MongoAccess.distinct("tacheTraitement", "oeuvre", "commande._id", commandeSelectionne.get_id()).as(Oeuvre.class);
-//		
-//		oeuvres_nom_colonne.setCellValueFactory(new PropertyValueFactory<Oeuvre, String>("nom"));
-//		
-//		ObservableList<Oeuvre> obs_oeuvres = FXCollections.observableArrayList(oeuvres);
-//		
-//		oeuvres_nom_colonne.setCellValueFactory(new PropertyValueFactory<Oeuvre, String>("nom"));
-//		//oeuvres_fait_colonne.setCellValueFactory(new PropertyValueFactory<Oeuvre, ImageView>("etat"));
-//		
-//		tableOeuvre.setItems(obs_oeuvres);
-    	
-        oeuvresTraiteesCursor = MongoAccess.request("oeuvreTraitee", commandeSelectionne).as(OeuvreTraitee.class);
+        oeuvresTraiteesCursor = MongoAccess.request("oeuvreTraitee", "commande_id", Messages.getCommande_id()).as(OeuvreTraitee.class);
 		
 		while (oeuvresTraiteesCursor.hasNext()){
 			oeuvresTraitees.add(oeuvresTraiteesCursor.next());

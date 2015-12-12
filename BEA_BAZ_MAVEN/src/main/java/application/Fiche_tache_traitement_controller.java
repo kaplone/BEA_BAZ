@@ -139,7 +139,7 @@ public class Fiche_tache_traitement_controller  implements Initializable{
 	
 	private Traitement traitementSource;
 	private OeuvreTraitee ot;
-	private Commande commande;
+	private String commande;
 	
 	private File file;
 	
@@ -607,7 +607,7 @@ public class Fiche_tache_traitement_controller  implements Initializable{
 		
 		ot_label.setText(ot.getNom());
 		t_label.setText(traitementSource.getNom());
-		commande_label.setText(commande.getNom());
+		commande_label.setText(commande);
 		
 		liste_traitements = FXCollections.observableArrayList();
 		liste_produits  = FXCollections.observableArrayList();

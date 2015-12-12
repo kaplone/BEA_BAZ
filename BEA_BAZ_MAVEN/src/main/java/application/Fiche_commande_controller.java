@@ -4,9 +4,12 @@ import java.net.URL;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 
+import org.bson.types.ObjectId;
 import org.jongo.MongoCursor;
 
 import enums.Progression;
@@ -112,10 +115,11 @@ public class Fiche_commande_controller  implements Initializable{
 	@FXML
 	private GridPane traitementGrid;
 	
-	private ArrayList<ChoiceBox<Traitement>> traitements_selectionnes;
-	private ArrayList<Traitement> traitements_attendus;
+	private ArrayList<ChoiceBox<String>> traitements_selectionnes;
+	private ArrayList<String> traitements_attendus;
 
-	private ObservableList<Traitement> observableTraitements;
+	private ObservableList<String> observableTraitements;
+	private Map<String, ObjectId> traitements_id;
 	private ObservableList<Auteur> observableAuteurs;
 
 	private List<OeuvreTraitee> oeuvresTraitees;
@@ -266,11 +270,11 @@ public class Fiche_commande_controller  implements Initializable{
 	@FXML
 	public void onMiseAJourButton(){
 		
-		if (commande == null){
+		if (Messages.getCommande() == null){
 			commande = new Commande();
 		}
 		else{
-			commande = Messages.getCommande(); 
+			commande = MongoAccess.request("commande", Messages.getCommande_id()).as(Commande.class).next(); 
 		}		
 
 		commande.setDateCommande(dateCommandePicker.getValue());
@@ -290,16 +294,16 @@ public class Fiche_commande_controller  implements Initializable{
 		
 		for (Node cb : traitementGrid.getChildren()){
 			
-			ChoiceBox<Traitement> cbox = (ChoiceBox<Traitement>) cb;
-			Traitement t = cbox.getValue();
+			ChoiceBox<String> cbox = (ChoiceBox<String>) cb;
+			String t = cbox.getValue();
 
 			if (t != null && 
-				!traitements_attendus.stream().map(a -> a.get_id().toString()).collect(Collectors.toList()).contains(t.get_id().toString())){
+				!traitements_attendus.contains(t)){
 				
-				Traitement traitement_attendu = ((ChoiceBox<Traitement>) cb).getValue();
+				String traitement_attendu = ((ChoiceBox<String>) cb).getValue();
 				
 				traitements_attendus.add(traitement_attendu);
-				commande.addTraitement_attendu(traitement_attendu);
+				commande.addTraitement_attendu(traitement_attendu, traitements_id.get(traitement_attendu));
 			}
 			
 		}
@@ -309,6 +313,10 @@ public class Fiche_commande_controller  implements Initializable{
 		}
 		else {
 		   Commande.save(commande);
+		   
+		   client.getCommandes_id().put(commande.getNom(), commande.get_id());
+		   
+		   MongoAccess.update("client", client);
 		}
 		
 		afficherCommande();
@@ -334,16 +342,16 @@ public class Fiche_commande_controller  implements Initializable{
 		nomClientLabel.setText(client.getNom());
 		
 
-		for (ChoiceBox<Traitement> cbt : traitements_selectionnes){
+		for (ChoiceBox<String> cbt : traitements_selectionnes){
 			cbt.getSelectionModel().clearSelection();
 		}
         
         int i = 0;
         
-        ObservableList<Traitement> menuList = FXCollections.observableArrayList(traitements_attendus);
+        ObservableList<String> menuList = FXCollections.observableArrayList(traitements_attendus);
         menuList.add(null);
 
-		for (Traitement t : traitements_attendus){
+		for (String t : traitements_attendus){
 			traitements_selectionnes.get(i).setItems(menuList);
 			traitements_selectionnes.get(i).getSelectionModel().select(i);
 			i++;
@@ -444,17 +452,34 @@ public class Fiche_commande_controller  implements Initializable{
     public void afficherTraitements(){
     	
     	observableTraitements.clear();
-        MongoCursor<Traitement> mgCursor = MongoAccess.request("traitement").as(Traitement.class);
-		
-		while (mgCursor.hasNext()){
-			observableTraitements.addAll(mgCursor.next());
-		}
-		
-		
+    	
+    	traitements_id = new TreeMap<>();
+    	
+    	if (Messages.getTraitements_id() == null){
+    		
+    		MongoCursor<Traitement> mgCursor = MongoAccess.request("traitement").as(Traitement.class);
+    		
+    		while (mgCursor.hasNext()){
+    			
+    			Traitement t = mgCursor.next();
+    			
+    			observableTraitements.add(t.getNom());
+    			traitements_id.put(t.getNom(), t.get_id());
+    		}
+    		
+    		Messages.setTraitements_id(traitements_id);
+    		
+    	}
+    	else {
+    		traitements_id = Messages.getTraitements_id();
+    	}
+    	
+    	observableTraitements.addAll(traitements_id.keySet());
+
 		for (Node cb : traitementGrid.getChildren()){
 			
-			((ChoiceBox<Traitement>) cb).setItems(observableTraitements);
-			traitements_selectionnes.add(((ChoiceBox<Traitement>) cb));
+			((ChoiceBox<String>) cb).setItems(observableTraitements);
+			traitements_selectionnes.add(((ChoiceBox<String>) cb));
 		}
     }
     
@@ -508,10 +533,11 @@ public class Fiche_commande_controller  implements Initializable{
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		
-		commande = Messages.getCommande();
-		client = Messages.getClient();
+		client = MongoAccess.request("client", Messages.getClient_id()).as(Client.class).next(); 
 		
-        if (commande != null) {
+        if (Messages.getCommande() != null) {
+        	
+        	commande = MongoAccess.request("commande", Messages.getCommande_id()).as(Commande.class).next(); 
 			
         	model = MongoAccess.request("model", commande.getModele_id()).as(Model.class).next();
         	Messages.setModel(model);
@@ -520,6 +546,9 @@ public class Fiche_commande_controller  implements Initializable{
 			
 		}
 		else {
+			
+			commande = new Commande();
+			
 			model = null;
 			auteur = null;
 		}
@@ -555,7 +584,7 @@ public class Fiche_commande_controller  implements Initializable{
 		
 		afficherModeles();		
         
-		if (commande != null) {
+		if (Messages.getCommande() != null) {
 			
 			commandeSelectionne = commande;
 			
