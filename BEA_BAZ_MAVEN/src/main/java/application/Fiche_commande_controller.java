@@ -22,6 +22,7 @@ import models.Messages;
 import models.Model;
 import models.Oeuvre;
 import models.OeuvreTraitee;
+import models.TacheTraitement;
 import models.Traitement;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -124,6 +125,7 @@ public class Fiche_commande_controller  implements Initializable{
 
 	private List<OeuvreTraitee> oeuvresTraitees;
 	private MongoCursor<OeuvreTraitee> oeuvresTraiteesCursor;
+	ObservableList<OeuvreTraitee> obs_oeuvres;
 	
 	private Stage currentStage;
 	
@@ -438,25 +440,33 @@ public class Fiche_commande_controller  implements Initializable{
 	
     public void afficherOeuvres(){
     	
-    	System.out.println("commandeSelectionne : " + commandeSelectionne);
-    	
-    	try {
-	        oeuvresTraiteesCursor = MongoAccess.request("oeuvreTraitee", commandeSelectionne).as(OeuvreTraitee.class);
-			
-			while (oeuvresTraiteesCursor.hasNext()){
-				oeuvresTraitees.add(oeuvresTraiteesCursor.next());
-			}
-			
-			oeuvres_nom_colonne.setCellValueFactory(new PropertyValueFactory<OeuvreTraitee, String>("nom"));
-			
-			ObservableList<OeuvreTraitee> obs_oeuvres = FXCollections.observableArrayList(oeuvresTraitees);
-	
-			tableOeuvre.setItems(obs_oeuvres);
+    	if (Messages.getObservablOeuvresTraitees() != null){
+    		obs_oeuvres = Messages.getObservablOeuvresTraitees();
     	}
-    	catch (NullPointerException npe) {
+    	else {
     		
+    		oeuvresTraitees.clear();
+    		
+    		commandeSelectionne = MongoAccess.request("commande", Messages.getCommande_id()).as(Commande.class).next();
+    		
+    		System.out.println(commandeSelectionne.getOeuvresTraitees_id());
+        	
+    	    oeuvresTraitees = commandeSelectionne.getOeuvresTraitees_id()
+    	    		                             .values()
+    	    		                             .stream()
+    	    		                             .map(a -> MongoAccess.request("oeuvreTraitee", a).as(OeuvreTraitee.class).next())
+    	    		                             .collect(Collectors.toList());
+    		
+    		System.out.println(oeuvresTraitees.size());
+    	    
+    		oeuvres_nom_colonne.setCellValueFactory(new PropertyValueFactory<OeuvreTraitee, String>("nom"));
+    		oeuvres_fait_colonne.setCellValueFactory(new PropertyValueFactory<OeuvreTraitee, ImageView>("icone_progression"));
+    		
+    		obs_oeuvres = FXCollections.observableArrayList(oeuvresTraitees);
     	}
-		
+    	
+		tableOeuvre.setItems(obs_oeuvres);
+
 	}
     
     public void afficherTraitements(){
@@ -520,16 +530,14 @@ public class Fiche_commande_controller  implements Initializable{
     	
     	Messages.setOeuvreTraitee((OeuvreTraitee) tableOeuvre.getSelectionModel().getSelectedItem());
     	Messages.setOeuvre_index(tableOeuvre.getSelectionModel().getSelectedIndex());
+    	Messages.setOeuvre(Messages.getOeuvreTraitee().getOeuvre());
     	
     	Messages.setAuteur(null);
 		Messages.setFichier(null);
 		Messages.setFichiers_id(null);
 		Messages.setModel(null);
-		Messages.setOeuvre(null);
 		Messages.setTacheTraitement(null);
 		Messages.setTacheTraitements_id(null);
-    	
-    	OeuvreTraitee oeuvreSelectionne = (OeuvreTraitee) tableOeuvre.getSelectionModel().getSelectedItem();
     	
     	Scene fiche_oeuvre_scene = new Scene((Parent) JfxUtils.loadFxml("/views/fiche_oeuvre.fxml"), 1275, 722);
 		fiche_oeuvre_scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
@@ -595,6 +603,8 @@ public class Fiche_commande_controller  implements Initializable{
 		afficherModeles();	
 		
 		afficherCommande();
+		
+		afficherOeuvres();
         
 		if (Messages.getCommande() != null) {
 			

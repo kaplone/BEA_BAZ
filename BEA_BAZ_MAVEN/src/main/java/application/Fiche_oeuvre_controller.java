@@ -700,6 +700,9 @@ public class Fiche_oeuvre_controller  implements Initializable{
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
+		
+		oeuvreSelectionne = Messages.getOeuvre();
+		oeuvreTraiteeSelectionne = Messages.getOeuvreTraitee();
 
 		
 		auteurs_id = new TreeMap<>();

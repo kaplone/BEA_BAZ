@@ -28,10 +28,12 @@ public class Normalize {
 	}
 
 	public static Object normalizeField(String s) {
-		return s.replace('"', ' ');
+		return s.replace('"', ' ')
+				.replace('.', '_');
 	}
 	
 	public static String normalizeStringField(String s) {
-		return s.replace('"', '\'');
+		return s.replace('"', '\'')
+				.replace('.', '_');
 	}
 }

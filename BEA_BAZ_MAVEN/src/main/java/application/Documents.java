@@ -65,6 +65,8 @@ public class Documents {
 	private static Map<String, ObjectId> tousLesTraitements_id;
 	private static ObservableList<String> liste_traitements;
 	
+	private static Map<String, ObjectId> listeOeuvresTraitees_id;
+	
 	private static StringProperty bindedLabel = new SimpleStringProperty(); 
 
 	public static void read(File file_, String table_) throws IOException {
@@ -454,6 +456,7 @@ public class Documents {
 	public static void read(File file_) throws IOException {
 		
 		liste_traitements = FXCollections.observableArrayList();
+		listeOeuvresTraitees_id = new TreeMap<>();
 		
         if (Messages.getTraitements_id() == null){
 			
@@ -664,9 +667,14 @@ public class Documents {
 	            ot.setOeuvre_id(o.get_id());
 	            ot.setProgressionOeuvreTraitee(Progression.TODO_);
 	            ot.setAlterations(alterations);
-	            
+	            ot.setKey1(o.getKey1());
+	            ot.setKey2(o.getKey2());
+	            ot.setNom(o.getNom());
+
 	            utils.MongoAccess.save("oeuvreTraitee", ot);
 	            
+	            listeOeuvresTraitees_id.put(ot.getNom(), ot.get_id());
+   
 	            ArrayList<ObjectId> traitementsEnCours = new ArrayList<>();
 	            
 	            for (String t : Messages.getTraitementsAttendus_id().keySet()) {
@@ -686,10 +694,16 @@ public class Documents {
 	    		}
     
 	            utils.MongoAccess.update("oeuvreTraitee", ot);
+	            
         	}
             
             titres = false; // après le premier passage ce ne sera plus un titre
 	     }
+        
+        System.out.println(listeOeuvresTraitees_id);
+
+        commande.setOeuvresTraitees_id(listeOeuvresTraitees_id);
+        utils.MongoAccess.update("commande", commande);
         
         //////////////////////////////////////////////////////////////////////////////////////////////////:
         	
