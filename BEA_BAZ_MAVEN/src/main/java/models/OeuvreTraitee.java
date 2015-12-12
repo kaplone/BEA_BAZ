@@ -32,6 +32,9 @@ public class OeuvreTraitee extends Commun {
 	
     private String observations;
     
+    private String key1;
+    private String key2;
+    
     public OeuvreTraitee(){
     	
     	traitementsAttendus_id = new HashMap<>();
@@ -145,6 +148,22 @@ public class OeuvreTraitee extends Commun {
 
 	public void setCommande_id(ObjectId commande_id) {
 		this.commande_id = commande_id;
+	}
+
+	public String getKey1() {
+		return key1;
+	}
+
+	public void setKey1(String key1) {
+		this.key1 = key1;
+	}
+
+	public String getKey2() {
+		return key2;
+	}
+
+	public void setKey2(String key2) {
+		this.key2 = key2;
 	}
 	
 	

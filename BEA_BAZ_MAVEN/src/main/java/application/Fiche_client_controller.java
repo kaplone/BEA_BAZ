@@ -188,6 +188,7 @@ public class Fiche_client_controller  implements Initializable{
 		commandeSelectionne = listView_commandes.getSelectionModel().getSelectedItem();
 		Messages.setCommande(commandeSelectionne);
 		Messages.setCommande_id(commandes_id.get(commandeSelectionne));
+		Messages.setTraitements_id(null);
 		
 		Messages.setAuteur(null);
 		Messages.setFichier(null);

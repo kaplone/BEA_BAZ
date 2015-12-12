@@ -341,6 +341,16 @@ public class Fiche_commande_controller  implements Initializable{
 		nomCommandeTextField.setDisable(true);
 		nomClientLabel.setText(client.getNom());
 		
+		if (Messages.getTraitementsAttendus_id() == null){
+		    
+    		traitements_id = commande.getTraitements_attendus_id();
+    		Messages.setTraitementsAttendus_id(traitements_id);
+    		
+    	}
+    	else {
+    		traitements_id = Messages.getTraitementsAttendus_id();
+    	}
+		
 
 		for (ChoiceBox<String> cbt : traitements_selectionnes){
 			cbt.getSelectionModel().clearSelection();
@@ -348,10 +358,10 @@ public class Fiche_commande_controller  implements Initializable{
         
         int i = 0;
         
-        ObservableList<String> menuList = FXCollections.observableArrayList(traitements_attendus);
+        ObservableList<String> menuList = FXCollections.observableArrayList(traitements_id.keySet());
         menuList.add(null);
 
-		for (String t : traitements_attendus){
+		for (String t : traitements_id.keySet()){
 			traitements_selectionnes.get(i).setItems(menuList);
 			traitements_selectionnes.get(i).getSelectionModel().select(i);
 			i++;
@@ -453,25 +463,23 @@ public class Fiche_commande_controller  implements Initializable{
     	
     	observableTraitements.clear();
     	
-    	traitements_id = new TreeMap<>();
-    	
     	if (Messages.getTraitements_id() == null){
+            
+    		MongoCursor<Traitement> mongoCursor = MongoAccess.request("traitement").as(Traitement.class);
     		
-    		MongoCursor<Traitement> mgCursor = MongoAccess.request("traitement").as(Traitement.class);
-    		
-    		while (mgCursor.hasNext()){
+    		while (mongoCursor.hasNext()){
     			
-    			Traitement t = mgCursor.next();
     			
-    			observableTraitements.add(t.getNom());
+    			Traitement t = mongoCursor.next();
     			traitements_id.put(t.getNom(), t.get_id());
     		}
-    		
+
     		Messages.setTraitements_id(traitements_id);
     		
     	}
     	else {
     		traitements_id = Messages.getTraitements_id();
+    		
     	}
     	
     	observableTraitements.addAll(traitements_id.keySet());
@@ -533,6 +541,8 @@ public class Fiche_commande_controller  implements Initializable{
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		
+		traitements_id = new TreeMap<>();
+		
 		client = MongoAccess.request("client", Messages.getClient_id()).as(Client.class).next(); 
 		
         if (Messages.getCommande() != null) {
@@ -582,14 +592,13 @@ public class Fiche_commande_controller  implements Initializable{
 		
 		afficherAuteurs();
 		
-		afficherModeles();		
+		afficherModeles();	
+		
+		afficherCommande();
         
 		if (Messages.getCommande() != null) {
 			
-			commandeSelectionne = commande;
-			
-			afficherCommande();
-			
+			commandeSelectionne = commande;	
 		}
 		else { 
 			

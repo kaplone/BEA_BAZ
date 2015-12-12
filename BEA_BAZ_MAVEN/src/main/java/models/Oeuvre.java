@@ -13,6 +13,9 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Oeuvre extends Commun{
 	
+	private String key1;
+    private String key2;
+	
 	private String n_d_origine,
 	               cote_archives,
 	               cote_archives_6s,
@@ -266,6 +269,22 @@ public class Oeuvre extends Commun{
                                                              .next()
                                                              .getNom_complet())
                                         .collect(Collectors.joining(", "));
+	}
+
+	public String getKey1() {
+		return key1;
+	}
+
+	public void setKey1(String key1) {
+		this.key1 = key1;
+	}
+
+	public String getKey2() {
+		return key2;
+	}
+
+	public void setKey2(String key2) {
+		this.key2 = key2;
 	}
 	
 

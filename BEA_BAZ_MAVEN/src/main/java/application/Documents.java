@@ -478,6 +478,7 @@ public class Documents {
 		}
 		
 		commande_id = Messages.getCommande_id();
+		commande = MongoAccess.request("commande", commande_id).as(Commande.class).next();
 		
 		boolean titres = true;
 		boolean update = false;
@@ -539,11 +540,12 @@ public class Documents {
 	                	o = new Oeuvre();
 	                    string_oeuvre = "";
 	                    string_oeuvre_liste.clear();
-	                    string_oeuvre_liste.add(String.format("\"%s\" : \"%s\"", "commande", commande_id));
 	                    string_oeuvre_liste.add(String.format("\"%s\" : \"%s\"", "auteur", commande.getAuteur().get_id()));
 	                    string_oeuvre_liste.add(String.format("\"%s\" : \"%s\"", "created_at", LocalDate.now()));
 	                    string_oeuvre_liste.add(String.format("\"%s\" : \"%s\"", "updated_at", null));
 	                    string_oeuvre_liste.add(String.format("\"%s\" : \"%s\"", "deleted_at", null));
+	                    string_oeuvre_liste.add(String.format("\"%s\" : \"%s\"", "key1", Normalize.normalizeStringField(row.getCell(4).getStringCellValue())));
+	                    string_oeuvre_liste.add(String.format("\"%s\" : \"%s\"", "key2", Normalize.normalizeStringField(row.getCell(6).getStringCellValue())));
 	                    
 	                    update = false;
 	                }
@@ -573,6 +575,8 @@ public class Documents {
 	                     string_oeuvre_liste.add(String.format("\"%s\" : \"%s\"", "created_at", LocalDate.now()));
 	                     string_oeuvre_liste.add(String.format("\"%s\" : \"%s\"", "updated_at", null));
 	                     string_oeuvre_liste.add(String.format("\"%s\" : \"%s\"", "deleted_at", null));
+	                     string_oeuvre_liste.add(String.format("\"%s\" : \"%s\"", "key1", Normalize.normalizeStringField(row.getCell(4).getStringCellValue())));
+	                     string_oeuvre_liste.add(String.format("\"%s\" : \"%s\"", "key2", Normalize.normalizeStringField(row.getCell(6).getStringCellValue())));
 	                     
 	                     update = false;
 	        		}
@@ -590,6 +594,8 @@ public class Documents {
 	                string_oeuvre_liste.add(String.format("\"%s\" : \"%s\"", "updated_at", null));
 	                string_oeuvre_liste.add(String.format("\"%s\" : \"%s\"", "deleted_at", null));
 	                string_oeuvre_liste.add(String.format("\"%s\" : \"%s\"", "etat_current", "TODO_"));
+	                string_oeuvre_liste.add(String.format("\"%s\" : \"%s\"", "key1", Normalize.normalizeStringField(row.getCell(4).getStringCellValue())));
+                    string_oeuvre_liste.add(String.format("\"%s\" : \"%s\"", "key2", Normalize.normalizeStringField(row.getCell(6).getStringCellValue())));
 	                
 	                update = false;
 	        		
@@ -712,10 +718,10 @@ public class Documents {
         		//System.out.println("**" + row.getCell(6).getStringCellValue() +  "**");
         		
         		if ("".equals(row.getCell(6).getStringCellValue())){
-        			oeuvreACompleter = MongoAccess.request("oeuvreTraitee", "oeuvre.titre_de_l_oeuvre", Normalize.normalizeStringField(row.getCell(4).getStringCellValue())).as(OeuvreTraitee.class);
+        			oeuvreACompleter = MongoAccess.request("oeuvreTraitee", "key1", Normalize.normalizeStringField(row.getCell(4).getStringCellValue())).as(OeuvreTraitee.class);
         		}
         		else {
-        			oeuvreACompleter = MongoAccess.request("oeuvreTraitee", "oeuvre.titre_de_l_oeuvre", Normalize.normalizeStringField(row.getCell(4).getStringCellValue()), "oeuvre.dimensions", row.getCell(6).getStringCellValue()).as(OeuvreTraitee.class);
+        			oeuvreACompleter = MongoAccess.request("oeuvreTraitee", "key1", Normalize.normalizeStringField(row.getCell(4).getStringCellValue()), "key2", row.getCell(6).getStringCellValue()).as(OeuvreTraitee.class);
         		}
         		
         		
@@ -802,7 +808,8 @@ public class Documents {
 	
 	public static void listeDesTachesTraitement(Oeuvre oeuvre){
 		
-		commande = MongoAccess.request("commande", Messages.getCommande_id()).as(Commande.class).next();
+		//commande = MongoAccess.request("commande", Messages.getCommande_id()).as(Commande.class).next();
+		
 		
 		System.out.println("nom : " +oeuvre.getNom());
 		//Fiche_commande_import_controller.getBindLabel().set("Import en cours : " + oeuvre.getNom());

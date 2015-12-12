@@ -186,4 +186,20 @@ public class Commande  extends Commun{
 		return MongoAccess.request("auteur", auteur_id).as(Auteur.class).next();
 	}
 
+	public Map<String, ObjectId> getOeuvresTraitees_id() {
+		return oeuvresTraitees_id;
+	}
+
+	public void setOeuvresTraitees_id(Map<String, ObjectId> oeuvresTraitees_id) {
+		this.oeuvresTraitees_id = oeuvresTraitees_id;
+	}
+
+	public Map<String, ObjectId> getTraitements_attendus_id() {
+		return traitements_attendus_id;
+	}
+
+	public void setTraitements_attendus_id(Map<String, ObjectId> traitements_attendus_id) {
+		this.traitements_attendus_id = traitements_attendus_id;
+	}
+    
 }
