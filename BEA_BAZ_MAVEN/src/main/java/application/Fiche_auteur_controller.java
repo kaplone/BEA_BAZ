@@ -303,6 +303,8 @@ public class Fiche_auteur_controller  implements Initializable{
     
     @FXML
     public void onMiseAJourAuteurButton(){
+    
+    	Messages.setAuteurs_id(null);
     	
     	if (auteurSelectionne == null){
     		auteurSelectionne = new Auteur();

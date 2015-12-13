@@ -445,76 +445,7 @@ public class Fiche_commande_controller  implements Initializable{
 		}
 	}
 	
-	public void afficherAuteurs(){
-		
-		observableAuteurs = FXCollections.observableArrayList();
-		auteurs_id = new TreeMap<>();
-		
-		if (Messages.getAuteurs_id() == null){
-			
-			MongoCursor<Auteur> auteurCursor = MongoAccess.request("auteur").as(Auteur.class);
-	        
-	        index = 0;
-	        int i = 2;
-	        
-	        observableAuteurs.add(null);
-			
-			while (auteurCursor.hasNext()){
-				Auteur auteur_ = auteurCursor.next();
-				observableAuteurs.addAll(auteur_.getNom());
-				auteurs_id.put(auteur_.getNom(), auteur_.get_id());
-				
-				if (auteur != null && auteur.getNom().equals(auteur_.getNom())){
-					index = i;
-				}
-				i++;
-			}
-			
-			
-			Messages.setAuteurs_id(auteurs_id);
-		}
-		else {
-			auteurs_id = Messages.getAuteurs_id();
-			observableAuteurs.addAll(auteurs_id.keySet());
-		}
-		
-		System.out.println("index auteur : " + index);
-
-		auteursChoiceBox.setItems(observableAuteurs);
-		auteursChoiceBox.getSelectionModel().select(index);
-	}
 	
-    public void afficherOeuvres(){
-    	
-    	oeuvresTraitees = FXCollections.observableArrayList();
-    	
-    	if (Messages.getCommande_id() != null){
-    		
-            commandeSelectionne = MongoAccess.request("commande", Messages.getCommande_id()).as(Commande.class).next();
-    		
-    		System.out.println(commandeSelectionne.getOeuvresTraitees_id());
-        	
-    	    oeuvresTraitees = commandeSelectionne.getOeuvresTraitees_id()
-    	    		                             .values()
-    	    		                             .stream()
-    	    		                             .map(a -> MongoAccess.request("oeuvreTraitee", a).as(OeuvreTraitee.class).next())
-    	    		                             .collect(Collectors.toList());
-    		
-    		oeuvres_nom_colonne.setCellValueFactory(new PropertyValueFactory<OeuvreTraitee, String>("nom"));
-    		oeuvres_fait_colonne.setCellValueFactory(new PropertyValueFactory<OeuvreTraitee, ImageView>("icone_progression"));
-    		
-    		obs_oeuvres = FXCollections.observableArrayList(oeuvresTraitees);
-    		Messages.setObservablOeuvresTraitees(obs_oeuvres);
-    	}
-
-    	else if(Messages.getObservablOeuvresTraitees() == null){
-    		
-    		obs_oeuvres = Messages.getObservablOeuvresTraitees();	
-    	}
-    	
-		tableOeuvre.setItems(obs_oeuvres);
-
-	}
     
     public void afficherTraitements(){
     	
@@ -548,40 +479,140 @@ public class Fiche_commande_controller  implements Initializable{
 		}
     }
     
+    public void afficherOeuvres(){
+    	
+    	oeuvresTraitees = FXCollections.observableArrayList();
+    	
+    	if (Messages.getCommande_id() != null){
+    		
+            commandeSelectionne = MongoAccess.request("commande", Messages.getCommande_id()).as(Commande.class).next();
+    		
+    		System.out.println(commandeSelectionne.getOeuvresTraitees_id());
+        	
+    	    oeuvresTraitees = commandeSelectionne.getOeuvresTraitees_id()
+    	    		                             .values()
+    	    		                             .stream()
+    	    		                             .map(a -> MongoAccess.request("oeuvreTraitee", a).as(OeuvreTraitee.class).next())
+    	    		                             .collect(Collectors.toList());
+    		
+    		oeuvres_nom_colonne.setCellValueFactory(new PropertyValueFactory<OeuvreTraitee, String>("nom"));
+    		oeuvres_fait_colonne.setCellValueFactory(new PropertyValueFactory<OeuvreTraitee, ImageView>("icone_progression"));
+    		
+    		obs_oeuvres = FXCollections.observableArrayList(oeuvresTraitees);
+    		Messages.setObservablOeuvresTraitees(obs_oeuvres);
+    	}
+
+    	else if(Messages.getObservablOeuvresTraitees() == null){
+    		
+    		obs_oeuvres = Messages.getObservablOeuvresTraitees();	
+    	}
+    	
+		tableOeuvre.setItems(obs_oeuvres);
+
+	}
+    
+    public void afficherAuteurs(){
+	
+	     index = 0;
+		
+		observableAuteurs = FXCollections.observableArrayList();
+		auteurs_id = new TreeMap<>();
+		
+		if (Messages.getAuteur() == null && Messages.getCommande_id()!= null){
+			
+			if (commande == null) {
+				commande = MongoAccess.request("commande", Messages.getCommande_id()).as(Commande.class).next();
+			}
+	
+			auteur = commande.getAuteur();
+			Messages.setAuteur(auteur);
+	
+		}
+		else {
+			auteur = Messages.getAuteur();
+		}
+		
+		
+		if (Messages.getAuteurs_id() == null){
+
+			MongoCursor<Auteur> auteurCursor = MongoAccess.request("auteur").as(Auteur.class);
+	        
+	        observableAuteurs.add(null);
+			
+			while (auteurCursor.hasNext()){
+				Auteur auteur_ = auteurCursor.next();
+				observableAuteurs.addAll(auteur_.getNom());
+				auteurs_id.put(auteur_.getNom(), auteur_.get_id());
+			}
+	
+			Messages.setAuteurs_id(auteurs_id);
+		}
+		else {
+			auteurs_id = Messages.getAuteurs_id();
+			observableAuteurs.addAll(auteurs_id.keySet());
+		}
+		
+		for (String aut : observableAuteurs){
+			
+			if (auteur != null && auteur.getNom().equals(aut)){
+				break;
+			}
+			index++;
+		}
+
+		auteursChoiceBox.setItems(observableAuteurs);
+		auteursChoiceBox.getSelectionModel().select(index);
+	}
+    
     public void afficherModeles(){
+    	
+		
+		index = 0;
     	
     	observableModeles = FXCollections.observableArrayList();
     	modeles_id = new TreeMap<>();
+    	
+    	if (Messages.getModel() == null && Messages.getCommande_id()!= null){
+    		if (commande == null) {
+				commande = MongoAccess.request("commande", Messages.getCommande_id()).as(Commande.class).next();
+			}
+	
+			model = commande.getModel();
+			Messages.setModel(model);
+    	}
+    	else {
+    		model = Messages.getModel();
+    	}
     	
     	if(Messages.getModels_id() == null){
     		
     		MongoCursor<Model> modelsCursor = MongoAccess.request("model").as(Model.class);
     		
-    		index = 0;
-    		i = 1;
+    		observableModeles.add(null);
     		
     		while (modelsCursor.hasNext()){
     			
     			Model model_  = modelsCursor.next();
     			observableModeles.add(model_.getNom());
     			modeles_id.put(model_.getNom(), model_.get_id());
-    			
-    			if (model_.getNom() != null && model_.getNom().equals(model_name)){
-    				index = i; 
-    			}
-    			i++;
     		} 
     		Messages.setModels_id(modeles_id);
     	}
     	else {
+    		modeles_id = Messages.getModels_id();
+    		observableModeles.addAll(modeles_id.keySet());
+    	}
+    	
+    	for (String mo: observableModeles){
     		
-    		observableModeles.addAll(Messages.getModels_id().keySet());
+    		if (model != null && model.getNom().equals(mo)){
+				break;
+			}
+			index++;
     	}
 
 		modelChoiceBox.setItems(observableModeles);
 
-			
-		System.out.println("index modele : " + index);
 		modelChoiceBox.getSelectionModel().select(index);
     }
     

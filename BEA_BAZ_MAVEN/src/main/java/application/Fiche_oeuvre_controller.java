@@ -259,7 +259,12 @@ public class Fiche_oeuvre_controller  implements Initializable{
 
 		Messages.setOeuvre_index(tableOeuvre.getSelectionModel().getSelectedIndex());
 		Messages.setTraitementsAttendus(null);
-		
+		Messages.setObservableFichiers(null);
+        Messages.setFichiers_id(null);
+        
+        
+        
+        
 		if (directSelect){
 		   tableOeuvre.scrollTo(Messages.getOeuvre_index() -9);
 		  // tableOeuvre.getSelectionModel().clearAndSelect(Messages.getOeuvre_index());
