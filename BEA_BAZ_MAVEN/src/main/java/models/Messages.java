@@ -43,6 +43,7 @@ public class Messages {
 	private static Map<String, ObjectId> produits_id;
 	
 	private static Auteur auteur;
+	private static String auteur_name;
 	private static Map<String, ObjectId> auteurs_id;
 	
 	private static Map<String, ObjectId> techniques_id;
@@ -50,6 +51,7 @@ public class Messages {
 	private static Map<String, ObjectId> matieres_id;
 	
 	private static Model model;
+	private static String model_name;
 	private static Map<String, ObjectId> models_id;
 	
 	private static Fichier fichier;
@@ -364,6 +366,26 @@ public class Messages {
 
 	public static void setClient_id(ObjectId client_id) {
 		Messages.client_id = client_id;
+	}
+
+
+	public static String getModel_name() {
+		return model_name;
+	}
+
+
+	public static void setModel_name(String model_name) {
+		Messages.model_name = model_name;
+	}
+
+
+	public static String getAuteur_name() {
+		return auteur_name;
+	}
+
+
+	public static void setAuteur_name(String auteur_name) {
+		Messages.auteur_name = auteur_name;
 	}
     
 }

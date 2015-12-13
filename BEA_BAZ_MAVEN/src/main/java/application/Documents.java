@@ -481,6 +481,8 @@ public class Documents {
 		}
 		
 		commande_id = Messages.getCommande_id();
+		
+		System.out.println(commande_id);
 		commande = MongoAccess.request("commande", commande_id).as(Commande.class).next();
 		
 		boolean titres = true;
@@ -597,8 +599,6 @@ public class Documents {
 	                string_oeuvre_liste.add(String.format("\"%s\" : \"%s\"", "updated_at", null));
 	                string_oeuvre_liste.add(String.format("\"%s\" : \"%s\"", "deleted_at", null));
 	                string_oeuvre_liste.add(String.format("\"%s\" : \"%s\"", "etat_current", "TODO_"));
-	                string_oeuvre_liste.add(String.format("\"%s\" : \"%s\"", "key1", Normalize.normalizeStringField(row.getCell(4).getStringCellValue())));
-                    string_oeuvre_liste.add(String.format("\"%s\" : \"%s\"", "key2", Normalize.normalizeStringField(row.getCell(6).getStringCellValue())));
 	                
 	                update = false;
 	        		
@@ -669,6 +669,7 @@ public class Documents {
 	            ot.setAlterations(alterations);
 	            ot.setKey1(o.getKey1());
 	            ot.setKey2(o.getKey2());
+	            ot.setCote(o.getCote_archives_6s());
 	            ot.setNom(o.getNom());
 
 	            utils.MongoAccess.save("oeuvreTraitee", ot);
@@ -684,13 +685,9 @@ public class Documents {
 	            	tt.setTraitement_id(tousLesTraitements_id.get(t));
 	            	tt.setNom(t);
 
-	            	
-	            	ot.addTraitementAttendu(t, tousLesTraitements_id.get(t));
-	            	
 	            	utils.MongoAccess.save("tacheTraitement", tt);
-	
-	            	traitementsEnCours.add(tt.get_id());
-	            	
+	            	ot.addTraitementAttendu(tt.getNom(), tt.get_id());
+  	
 	    		}
     
 	            utils.MongoAccess.update("oeuvreTraitee", ot);

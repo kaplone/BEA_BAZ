@@ -143,9 +143,6 @@ public class Fiche_client_controller  implements Initializable{
 	public void onAjoutCommande(){
 		
 		Messages.setCommande(null);
-		Messages.setClient(clientSelectionne);
-		Messages.setClient_id(clients_id.get(clientSelectionne));
-		Messages.setClients_id(clients_id);
 
 		Scene fiche_commande_scene = new Scene((Parent) JfxUtils.loadFxml("/views/fiche_commande.fxml"), 1275, 722);
 		fiche_commande_scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
@@ -162,9 +159,14 @@ public class Fiche_client_controller  implements Initializable{
 		Messages.setClient(clientSelectionne);
 		Messages.setClient_id(clients_id.get(clientSelectionne));
 		
+		commandes_id = MongoAccess.request("client", Messages.getClient_id()).as(Client.class).next().getCommandes_id();
+		
+		System.out.println(commandes_id);
+		
+		Messages.setCommandes_id(commandes_id);
+		
 		Messages.setAuteur(null);
 		Messages.setCommande(null);
-		Messages.setCommandes_id(null);
 		Messages.setFichier(null);
 		Messages.setFichiers_id(null);
 		Messages.setModel(null);
@@ -186,10 +188,11 @@ public class Fiche_client_controller  implements Initializable{
 	public void onCommandeSelect(){
 		
 		commandeSelectionne = listView_commandes.getSelectionModel().getSelectedItem();
+		
 		Messages.setCommande(commandeSelectionne);
 		Messages.setCommande_id(commandes_id.get(commandeSelectionne));
-		Messages.setTraitements_id(null);
 		
+		Messages.setTraitements_id(null);
 		Messages.setAuteur(null);
 		Messages.setFichier(null);
 		Messages.setFichiers_id(null);
@@ -197,7 +200,6 @@ public class Fiche_client_controller  implements Initializable{
 		Messages.setObservablOeuvresTraitees(null);
 		Messages.setOeuvre(null);
 		Messages.setOeuvre_index(0);
-		Messages.setOeuvresTraitees_id(null);
 		Messages.setOeuvreTraitee(null);
 		Messages.setTacheTraitement(null);
 		Messages.setTacheTraitements_id(null);
@@ -393,8 +395,6 @@ public class Fiche_client_controller  implements Initializable{
 		liste_commandes  = FXCollections.observableArrayList();
 		
 		clients_id = Messages.getClients_id();
-		
-		commandes_id = Messages.getCommandes_id();
 
 		if (clients_id == null){
 			
@@ -431,15 +431,20 @@ public class Fiche_client_controller  implements Initializable{
 		}
 		else if (liste_clients.size() > 0){
 			listView_client.getSelectionModel().select(0);
+            clientSelectionne = listView_client.getSelectionModel().getSelectedItem();
+			
+			Messages.setClient(clientSelectionne);
+			Messages.setClient_id(clients_id.get(clientSelectionne));
 		}
-		
-		
+
         if (commandes_id == null){
         	
         	if(Messages.getClient_id() != null){
         	    commandes_id = MongoAccess.request("client", Messages.getClient_id()).as(Client.class).next().getCommandes_id();    
         	}
 			
+        	System.out.println(commandes_id);
+        	
         	Messages.setCommandes_id(commandes_id);
 			
 		}
@@ -462,18 +467,6 @@ public class Fiche_client_controller  implements Initializable{
 		versOeuvreButton.setVisible(false);
 		versRapportButton.setVisible(false);
 
-		if (clientSelectionne == null){
-			listView_client.getSelectionModel().select(0);
-			clientSelectionne = listView_client.getSelectionModel().getSelectedItem();
-			
-			Messages.setClient(clientSelectionne);
-			Messages.setClient_id(clients_id.get(clientSelectionne));
-
-		}
-
 		affichageInfos();
-
-
 	}
-
 }

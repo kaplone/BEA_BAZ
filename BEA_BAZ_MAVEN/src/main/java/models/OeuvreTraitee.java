@@ -35,6 +35,8 @@ public class OeuvreTraitee extends Commun {
     private String key1;
     private String key2;
     
+    private String cote;
+    
     public OeuvreTraitee(){
     	
     	traitementsAttendus_id = new HashMap<>();
@@ -57,8 +59,12 @@ public class OeuvreTraitee extends Commun {
 	public ArrayList<Fichier> getFichiers() {
 		return fichiers;
 	}
-	public Collection<ObjectId> getFichiers_id() {
-		return fichiers_id.values();
+//	public Collection<ObjectId> getFichiers_id() {
+//		return fichiers_id.values();
+//	}
+	
+	public Map<String, ObjectId> getFichiers_id() {
+		return fichiers_id;
 	}
 	public Set<String> getFichiers_names() {
 		return fichiers_id.keySet();
@@ -164,6 +170,14 @@ public class OeuvreTraitee extends Commun {
 
 	public void setKey2(String key2) {
 		this.key2 = key2;
+	}
+
+	public String getCote() {
+		return cote;
+	}
+
+	public void setCote(String cote) {
+		this.cote = cote;
 	}
 	
 	

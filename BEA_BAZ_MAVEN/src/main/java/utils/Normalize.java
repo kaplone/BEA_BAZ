@@ -36,4 +36,12 @@ public class Normalize {
 		return s.replace('"', '\'')
 				.replace('.', '_');
 	}
+	
+	public static String normalizeNormStringField(String s) {
+		return s.replace('.', (char) 158);
+	}
+	
+	public static String normalizeDenormStringField(String s) {
+		return s.replace((char) 158, '.');
+	}
 }

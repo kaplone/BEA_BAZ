@@ -100,9 +100,9 @@ public class Fiche_commande_controller  implements Initializable{
 	private RadioButton fait_radioButton;
 	
 	@FXML
-	private ChoiceBox<Model> modelChoiceBox;
+	private ChoiceBox<String> modelChoiceBox;
 	@FXML
-	private ChoiceBox<Auteur> auteursChoiceBox;
+	private ChoiceBox<String> auteursChoiceBox;
 	
 	@FXML
 	private VBox commandeExportVbox;
@@ -121,7 +121,12 @@ public class Fiche_commande_controller  implements Initializable{
 
 	private ObservableList<String> observableTraitements;
 	private Map<String, ObjectId> traitements_id;
-	private ObservableList<Auteur> observableAuteurs;
+	
+	private ObservableList<String> observableAuteurs;
+	private Map<String, ObjectId> auteurs_id;
+	
+	private ObservableList<String> observableModeles;
+	private Map<String, ObjectId> modeles_id;
 
 	private List<OeuvreTraitee> oeuvresTraitees;
 	private MongoCursor<OeuvreTraitee> oeuvresTraiteesCursor;
@@ -135,6 +140,10 @@ public class Fiche_commande_controller  implements Initializable{
 	private Client client;
 	private Model model;
     private Auteur auteur;
+    
+    private String client_name;
+	private String model_name;
+    private String auteur_name;
     
     private int index;
     private int i;
@@ -271,7 +280,7 @@ public class Fiche_commande_controller  implements Initializable{
 	
 	@FXML
 	public void onMiseAJourButton(){
-		
+
 		if (Messages.getCommande() == null){
 			commande = new Commande();
 		}
@@ -284,14 +293,15 @@ public class Fiche_commande_controller  implements Initializable{
 		commande.setDateFinProjet(dateFinProjetPicker.getValue());
 		commande.setRemarques(remarques_client.getText());
 		commande.setNom(nomCommandeTextField.getText());
-		model = modelChoiceBox.getSelectionModel().getSelectedItem();
-		commande.setModele_id(model.get_id());
-		auteur = auteursChoiceBox.getSelectionModel().getSelectedItem();
-		commande.setAuteur_id(auteur.get_id());
+		model_name = modelChoiceBox.getSelectionModel().getSelectedItem();
+		commande.setModele_id(modeles_id.get(model_name));
+		auteur_name = auteursChoiceBox.getSelectionModel().getSelectedItem();
+		commande.setAuteur_id(auteurs_id.get(auteur_name));
 		
-		Messages.setModel(model);
-		Messages.setAuteur(auteur);
+		Messages.setModel_name(model_name);
+		Messages.setAuteur_name(auteur_name);
 		
+				
         traitements_attendus.clear();
 		
 		for (Node cb : traitementGrid.getChildren()){
@@ -320,6 +330,21 @@ public class Fiche_commande_controller  implements Initializable{
 		   
 		   MongoAccess.update("client", client);
 		}
+		
+		Messages.setCommande_id(commande.get_id());
+		Messages.setCommande(commande.getNom());
+		
+		Map<String, ObjectId> commandes_id;
+		
+		if (Messages.getCommandes_id() != null){
+			commandes_id = Messages.getCommandes_id();
+		}
+		else {
+			commandes_id = new TreeMap<>();
+		}
+
+		commandes_id.put(commande.getNom(), commande.get_id());
+		Messages.setCommandes_id(commandes_id);
 		
 		afficherCommande();
 	    afficherModeles();
@@ -364,6 +389,9 @@ public class Fiche_commande_controller  implements Initializable{
         menuList.add(null);
 
 		for (String t : traitements_id.keySet()){
+			
+			System.out.println(t);
+			
 			traitements_selectionnes.get(i).setItems(menuList);
 			traitements_selectionnes.get(i).getSelectionModel().select(i);
 			i++;
@@ -406,48 +434,63 @@ public class Fiche_commande_controller  implements Initializable{
 	
 	public void loadCommande(Commande c){
 		
-		dateCommandePicker.setValue(c.getDateCommande());;
-		dateDebutProjetPicker.setValue(c.getDateDebutProjet());;
-		dateFinProjetPicker.setValue(c.getDateFinProjet());
-		remarques_client.setText(c.getRemarques());
-		nom_commande_label.setText(c.getNom());
-		nomCommandeTextField.setText(c.getNom());		
+		if (c != null){
+		
+			dateCommandePicker.setValue(c.getDateCommande());;
+			dateDebutProjetPicker.setValue(c.getDateDebutProjet());;
+			dateFinProjetPicker.setValue(c.getDateFinProjet());
+			remarques_client.setText(c.getRemarques());
+			nom_commande_label.setText(c.getNom());
+			nomCommandeTextField.setText(c.getNom());	
+		}
 	}
 	
 	public void afficherAuteurs(){
 		
 		observableAuteurs = FXCollections.observableArrayList();
-        MongoCursor<Auteur> auteurCursor = MongoAccess.request("auteur").as(Auteur.class);
-        
-        int index = 0;
-        int i = 1;
-        
-        observableAuteurs.add(null);
+		auteurs_id = new TreeMap<>();
 		
-		while (auteurCursor.hasNext()){
-			Auteur auteur_ = auteurCursor.next();
-			observableAuteurs.addAll(auteur_);
-			if (auteur != null && auteur.getNom().equals(auteur_.getNom())){
-				index = i;
-				System.out.println("i : " + i);
+		if (Messages.getAuteurs_id() == null){
+			
+			MongoCursor<Auteur> auteurCursor = MongoAccess.request("auteur").as(Auteur.class);
+	        
+	        index = 0;
+	        int i = 2;
+	        
+	        observableAuteurs.add(null);
+			
+			while (auteurCursor.hasNext()){
+				Auteur auteur_ = auteurCursor.next();
+				observableAuteurs.addAll(auteur_.getNom());
+				auteurs_id.put(auteur_.getNom(), auteur_.get_id());
+				
+				if (auteur != null && auteur.getNom().equals(auteur_.getNom())){
+					index = i;
+				}
+				i++;
 			}
-			i++;
+			
+			
+			Messages.setAuteurs_id(auteurs_id);
+		}
+		else {
+			auteurs_id = Messages.getAuteurs_id();
+			observableAuteurs.addAll(auteurs_id.keySet());
 		}
 		
+		System.out.println("index auteur : " + index);
+
 		auteursChoiceBox.setItems(observableAuteurs);
 		auteursChoiceBox.getSelectionModel().select(index);
 	}
 	
     public void afficherOeuvres(){
     	
-    	if (Messages.getObservablOeuvresTraitees() != null){
-    		obs_oeuvres = Messages.getObservablOeuvresTraitees();
-    	}
-    	else {
+    	oeuvresTraitees = FXCollections.observableArrayList();
+    	
+    	if (Messages.getCommande_id() != null){
     		
-    		oeuvresTraitees.clear();
-    		
-    		commandeSelectionne = MongoAccess.request("commande", Messages.getCommande_id()).as(Commande.class).next();
+            commandeSelectionne = MongoAccess.request("commande", Messages.getCommande_id()).as(Commande.class).next();
     		
     		System.out.println(commandeSelectionne.getOeuvresTraitees_id());
         	
@@ -457,12 +500,16 @@ public class Fiche_commande_controller  implements Initializable{
     	    		                             .map(a -> MongoAccess.request("oeuvreTraitee", a).as(OeuvreTraitee.class).next())
     	    		                             .collect(Collectors.toList());
     		
-    		System.out.println(oeuvresTraitees.size());
-    	    
     		oeuvres_nom_colonne.setCellValueFactory(new PropertyValueFactory<OeuvreTraitee, String>("nom"));
     		oeuvres_fait_colonne.setCellValueFactory(new PropertyValueFactory<OeuvreTraitee, ImageView>("icone_progression"));
     		
     		obs_oeuvres = FXCollections.observableArrayList(oeuvresTraitees);
+    		Messages.setObservablOeuvresTraitees(obs_oeuvres);
+    	}
+
+    	else if(Messages.getObservablOeuvresTraitees() == null){
+    		
+    		obs_oeuvres = Messages.getObservablOeuvresTraitees();	
     	}
     	
 		tableOeuvre.setItems(obs_oeuvres);
@@ -503,27 +550,39 @@ public class Fiche_commande_controller  implements Initializable{
     
     public void afficherModeles(){
     	
-    	ObservableList<Model> models = FXCollections.observableArrayList();
-		MongoCursor<Model> modelsCursor = MongoAccess.request("model").as(Model.class);
-		
-		index = 0;
-		i = 0;
-		
-		while (modelsCursor.hasNext()){
+    	observableModeles = FXCollections.observableArrayList();
+    	modeles_id = new TreeMap<>();
+    	
+    	if(Messages.getModels_id() == null){
+    		
+    		MongoCursor<Model> modelsCursor = MongoAccess.request("model").as(Model.class);
+    		
+    		index = 0;
+    		i = 1;
+    		
+    		while (modelsCursor.hasNext()){
+    			
+    			Model model_  = modelsCursor.next();
+    			observableModeles.add(model_.getNom());
+    			modeles_id.put(model_.getNom(), model_.get_id());
+    			
+    			if (model_.getNom() != null && model_.getNom().equals(model_name)){
+    				index = i; 
+    			}
+    			i++;
+    		} 
+    		Messages.setModels_id(modeles_id);
+    	}
+    	else {
+    		
+    		observableModeles.addAll(Messages.getModels_id().keySet());
+    	}
+
+		modelChoiceBox.setItems(observableModeles);
+
 			
-			Model model_  = modelsCursor.next();
-			models.addAll(model_);
-			if (model != null && model_.getNom().equals(model.getNom())){
-				index = i; 
-			}
-			i++;
-		}  
-        
-		modelChoiceBox.setItems(models);
-		
-		if (model != null){
-			modelChoiceBox.getSelectionModel().select(index);
-		}
+		System.out.println("index modele : " + index);
+		modelChoiceBox.getSelectionModel().select(index);
     }
     
     public void onOeuvreSelect(){
@@ -550,27 +609,48 @@ public class Fiche_commande_controller  implements Initializable{
 	public void initialize(URL location, ResourceBundle resources) {
 		
 		traitements_id = new TreeMap<>();
+		liste_oeuvres = FXCollections.observableArrayList();
+		observableTraitements = FXCollections.observableArrayList();
+		observableAuteurs = FXCollections.observableArrayList();
+		traitements_attendus = new ArrayList<>();
+		traitements_selectionnes = new ArrayList<>();
+		oeuvresTraitees = new ArrayList<>();
 		
 		client = MongoAccess.request("client", Messages.getClient_id()).as(Client.class).next(); 
+		
+		afficherTraitements();
+		afficherAuteurs();
+		afficherModeles();
 		
         if (Messages.getCommande() != null) {
         	
         	commande = MongoAccess.request("commande", Messages.getCommande_id()).as(Commande.class).next(); 
 			
+        	Messages.setOeuvresTraitees_id(commande.getOeuvresTraitees_id());
+        	
         	model = MongoAccess.request("model", commande.getModele_id()).as(Model.class).next();
+        	Messages.setModel_name(model_name);
         	Messages.setModel(model);
     		auteur = MongoAccess.request("auteur", commande.getAuteur_id()).as(Auteur.class).next();
     		Messages.setAuteur(auteur);
+    		
+    		System.out.println(auteur);
+    		System.out.println(model);
+    		
+    		//traitements_selectionnes.
+    		
+    		afficherCommande();
+    		afficherOeuvres();
 			
 		}
 		else {
 			
 			commande = new Commande();
-			
-			model = null;
-			auteur = null;
 		}
-			
+        
+        afficherAuteurs();
+		afficherModeles();
+	
 		index = 0;
 	    i = 0;
 
@@ -586,25 +666,6 @@ public class Fiche_commande_controller  implements Initializable{
 		versAuteursButton.setVisible(true);
 		
 		currentStage = Messages.getStage();
-		
-		liste_oeuvres = FXCollections.observableArrayList();
-		observableTraitements = FXCollections.observableArrayList();
-		observableAuteurs = FXCollections.observableArrayList();
-		
-		traitements_attendus = new ArrayList<>();
-		traitements_selectionnes = new ArrayList<>();
-		
-		oeuvresTraitees = new ArrayList<>();
-	
-		afficherTraitements();
-		
-		afficherAuteurs();
-		
-		afficherModeles();	
-		
-		afficherCommande();
-		
-		afficherOeuvres();
         
 		if (Messages.getCommande() != null) {
 			

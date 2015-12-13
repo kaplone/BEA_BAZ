@@ -14,6 +14,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
+import java.util.TreeMap;
 
 import org.bson.types.ObjectId;
 
@@ -138,23 +139,18 @@ public class Walk {
 			fichier.setLegende(legende);
 			
 			MongoAccess.save("fichier", fichier);
-			
-			System.out.println(cote);
-			
-			System.out.println(fichier.get_id());
 
-			OeuvreTraitee oeuvreConcernee = MongoAccess.request("oeuvreTraitee", "oeuvre.cote_archives_6s", cote).as(OeuvreTraitee.class);
-			
-			System.out.println(oeuvreConcernee);
-			System.out.println(oeuvreConcernee.getNom());
+			OeuvreTraitee oeuvreConcernee = MongoAccess.request("oeuvreTraitee", "cote", cote).as(OeuvreTraitee.class);
+
 			
 			//Fiche_commande_import_controller.getBindLabel().set("Images en cours : " + path.getFileName().toString());
 			
-			if (oeuvreConcernee.getFichiers() == null){
-				oeuvreConcernee.setFichiers(new ArrayList<Fichier>());
+			if (oeuvreConcernee.getFichiers_id() == null){
+				
+				oeuvreConcernee.setFichiers_id(new TreeMap<String, ObjectId>());
 			}
 			
-			oeuvreConcernee.getFichiers().add(fichier);
+			oeuvreConcernee.getFichiers_id().put(Normalize.normalizeNormStringField(fichier.getNom()), fichier.get_id());
 			
 			OeuvreTraitee.update(oeuvreConcernee);
 		}

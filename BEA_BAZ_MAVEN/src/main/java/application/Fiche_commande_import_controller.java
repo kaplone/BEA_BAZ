@@ -293,33 +293,6 @@ public class Fiche_commande_import_controller  implements Initializable{
 	@FXML
     public void onRapportsButton(){}
 	
-	public void afficherOeuvres(){
-
-		oeuvresTraiteesCursor = MongoAccess.request("oeuvreTraitee", "commande_id", Messages.getCommande_id()).as(OeuvreTraitee.class);
-		
-		while (oeuvresTraiteesCursor.hasNext()){
-			oeuvresTraitees.add(oeuvresTraiteesCursor.next());
-		}
-		
-		oeuvres_nom_colonne.setCellValueFactory(new PropertyValueFactory<OeuvreTraitee, String>("nom"));
-		
-		ObservableList<OeuvreTraitee> obs_oeuvres = FXCollections.observableArrayList(oeuvresTraitees);
-
-		tableOeuvre.setItems(obs_oeuvres);
-		
-	}
-	
-	public void loadCommande(Commande c){
-		
-		dateCommandePicker.setValue(c.getDateCommande());;
-		dateDebutProjetPicker.setValue(c.getDateDebutProjet());;
-		dateFinProjetPicker.setValue(c.getDateFinProjet());
-		remarques_client.setText(c.getRemarques());
-		nom_commande_label.setText(c.getNom());
-		nomCommandeTextField.setText(c.getNom());
-		
-	}
-	
 	@FXML
 	public void onImportImagesButton(){
 		

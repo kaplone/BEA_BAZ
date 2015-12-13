@@ -129,6 +129,8 @@ public class Fiche_tache_traitement_controller  implements Initializable{
 	
 	private ArrayList<TacheTraitement> liste_tachesTraitements;
 	private ObservableList<TacheTraitement> observable_liste_tachestraitements_lies;
+	private Map<String, ObjectId> tacheTraitements_id;
+	private TacheTraitement tt_enplus; 
 
 	
 	private Progression progres;
@@ -196,9 +198,20 @@ public class Fiche_tache_traitement_controller  implements Initializable{
 		
 		traitementSelectionne = traitements_associes_tableView.getSelectionModel().getSelectedItem();
 		Messages.setTacheTraitement(traitementSelectionne);
+		
+		tt_enplus = new TacheTraitement();
+		tt_enplus.setFait_(Progression.TODO_);
+		tt_enplus.setTraitement_id(tousLesTraitements_id.get(traitementSelectionne));
+		tt_enplus.setNom(traitementSelectionne.getNom());
 
-		Messages.setTraitementsAttendus(null);
-		Messages.setTraitementsAttendus_id(null);
+    	utils.MongoAccess.save("tacheTraitement", tt_enplus);
+    	ot.addTraitementAttendu(tt_enplus.getNom(), tt_enplus.get_id());
+		
+		liste_traitements.add(tt_enplus.getNom());
+		observable_liste_tachestraitements_lies.add(tt_enplus);
+//
+//		Messages.setTraitementsAttendus(null);
+//		Messages.setTraitementsAttendus_id(null);
 		
 		affichageInfos();	
 	}

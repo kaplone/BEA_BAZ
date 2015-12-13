@@ -18,6 +18,7 @@ import enums.EtatFinal;
 import enums.Progression;
 import utils.FreeMarkerMaker;
 import utils.MongoAccess;
+import utils.Normalize;
 import models.Auteur;
 import models.Commande;
 import models.Fichier;
@@ -238,7 +239,10 @@ public class Fiche_oeuvre_controller  implements Initializable{
 	
 	@FXML
 	public void onOeuvreSelect(){
-	
+	    
+		
+		Messages.setOeuvreTraitee((OeuvreTraitee) tableOeuvre.getSelectionModel().getSelectedItem());
+		
 		directSelect = true;
 		reloadOeuvre();
 	
@@ -247,15 +251,14 @@ public class Fiche_oeuvre_controller  implements Initializable{
 	
 	public void reloadOeuvre(){
         
-		oeuvreTraiteeSelectionne = (OeuvreTraitee) tableOeuvre.getSelectionModel().getSelectedItem();
+		oeuvreTraiteeSelectionne = Messages.getOeuvreTraitee();
 		oeuvreSelectionne = oeuvreTraiteeSelectionne.getOeuvre();
 		
 		matieresUtilisees = oeuvreSelectionne.getMatieresUtilisees_id().keySet();
 		techniquesUtilisees = oeuvreSelectionne.getTechniquesUtilisees_id().keySet();
-		
-		Messages.setOeuvre(oeuvreSelectionne);
-		Messages.setOeuvreTraitee(oeuvreTraiteeSelectionne);
+
 		Messages.setOeuvre_index(tableOeuvre.getSelectionModel().getSelectedIndex());
+		Messages.setTraitementsAttendus(null);
 		
 		if (directSelect){
 		   tableOeuvre.scrollTo(Messages.getOeuvre_index() -9);
@@ -295,7 +298,7 @@ public class Fiche_oeuvre_controller  implements Initializable{
 		
 		Fichier fichierSelectionne = MongoAccess.request("fichier", "fichierLie", oeuvreSelectionne.getCote_archives_6s(), true).as(Fichier.class);
 		
-		System.out.println(fichierSelectionne.getFichierLie().toString());
+//		System.out.println(fichierSelectionne.getFichierLie().toString());
 		
 		preview_imageView.setImage(new Image(String.format("file:%s" ,fichierSelectionne.getFichierLie().toString())));
 		
@@ -316,8 +319,16 @@ public class Fiche_oeuvre_controller  implements Initializable{
 		
 		traitementsAttendus.clear();
 		
-		if (Messages.getTraitementsAttendus_id() == null){
+		if (Messages.getTraitementsAttendus() == null){
 			for (ObjectId tt_id : oeuvreTraiteeSelectionne.getTraitementsAttendus_id()){
+				
+				System.out.println(oeuvreTraiteeSelectionne);
+				System.out.println(oeuvreTraiteeSelectionne.getTraitementsAttendus_id());
+				System.out.println(tt_id);
+				
+				System.out.println(traitementsAttendus);
+				System.out.println(MongoAccess.request("tacheTraitement", tt_id).as(TacheTraitement.class).next());
+				
 				traitementsAttendus.add(MongoAccess.request("tacheTraitement", tt_id).as(TacheTraitement.class).next());
 			}
 			Messages.setTraitementsAttendus(traitementsAttendus);
@@ -336,11 +347,11 @@ public class Fiche_oeuvre_controller  implements Initializable{
     	
     	int index = 0;
     	int i = 1;
-    	observableAuteurs.clear();
+    	
+    	observableAuteurs = FXCollections.observableArrayList();
     	
     	if (Messages.getAuteurs_id() == null){
     		
-    		observableAuteurs = FXCollections.observableArrayList();
             MongoCursor<Auteur> auteurCursor = MongoAccess.request("auteur").as(Auteur.class);
  
             observableAuteurs.add(null);
@@ -373,7 +384,6 @@ public class Fiche_oeuvre_controller  implements Initializable{
     @FXML
     public void onEditerOeuvreButton(){
     	
-
     	annuler.setVisible(true);
     	editer.setVisible(false);
     	mise_a_jour_oeuvre.setVisible(true);
@@ -449,19 +459,28 @@ public class Fiche_oeuvre_controller  implements Initializable{
     }
     
     public void afficherOeuvres(){
-
     	
-        oeuvresTraiteesCursor = MongoAccess.request("oeuvreTraitee", "commande_id", Messages.getCommande_id()).as(OeuvreTraitee.class);
-		
-		while (oeuvresTraiteesCursor.hasNext()){
-			oeuvresTraitees.add(oeuvresTraiteesCursor.next());
-		}
-		
+    	ObservableList<OeuvreTraitee> obs_oeuvres;
+    	
+    	if (Messages.getObservablOeuvresTraitees() == null){
+    		oeuvresTraitees = new ArrayList<>();
+    		
+    		oeuvresTraitees = Messages.getOeuvresTraitees_id()
+                                      .values()
+                                      .stream()
+                                      .map(a -> MongoAccess.request("oeuvreTraitee", a).as(OeuvreTraitee.class).next())
+                                      .collect(Collectors.toList());
+    		
+    		obs_oeuvres = FXCollections.observableArrayList(oeuvresTraitees);
+
+    	}
+    	else {
+    		obs_oeuvres = Messages.getObservablOeuvresTraitees();
+    	}
+
 		oeuvres_nom_colonne.setCellValueFactory(new PropertyValueFactory<OeuvreTraitee, String>("nom"));
 		oeuvres_fait_colonne.setCellValueFactory(new PropertyValueFactory<OeuvreTraitee, ImageView>("icone_progression"));
 		//oeuvres_fait_colonne.setCellValueFactory(new PropertyValueFactory<OeuvreTraitee, String>("fait"));
-		
-		ObservableList<OeuvreTraitee> obs_oeuvres = FXCollections.observableArrayList(oeuvresTraitees);
 
 		tableOeuvre.setItems(obs_oeuvres);
 		
@@ -473,6 +492,7 @@ public class Fiche_oeuvre_controller  implements Initializable{
    public void afficherTechniques(){
 	   
 	   techniques.clear();
+	   techniques_id = new TreeMap<>();
     	
        if (Messages.getTechniques_id() == null){
 
@@ -495,6 +515,7 @@ public class Fiche_oeuvre_controller  implements Initializable{
    public void afficherMatieres(){
    	
        matieres.clear();
+       matieres_id = new TreeMap<>();
        
        if (Messages.getMatieres_id() == null){
     	   
@@ -514,12 +535,13 @@ public class Fiche_oeuvre_controller  implements Initializable{
     public void afficherFichiers(){
     	
     	observableFichiers.clear();
+    	fichiers_id = new TreeMap<>();
     	
     	if (Messages.getFichiers_id() == null){
     		
     		try {
     	    	
-    	    	for (ObjectId fichier_id : oeuvreTraiteeSelectionne.getFichiers_id()){
+    	    	for (ObjectId fichier_id : oeuvreTraiteeSelectionne.getFichiers_id().values()){
     	    		
     	    		Fichier f = MongoAccess.request("fichier", fichier_id).as(Fichier.class).next();
     	    		
@@ -545,9 +567,10 @@ public class Fiche_oeuvre_controller  implements Initializable{
     		
     	}
     	else {
-    		observableFichiers.addAll(Messages.getFichiers_id().keySet());
+    		observableFichiers.addAll(Messages.getFichiers_id().keySet().stream().map(a -> Normalize.normalizeDenormStringField(a)).collect(Collectors.toList()));
     	}
     	
+    	System.out.println(observableFichiers.size());
     	fichiers_listView.setItems(observableFichiers);
     	
     }
@@ -754,8 +777,7 @@ public class Fiche_oeuvre_controller  implements Initializable{
 
 		
 		currentStage = Messages.getStage();
-        
-		afficherFichiers();
+
 		afficherOeuvres();
 		afficherMatieres();
 		afficherTechniques();
