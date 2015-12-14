@@ -294,11 +294,15 @@ public class Fiche_commande_controller  implements Initializable{
 		commande.setRemarques(remarques_client.getText());
 		commande.setNom(nomCommandeTextField.getText());
 		model_name = modelChoiceBox.getSelectionModel().getSelectedItem();
+		model = MongoAccess.request("model", modeles_id.get(model_name)).as(Model.class).next();
 		commande.setModele_id(modeles_id.get(model_name));
 		auteur_name = auteursChoiceBox.getSelectionModel().getSelectedItem();
+		auteur = MongoAccess.request("auteur", auteurs_id.get(auteur_name)).as(Auteur.class).next();
 		commande.setAuteur_id(auteurs_id.get(auteur_name));
 		
+		Messages.setModel(model);
 		Messages.setModel_name(model_name);
+		Messages.setAuteur(auteur);
 		Messages.setAuteur_name(auteur_name);
 		
 				

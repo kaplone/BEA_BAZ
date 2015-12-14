@@ -37,6 +37,7 @@ public class Messages {
 	
 	private static List<TacheTraitement> traitementsLies;
 	private static Map<String, ObjectId> traitementslies_id;
+	private static ObservableList<TacheTraitement> observableTacheTraitementsLiees;
 	
 	private static Produit produit;
 	private static String nom_produit;
@@ -386,6 +387,16 @@ public class Messages {
 
 	public static void setAuteur_name(String auteur_name) {
 		Messages.auteur_name = auteur_name;
+	}
+
+
+	public static ObservableList<TacheTraitement> getObservableTacheTraitementsLiees() {
+		return observableTacheTraitementsLiees;
+	}
+
+
+	public static void setObservableTacheTraitementsLiees(ObservableList<TacheTraitement> observableTacheTraitementsLiees) {
+		Messages.observableTacheTraitementsLiees = observableTacheTraitementsLiees;
 	}
     
 }

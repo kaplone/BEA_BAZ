@@ -327,12 +327,7 @@ public class Fiche_oeuvre_controller  implements Initializable{
 		if (Messages.getTraitementsAttendus() == null){
 			for (ObjectId tt_id : oeuvreTraiteeSelectionne.getTraitementsAttendus_id()){
 				
-				System.out.println(oeuvreTraiteeSelectionne);
-				System.out.println(oeuvreTraiteeSelectionne.getTraitementsAttendus_id());
 				System.out.println(tt_id);
-				
-				System.out.println(traitementsAttendus);
-				System.out.println(MongoAccess.request("tacheTraitement", tt_id).as(TacheTraitement.class).next());
 				
 				traitementsAttendus.add(MongoAccess.request("tacheTraitement", tt_id).as(TacheTraitement.class).next());
 			}
@@ -534,6 +529,11 @@ public class Fiche_oeuvre_controller  implements Initializable{
    		   }
    		   Messages.setMatieres_id(matieres_id);
        }
+       else {
+    	   matieres_id = Messages.getMatieres_id();
+    	   matieres.addAll(matieres_id.keySet());
+       }
+       
 		matieres_listView.setItems(matieres);	
 	}
     

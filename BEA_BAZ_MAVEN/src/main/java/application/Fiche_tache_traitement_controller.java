@@ -502,9 +502,18 @@ public class Fiche_tache_traitement_controller  implements Initializable{
 
     public void afficherTraitementsAssocies(){
     	
-    	if (traitementSelectionne == null){
-    		traitementSelectionne = Messages.getTacheTraitement();
-    	}
+        observable_liste_tachestraitements_lies.clear();
+		
+		if (Messages.getObservableTacheTraitementsLiees() == null){
+			for (ObjectId tt_id : Messages.getOeuvreTraitee().getTraitementsAttendus_id()){
+				
+				observable_liste_tachestraitements_lies.add(MongoAccess.request("tacheTraitement", tt_id).as(TacheTraitement.class).next());
+			}
+			Messages.setObservableTacheTraitementsLiees(observable_liste_tachestraitements_lies);
+		}
+		else {
+			observable_liste_tachestraitements_lies = Messages.getObservableTacheTraitementsLiees();
+		}
 
 		traitements_associes_tableColumn.setCellValueFactory(new PropertyValueFactory<TacheTraitement, String>("nom"));
 		traitements_associes_faits_tableColumn.setCellValueFactory(new PropertyValueFactory<TacheTraitement, ImageView>("icone_progression"));
@@ -579,11 +588,11 @@ public class Fiche_tache_traitement_controller  implements Initializable{
     	tt.setTraitement_id(tousLesTraitements_id.get(traitement));
     	tt.setNom(traitement);
     	
-    	//MongoAccess.insert("tacheTraitement", tt);
+    	MongoAccess.save("tacheTraitement", tt);
     	
     	observable_liste_tachestraitements_lies.add(tt);
     	
-    	ot.addTraitementAttendu(traitement, tousLesTraitements_id.get(traitement));
+    	ot.addTraitementAttendu(tt.getNom(), tt.get_id());
     	
     	MongoAccess.update("oeuvreTraitee", ot);
     }
