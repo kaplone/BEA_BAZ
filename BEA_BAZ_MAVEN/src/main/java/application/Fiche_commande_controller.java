@@ -625,7 +625,6 @@ public class Fiche_commande_controller  implements Initializable{
     	Messages.setAuteur(null);
 		Messages.setFichier(null);
 		Messages.setFichiers_id(null);
-		Messages.setModel(null);
 		Messages.setTacheTraitement(null);
 		Messages.setTacheTraitements_id(null);
     	

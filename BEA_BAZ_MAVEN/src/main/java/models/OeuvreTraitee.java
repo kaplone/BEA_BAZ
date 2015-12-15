@@ -3,12 +3,19 @@ package models;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
+
 import org.bson.types.ObjectId;
+
+import com.sun.xml.bind.v2.runtime.unmarshaller.XsiNilLoader.Array;
+
 import enums.EtatFinal;
 import enums.Progression;
 import utils.MongoAccess;
+import utils.Normalize;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
@@ -57,11 +64,30 @@ public class OeuvreTraitee extends Commun {
 		this.etat = etat;
 	}
 	public ArrayList<Fichier> getFichiers() {
+		
+		ArrayList<Fichier> fichiers = new ArrayList<>();
+		
+		for (String s : fichiers_id.keySet()) {
+			fichiers.add(MongoAccess.request("fichier", fichiers_id.get(s)).as(Fichier.class).next());
+		}
+		
 		return fichiers;
 	}
-//	public Collection<ObjectId> getFichiers_id() {
-//		return fichiers_id.values();
-//	}
+	
+	public Fichier getFichierAffiche () {
+		
+		Fichier fichier = null;
+		
+		for (String s : fichiers_id.keySet()) {
+			
+			if (Normalize.normalizeDenormStringField(s).endsWith(".PR.1.JPG")){
+				fichier = MongoAccess.request("fichier", fichiers_id.get(s)).as(Fichier.class).next();
+			}
+		}
+		
+		return fichier;
+		
+	}
 	
 	public Map<String, ObjectId> getFichiers_id() {
 		return fichiers_id;

@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.stream.Collectors;
@@ -48,11 +49,11 @@ public class FreeMarkerMaker {
 	
 	@FieldMetadata( images = { @ImageMetadata( name = "image_oeuvre" ) } )
     //public static File  getLogo(OeuvreTraitee ot)
-    public static File  getLogo(ArrayList<Fichier> af)
-    {
-		//return MongoAccess.request("fichier", ot.getFichiers().get(ot.getFichiers().size() -2)).as(Fichier.class).next().getFichierLie();
-        return new File(af.get(af.size() -2).getFichierLie());
-    }
+//    public static File  getLogo(ArrayList<Fichier> af)
+//    {
+//		//return MongoAccess.request("fichier", ot.getFichiers().get(ot.getFichiers().size() -2)).as(Fichier.class).next().getFichierLie();
+//        return new File(af.get(af.size() -2).getFichierLie());
+//    }
 
 	public static void odt2pdf(Oeuvre o, OeuvreTraitee ot) {
 
@@ -61,22 +62,25 @@ public class FreeMarkerMaker {
 		      //InputStream in = new FileInputStream(new File("/home/kaplone/Desktop/BEABASE/Béa base/modele_rapport_v2_freemarker.odt"));
 		      //InputStream in = new FileInputStream(new File("C:\\Users\\USER\\Desktop\\BEABAZ\\modele_rapport_v2_freemarker.odt"));
 			  
-              ArrayList<Fichier> listeFichiers = new ArrayList<>();
-		      
-		      for (Fichier fichier : ot.getFichiers()){
-		    	  
-		    	  listeFichiers.sort(new Comparator<Fichier>() {
+              ArrayList<Fichier> listeFichiers = ot.getFichiers();
+              listeFichiers.sort(new Comparator<Fichier>() {
 
 					@Override
 					public int compare(Fichier o1, Fichier o2) {
+						
+						String s1 = Paths.get(o1.getFichierLie()).getFileName().toString();
+						String s2 = Paths.get(o2.getFichierLie()).getFileName().toString();
 					
-						return String.format("%s_%02d", o1.getNom().split("\\.")[1], Integer.parseInt(o1.getNom().split("\\.")[2]))
-					.compareTo(String.format("%s_%02d", o2.getNom().split("\\.")[1], Integer.parseInt(o2.getNom().split("\\.")[2])));
+//						return String.format("%s_%02d", s1.split("\\.")[1], Integer.parseInt(s1.split("\\.")[2]))
+//					.compareTo(String.format("%s_%02d", s2.split("\\.")[1], Integer.parseInt(s2.split("\\.")[2])));
+						
+						return s1.compareTo(s2);
 					}
 				});
-		      }
+            		  
 		      
-			  Image img = new Image("file:" + listeFichiers.get(listeFichiers.size() -2).getFichierLie().toString());
+			  Image img = new Image("file:" + ot.getFichierAffiche().getFichierLie().toString());
+			  File file = new File(ot.getFichierAffiche().getFichierLie());
  
 			  InputStream in;
 			  
@@ -182,7 +186,7 @@ public class FreeMarkerMaker {
 		      System.out.println("__03");
 
 		      //context.put("image_oeuvre", getLogo(ot));	
-		      context.put("image_oeuvre", getLogo(listeFichiers));
+		      context.put("image_oeuvre", file);
 
 		      // 3) Generate report by merging Java model with the Docx
 
