@@ -144,12 +144,10 @@ public class Fiche_auteur_controller  implements Initializable{
 	
 	@FXML
 	public void onAuteurSelect(){
-		
-		System.out.println(listView_auteur.getSelectionModel().getSelectedItem());
+
 		
 		if (listView_auteur.getSelectionModel().getSelectedItem() == null){
-            
-			System.out.println("-");
+
 			editer.setVisible(false);	
 		}
 		else {
@@ -339,8 +337,6 @@ public class Fiche_auteur_controller  implements Initializable{
 			onAnnulerEditButton();
 		}
 		else {
-			
-			System.out.println(auteurSelectionne);
 			
 		   Auteur.save(auteurSelectionne);
 		   //afficherClient();

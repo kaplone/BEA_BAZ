@@ -281,8 +281,6 @@ public class Fiche_modele_controller  implements Initializable{
 		}
 		else {
 			
-			System.out.println(modelSelectionne);
-			
 		   Model.save(modelSelectionne);
 		   //afficherClient();
 		   onAnnulerEditButton();

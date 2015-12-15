@@ -393,9 +393,7 @@ public class Fiche_commande_controller  implements Initializable{
         menuList.add(null);
 
 		for (String t : traitements_id.keySet()){
-			
-			System.out.println(t);
-			
+
 			traitements_selectionnes.get(i).setItems(menuList);
 			traitements_selectionnes.get(i).getSelectionModel().select(i);
 			i++;
@@ -490,8 +488,6 @@ public class Fiche_commande_controller  implements Initializable{
     	if (Messages.getCommande_id() != null){
     		
             commandeSelectionne = MongoAccess.request("commande", Messages.getCommande_id()).as(Commande.class).next();
-    		
-    		System.out.println(commandeSelectionne.getOeuvresTraitees_id());
         	
     	    oeuvresTraitees = commandeSelectionne.getOeuvresTraitees_id()
     	    		                             .values()
@@ -668,12 +664,7 @@ public class Fiche_commande_controller  implements Initializable{
         	Messages.setModel(model);
     		auteur = MongoAccess.request("auteur", commande.getAuteur_id()).as(Auteur.class).next();
     		Messages.setAuteur(auteur);
-    		
-    		System.out.println(auteur);
-    		System.out.println(model);
-    		
-    		//traitements_selectionnes.
-    		
+	
     		afficherCommande();
     		afficherOeuvres();
 			

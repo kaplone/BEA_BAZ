@@ -318,8 +318,6 @@ public class Fiche_matiere_controller  implements Initializable{
 		}
 		else {
 			
-			System.out.println(matiereSelectionne);
-			
 		   Matiere.save(matiereSelectionne);
 		   afficherMatiere();
 		   onAnnulerEditButton();

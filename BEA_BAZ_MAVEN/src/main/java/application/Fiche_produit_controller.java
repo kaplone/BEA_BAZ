@@ -310,8 +310,6 @@ public class Fiche_produit_controller  implements Initializable{
 		}
 		else {
 			
-			System.out.println(produitSelectionne);
-			
 		   Produit.save(produitSelectionne);
 		   afficherProduit();
 		   onAnnulerEditButton();

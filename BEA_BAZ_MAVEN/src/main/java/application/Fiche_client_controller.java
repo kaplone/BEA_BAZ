@@ -160,9 +160,7 @@ public class Fiche_client_controller  implements Initializable{
 		Messages.setClient_id(clients_id.get(clientSelectionne));
 		
 		commandes_id = MongoAccess.request("client", Messages.getClient_id()).as(Client.class).next().getCommandes_id();
-		
-		System.out.println(commandes_id);
-		
+
 		Messages.setCommandes_id(commandes_id);
 		
 		Messages.setAuteur(null);
@@ -442,9 +440,7 @@ public class Fiche_client_controller  implements Initializable{
         	if(Messages.getClient_id() != null){
         	    commandes_id = MongoAccess.request("client", Messages.getClient_id()).as(Client.class).next().getCommandes_id();    
         	}
-			
-        	System.out.println(commandes_id);
-        	
+
         	Messages.setCommandes_id(commandes_id);
 			
 		}

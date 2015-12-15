@@ -318,8 +318,6 @@ public class Fiche_technique_controller  implements Initializable{
 		}
 		else {
 			
-			System.out.println(techniqueSelectionne);
-			
 		   Technique.save(techniqueSelectionne);
 		   onAnnulerEditButton();
 		}
@@ -336,10 +334,6 @@ public class Fiche_technique_controller  implements Initializable{
 		annuler.setVisible(false);
 		
 		fiche_technique_label.setText("FICHE PRODUIT :");
-		
-		System.out.println(nom_technique_label);
-		System.out.println(techniqueSelectionne);
-		System.out.println(techniqueSelectionne.getNom());
 		
 		nom_technique_label.setText(techniqueSelectionne.getNom());
 		nom_technique_textField.setText(techniqueSelectionne.getNom());

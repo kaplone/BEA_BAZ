@@ -261,8 +261,6 @@ public class Fiche_fichier_controller  implements Initializable{
 		}
 		else {
 			
-			System.out.println(fichierSelectionne);
-			
 		   Fichier.save(fichierSelectionne);
 		   //afficherClient();
 		   onAnnulerEditButton();

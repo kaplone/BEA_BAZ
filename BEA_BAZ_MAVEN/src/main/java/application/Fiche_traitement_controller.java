@@ -214,8 +214,6 @@ public class Fiche_traitement_controller  implements Initializable{
 		
 		int index = produitsLiesHbox.getChildren().indexOf(e);
 		
-		System.out.println("nom produit : " + ((Button) produitsLiesHbox.getChildren().get(index -1)).getText());
-		
 		Produit produit = MongoAccess.request("produit", "nom",  ((Button) produitsLiesHbox.getChildren().get(index -1)).getText()).as(Produit.class);
 		
 		produitsLiesHbox.getChildren().remove(index -1, index +1);
@@ -430,9 +428,7 @@ public class Fiche_traitement_controller  implements Initializable{
 			onAnnulerEditButton();
 		}
 		else {
-			
-			System.out.println(traitementSelectionne);
-			
+
 		   Traitement.save(traitementSelectionne);
 		   afficherTraitement();
 		   onAnnulerEditButton();

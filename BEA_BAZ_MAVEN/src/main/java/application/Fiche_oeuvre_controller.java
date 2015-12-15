@@ -327,8 +327,6 @@ public class Fiche_oeuvre_controller  implements Initializable{
 		if (Messages.getTraitementsAttendus() == null){
 			for (ObjectId tt_id : oeuvreTraiteeSelectionne.getTraitementsAttendus_id()){
 				
-				System.out.println(tt_id);
-				
 				traitementsAttendus.add(MongoAccess.request("tacheTraitement", tt_id).as(TacheTraitement.class).next());
 			}
 			Messages.setTraitementsAttendus(traitementsAttendus);
@@ -575,7 +573,6 @@ public class Fiche_oeuvre_controller  implements Initializable{
     		observableFichiers.addAll(Messages.getFichiers_id().keySet().stream().map(a -> Normalize.normalizeDenormStringField(a)).collect(Collectors.toList()));
     	}
     	
-    	System.out.println(observableFichiers.size());
     	fichiers_listView.setItems(observableFichiers);
     	
     }
