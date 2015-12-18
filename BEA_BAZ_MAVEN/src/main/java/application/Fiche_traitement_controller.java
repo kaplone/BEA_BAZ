@@ -139,6 +139,13 @@ public class Fiche_traitement_controller  implements Initializable{
 		currentStage.setScene(fiche_technique_scene);
     }
 	
+    @FXML
+    public void onVersClientButton(){
+    	Scene fiche_client_scene = new Scene((Parent) JfxUtils.loadFxml("/views/fiche_client.fxml"), 1275, 722);
+		fiche_client_scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+		
+		currentStage.setScene(fiche_client_scene);
+    }
 	@FXML
 	public void onVersCommandeButton(){
 		
@@ -146,14 +153,13 @@ public class Fiche_traitement_controller  implements Initializable{
 		fiche_commande_scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 		
 		currentStage.setScene(fiche_commande_scene);	
-	}	
-	
+	}
 	@FXML
-    public void onVersClientButton(){
-    	Scene fiche_client_scene = new Scene((Parent) JfxUtils.loadFxml("/views/fiche_client.fxml"), 1275, 722);
-		fiche_client_scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+    public void onVersOeuvreButton(){
+    	Scene fiche_oeuvre_scene = new Scene((Parent) JfxUtils.loadFxml("/views/fiche_oeuvre.fxml"), 1275, 722);
+		fiche_oeuvre_scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 		
-		currentStage.setScene(fiche_client_scene);
+		currentStage.setScene(fiche_oeuvre_scene);
     }
 
 	@FXML
@@ -473,9 +479,6 @@ public class Fiche_traitement_controller  implements Initializable{
     }
     
     @FXML
-    public void onVersOeuvreButton(){}
-    
-    @FXML
     public void onAjoutProduit(){
     	
     	//Messages.setTacheTraitementEdited(listView_traitements.getSelectionModel().getSelectedItem());
@@ -500,9 +503,20 @@ public class Fiche_traitement_controller  implements Initializable{
         mise_a_jour_traitement.setVisible(false);
 		annuler.setVisible(false);
 		
-		versCommandeButton.setVisible(false);
+		if(Messages.getCommande() != null){
+			versCommandeButton.setVisible(true);
+		}
+		else {
+			versCommandeButton.setVisible(false);
+		}
+		
+		if(Messages.getOeuvreTraitee() != null){
+			versOeuvreButton.setVisible(true);
+		}
+		else {
+			versOeuvreButton.setVisible(false);
+		}
 		versTraitementsButton.setVisible(false);
-		versOeuvreButton.setVisible(false);
 		versRapportButton.setVisible(false);
 		
 		file_path_textField.setVisible(false);

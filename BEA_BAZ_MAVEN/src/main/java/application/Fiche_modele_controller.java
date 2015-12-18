@@ -106,25 +106,28 @@ public class Fiche_modele_controller  implements Initializable{
 		currentStage.setScene(fiche_traitement_scene);
     }
 
-	@FXML
-	public void onVersClientButton(){
-		
-		Scene fiche_client_scene = new Scene((Parent) JfxUtils.loadFxml("/views/fiche_client.fxml"), 1275, 722);
+    @FXML
+    public void onVersClientButton(){
+    	Scene fiche_client_scene = new Scene((Parent) JfxUtils.loadFxml("/views/fiche_client.fxml"), 1275, 722);
 		fiche_client_scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 		
 		currentStage.setScene(fiche_client_scene);
-		
-	}
-	
+    }
 	@FXML
 	public void onVersCommandeButton(){
 		
 		Scene fiche_commande_scene = new Scene((Parent) JfxUtils.loadFxml("/views/fiche_commande.fxml"), 1275, 722);
 		fiche_commande_scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 		
-		currentStage.setScene(fiche_commande_scene);
-		
+		currentStage.setScene(fiche_commande_scene);	
 	}
+	@FXML
+    public void onVersOeuvreButton(){
+    	Scene fiche_oeuvre_scene = new Scene((Parent) JfxUtils.loadFxml("/views/fiche_oeuvre.fxml"), 1275, 722);
+		fiche_oeuvre_scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+		
+		currentStage.setScene(fiche_oeuvre_scene);
+    }
 	
 	@FXML
 	public void onVersAuteursButton(){
@@ -335,8 +338,19 @@ protected File chooseExport(){
 		
 		versAuteursButton.setVisible(true);
 		versClientButton.setVisible(true);
-		versCommandeButton.setVisible(true);
-		versOeuvreButton.setVisible(false);
+		if(Messages.getCommande() != null){
+			versCommandeButton.setVisible(true);
+		}
+		else {
+			versCommandeButton.setVisible(false);
+		}
+		
+		if(Messages.getOeuvreTraitee() != null){
+			versOeuvreButton.setVisible(true);
+		}
+		else {
+			versOeuvreButton.setVisible(false);
+		}
 		versRapportButton.setVisible(false);
 		versModelesButton.setVisible(false);
 		

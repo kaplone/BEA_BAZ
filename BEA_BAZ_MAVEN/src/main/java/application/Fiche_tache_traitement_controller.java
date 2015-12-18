@@ -508,8 +508,19 @@ public class Fiche_tache_traitement_controller  implements Initializable{
         mise_a_jour_traitement.setVisible(false);
 		annuler.setVisible(false);
 		
-		versCommandeButton.setVisible(true);
-		versOeuvreButton.setVisible(true);
+		if(Messages.getCommande() != null){
+			versCommandeButton.setVisible(true);
+		}
+		else {
+			versCommandeButton.setVisible(false);
+		}
+		
+		if(Messages.getOeuvreTraitee() != null){
+			versOeuvreButton.setVisible(true);
+		}
+		else {
+			versOeuvreButton.setVisible(false);
+		}
 		versRapportButton.setVisible(false);
 		
 		versTraitementsButton.setVisible(true);

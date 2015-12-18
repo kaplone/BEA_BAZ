@@ -92,13 +92,27 @@ public class Fiche_produit_controller  implements Initializable{
 	Produit detail;
 	
 	@FXML
-	public void onVersClientButton(){
-		
-		Scene fiche_client_scene = new Scene((Parent) JfxUtils.loadFxml("/views/fiche_client.fxml"), 1275, 722);
+    public void onVersClientButton(){
+    	Scene fiche_client_scene = new Scene((Parent) JfxUtils.loadFxml("/views/fiche_client.fxml"), 1275, 722);
 		fiche_client_scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 		
-		currentStage.setScene(fiche_client_scene);	
+		currentStage.setScene(fiche_client_scene);
+    }
+	@FXML
+	public void onVersCommandeButton(){
+		
+		Scene fiche_commande_scene = new Scene((Parent) JfxUtils.loadFxml("/views/fiche_commande.fxml"), 1275, 722);
+		fiche_commande_scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+		
+		currentStage.setScene(fiche_commande_scene);	
 	}
+	@FXML
+    public void onVersOeuvreButton(){
+    	Scene fiche_oeuvre_scene = new Scene((Parent) JfxUtils.loadFxml("/views/fiche_oeuvre.fxml"), 1275, 722);
+		fiche_oeuvre_scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+		
+		currentStage.setScene(fiche_oeuvre_scene);
+    }
 	
 	@FXML
 	public void onVersTraitementsButton(){
@@ -333,9 +347,7 @@ public class Fiche_produit_controller  implements Initializable{
 		remarques_produit_textArea.setText(produitSelectionne.getRemarques());
 		//rafraichirAffichage();
     }
-    
-    @FXML
-    public void onVersOeuvreButton(){}
+
     @FXML
     public void onAjoutDetail(){}
     @FXML
@@ -362,8 +374,19 @@ public class Fiche_produit_controller  implements Initializable{
         mise_a_jour_traitement.setVisible(false);
 		annuler.setVisible(false);
 		
-		versCommandeButton.setVisible(false);
-		versOeuvreButton.setVisible(false);
+		if(Messages.getCommande() != null){
+			versCommandeButton.setVisible(true);
+		}
+		else {
+			versCommandeButton.setVisible(false);
+		}
+		
+		if(Messages.getOeuvreTraitee() != null){
+			versOeuvreButton.setVisible(true);
+		}
+		else {
+			versOeuvreButton.setVisible(false);
+		}
 		versRapportButton.setVisible(false);
 		versProduitsButton.setVisible(false);
 		

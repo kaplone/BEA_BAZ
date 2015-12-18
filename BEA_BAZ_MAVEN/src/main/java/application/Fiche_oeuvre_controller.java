@@ -227,7 +227,14 @@ public class Fiche_oeuvre_controller  implements Initializable{
 		
 		currentStage.setScene(fiche_technique_scene);
     }
-	
+    
+    @FXML
+    public void onVersClientButton(){
+    	Scene fiche_client_scene = new Scene((Parent) JfxUtils.loadFxml("/views/fiche_client.fxml"), 1275, 722);
+		fiche_client_scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+		
+		currentStage.setScene(fiche_client_scene);
+    }
 	@FXML
 	public void onVersCommandeButton(){
 		
@@ -430,8 +437,13 @@ public class Fiche_oeuvre_controller  implements Initializable{
     	oeuvreTraiteeSelectionne.setRemarques(remarques_textArea.getText());
     	oeuvreTraiteeSelectionne.setEtat(etat_final_choiceBox.getSelectionModel().getSelectedItem());
     	oeuvreTraiteeSelectionne.setComplement_etat(complement_etat_textArea.getText());
+    	
+    	//TODO
+    	// ajouter onAuteurSelect()
+    	//oeuvreSelectionne.setAuteur(auteur.get_id());
 
 		OeuvreTraitee.update(oeuvreTraiteeSelectionne);
+		Oeuvre.update(oeuvreSelectionne);
 		
 		onAnnulerEditButton();
 
@@ -448,13 +460,7 @@ public class Fiche_oeuvre_controller  implements Initializable{
     	
     	FreeMarkerMaker.odt2pdf(oeuvreSelectionne, oeuvreTraiteeSelectionne);
     };
-    @FXML
-    public void onVersClientButton(){
-    	Scene fiche_client_scene = new Scene((Parent) JfxUtils.loadFxml("/views/fiche_client.fxml"), 1275, 722);
-		fiche_client_scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
-		
-		currentStage.setScene(fiche_client_scene);
-    }
+    
     
     public void afficherOeuvres(){
     	
