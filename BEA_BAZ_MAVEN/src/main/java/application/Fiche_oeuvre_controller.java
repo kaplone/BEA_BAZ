@@ -30,6 +30,7 @@ import models.Produit;
 import models.TacheTraitement;
 import models.Technique;
 import models.Traitement;
+import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -247,8 +248,10 @@ public class Fiche_oeuvre_controller  implements Initializable{
 	@FXML
 	public void onOeuvreSelect(){
 	    
+		oeuvreTraiteeSelectionne = (OeuvreTraitee) tableOeuvre.getSelectionModel().getSelectedItem();
+		Messages.setOeuvreTraitee(oeuvreTraiteeSelectionne);
 		
-		Messages.setOeuvreTraitee((OeuvreTraitee) tableOeuvre.getSelectionModel().getSelectedItem());
+		Messages.setAuteur(null);
 		
 		directSelect = true;
 		reloadOeuvre();
@@ -257,6 +260,16 @@ public class Fiche_oeuvre_controller  implements Initializable{
 
 	
 	public void reloadOeuvre(){
+		
+//		complement_etat_textArea.textProperty().removeListener((observable, oldValue, newValue) -> {
+//			onEditerOeuvreButton();
+//		});
+//		auteursChoiceBox.valueProperty().removeListener((observable, oldValue, newValue) -> {
+//			onEditerOeuvreButton();
+//		});
+//		etat_final_choiceBox.valueProperty().removeListener((observable, oldValue, newValue) -> {
+//			onEditerOeuvreButton();
+//		});
         
 		oeuvreTraiteeSelectionne = Messages.getOeuvreTraitee();
 		oeuvreSelectionne = oeuvreTraiteeSelectionne.getOeuvre();
@@ -268,10 +281,7 @@ public class Fiche_oeuvre_controller  implements Initializable{
 		Messages.setTraitementsAttendus(null);
 		Messages.setObservableFichiers(null);
         Messages.setFichiers_id(null);
-        
-        
-        
-        
+ 
 		if (directSelect){
 		   tableOeuvre.scrollTo(Messages.getOeuvre_index() -9);
 		  // tableOeuvre.getSelectionModel().clearAndSelect(Messages.getOeuvre_index());
@@ -316,14 +326,50 @@ public class Fiche_oeuvre_controller  implements Initializable{
 		
 		etat_final_choiceBox.getSelectionModel().select(oeuvreTraiteeSelectionne.getEtat());
 		complement_etat_textArea.setText(oeuvreTraiteeSelectionne.getComplement_etat());
-		
+
 		editer.setVisible(true);
         mise_a_jour_oeuvre.setVisible(false);
 		annuler.setVisible(false);
-
-		afficherAuteurs();
+	
 		afficherTraitements();
 		afficherFichiers();
+		
+//		complement_etat_textArea.textProperty().addListener((observable, oldValue, newValue) -> {
+//			onEditerOeuvreButton();
+//		});
+		
+		if(Messages.getAuteur() != null){
+			auteur = Messages.getAuteur();
+		}
+		else {
+			auteur = MongoAccess.request("auteur", oeuvreSelectionne.getAuteur()).as(Auteur.class).next();
+			Messages.setAuteur(auteur);
+		}
+		
+		
+		afficherAuteurs();
+		auteursChoiceBox.getSelectionModel().select(auteur.getNom());
+		
+//		auteursChoiceBox.valueProperty().addListener((observable, oldValue, newValue) -> {
+//			
+//			System.out.println(oldValue);
+//			System.out.println(newValue);
+//			
+//			if(newValue != null && ! newValue.equals(auteur.getNom())){
+//				
+//				System.out.println(auteurs_id);
+//				System.out.println(auteurs_id.get(newValue));
+//				
+//				auteur = MongoAccess.request("auteur", auteurs_id.get(newValue)).as(Auteur.class).next();
+//				
+//				Messages.setAuteur(auteur);
+//				onEditerOeuvreButton();
+//			}	
+//		});
+//		
+//		etat_final_choiceBox.valueProperty().addListener((observable, oldValue, newValue) -> {
+//			onEditerOeuvreButton();
+//		});
 		
 	}
 	
@@ -351,7 +397,6 @@ public class Fiche_oeuvre_controller  implements Initializable{
     public void afficherAuteurs(){
     	
     	int index = 0;
-    	int i = 1;
     	
     	observableAuteurs = FXCollections.observableArrayList();
     	
@@ -366,9 +411,9 @@ public class Fiche_oeuvre_controller  implements Initializable{
     			observableAuteurs.addAll(auteur_.getNom());
     			auteurs_id.put(auteur_.getNom(), auteur_.get_id());
     			if (auteur != null && auteur.getNom().equals(auteur_.getNom())){
-    				index = i;
+    				index ++;
+    				break;
     			}
-    			i++;
     		}	
     		Messages.setAuteurs_id(auteurs_id);
     	}
@@ -376,9 +421,11 @@ public class Fiche_oeuvre_controller  implements Initializable{
     		observableAuteurs.addAll(Messages.getAuteurs_id().keySet());
     		for (String s : Messages.getAuteurs_id().keySet()){
     			if (auteur != null && auteur.getNom().equals(s)){
-    				index = i;
+    				break;
     			}
-    			i++;
+    			else{
+    				index ++;
+    			}
     		}
     	}
 
@@ -432,15 +479,15 @@ public class Fiche_oeuvre_controller  implements Initializable{
     	oeuvreSelectionne.setDate(date_oeuvre_textField.getText());
     	oeuvreSelectionne.setDimensions(dimensions_textField.getText());
     	oeuvreSelectionne.setInscriptions_au_verso(inscriptions_textArea.getText());
+    	oeuvreSelectionne.setAuteur(Messages.getAuteurs_id().get(auteursChoiceBox.getSelectionModel().getSelectedItem()));
+    	
     	oeuvreTraiteeSelectionne.setAlterations(new ArrayList(Arrays.asList(degradations_textArea.getText().split(System.getProperty("line.separator")))));
     	oeuvreTraiteeSelectionne.setObservations(observations_textArea.getText());
     	oeuvreTraiteeSelectionne.setRemarques(remarques_textArea.getText());
     	oeuvreTraiteeSelectionne.setEtat(etat_final_choiceBox.getSelectionModel().getSelectedItem());
     	oeuvreTraiteeSelectionne.setComplement_etat(complement_etat_textArea.getText());
     	
-    	//TODO
-    	// ajouter onAuteurSelect()
-    	//oeuvreSelectionne.setAuteur(auteur.get_id());
+    	
 
 		OeuvreTraitee.update(oeuvreTraiteeSelectionne);
 		Oeuvre.update(oeuvreSelectionne);
@@ -735,8 +782,19 @@ public class Fiche_oeuvre_controller  implements Initializable{
 		oeuvreSelectionne = Messages.getOeuvre();
 		oeuvreTraiteeSelectionne = Messages.getOeuvreTraitee();
 
-		
-		auteurs_id = new TreeMap<>();
+		if (Messages.getAuteurs_id() != null){
+			auteurs_id = Messages.getAuteurs_id();
+		}
+		else {
+			auteurs_id = new TreeMap<>();
+			MongoCursor<Auteur> auteurCursor = MongoAccess.request("auteur").as(Auteur.class);
+			
+			while (auteurCursor.hasNext()){
+				Auteur a = auteurCursor.next();
+				auteurs_id.put(a.getNom(), a.get_id());
+			}
+			Messages.setAuteurs_id(auteurs_id);
+		}
 		fichiers_id = new TreeMap<>();
 
 		traitementSelectionne = Messages.getTacheTraitement();
@@ -753,10 +811,6 @@ public class Fiche_oeuvre_controller  implements Initializable{
 		degradations_textArea.setEditable(false);
 		observations_textArea.setEditable(false);
 		remarques_textArea.setEditable(false);
-		
-		complement_etat_textArea.textProperty().addListener((observable, oldValue, newValue) -> {
-			onEditerOeuvreButton();
-		});
 
 		numero_archive_6s_textField.setText(oeuvreSelectionne.getCote_archives_6s());
 		titre_textField.setText(oeuvreSelectionne.getTitre_de_l_oeuvre());
@@ -785,6 +839,31 @@ public class Fiche_oeuvre_controller  implements Initializable{
 
 		
 		currentStage = Messages.getStage();
+		
+		complement_etat_textArea.textProperty().addListener((observable, oldValue, newValue) -> {
+			onEditerOeuvreButton();
+		});
+		
+        auteursChoiceBox.valueProperty().addListener((observable, oldValue, newValue) -> {
+			
+			System.out.println(oldValue);
+			System.out.println(newValue);
+			
+			if(newValue != null && ! newValue.equals(auteur.getNom())){
+				
+				System.out.println(auteurs_id);
+				System.out.println(auteurs_id.get(newValue));
+				
+				auteur = MongoAccess.request("auteur", auteurs_id.get(newValue)).as(Auteur.class).next();
+				
+				Messages.setAuteur(auteur);
+				onEditerOeuvreButton();
+			}	
+		});
+		
+		etat_final_choiceBox.valueProperty().addListener((observable, oldValue, newValue) -> {
+			onEditerOeuvreButton();
+		});
 
 		afficherOeuvres();
 		afficherMatieres();

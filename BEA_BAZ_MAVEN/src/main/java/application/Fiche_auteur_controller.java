@@ -287,10 +287,7 @@ public class Fiche_auteur_controller  implements Initializable{
     	nom_complet_auteur_textField.setEditable(false);
 		remarques_auteur_textArea.setEditable(false);
 		nouveau_auteur.setVisible(true);
-		
-		nom_auteur_textField.setText("");
-    	remarques_auteur_textArea.setText("");
-    	nom_complet_auteur_textField.setText("");
+
     	nom_auteur_textField.setPromptText("");
     	nom_complet_auteur_textField.setPromptText("");
     	remarques_auteur_textArea.setPromptText("");
@@ -332,17 +329,25 @@ public class Fiche_auteur_controller  implements Initializable{
 		
 		if (edit) {
 			Auteur.update(auteurSelectionne);
-			//afficherClient();
+			afficherAuteur();
 			rafraichirAffichage();
 			onAnnulerEditButton();
 		}
 		else {
 			
 		   Auteur.save(auteurSelectionne);
-		   //afficherClient();
+		   afficherAuteur();
 		   rafraichirAffichage();
 		   onAnnulerEditButton();
 		}
+    	
+    }
+    
+    public void afficherAuteur(){
+    	nom_auteur_textField.setText(auteurSelectionne.getNom());
+    	nom_complet_auteur_textField.setText(auteurSelectionne.getNom_complet());
+    	remarques_auteur_textArea.setText(auteurSelectionne.getRemarques());
+
     	
     }
     
