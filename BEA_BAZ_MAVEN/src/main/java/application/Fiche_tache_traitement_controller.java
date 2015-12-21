@@ -203,10 +203,25 @@ public class Fiche_tache_traitement_controller  implements Initializable{
 		
         produitSelectionne = listView_produits.getSelectionModel().getSelectedItem();
 		
-		if (produitSelectionne != null){
+		if (produitSelectionne != null && ! tacheTraitementSelectionne.getProduitsLies_names().contains(produitSelectionne)){
+			
 			Messages.setNom_produit(produitSelectionne);
 			
-			tacheTraitementSelectionne.addProduit(produitSelectionne);
+			if (Messages.getProduits_id() == null){
+				
+				Map<String, ObjectId> produits = new TreeMap<>();
+				MongoCursor<Produit> produit_cursor = MongoAccess.request("produit").as(Produit.class);
+				
+				while (produit_cursor.hasNext()){
+					Produit p = produit_cursor.next();
+					produits.put(p.getNom(), p.get_id());
+				}
+				
+				Messages.setProduits_id(produits);
+			}
+			
+			tacheTraitementSelectionne.addProduit(Messages.getProduits_id().get(produitSelectionne));
+			
 			MongoAccess.update("tacheTraitement", tacheTraitementSelectionne);
 			
 			affichageProduitsUtilises();
@@ -235,21 +250,28 @@ public class Fiche_tache_traitement_controller  implements Initializable{
 		HBox.setMargin(b2, new Insets(0,10,0,0));
 	}
     
+    public void affichageProduitsUtilises(String p){
+    	produitSelectionne = p;
+    	affichageProduitsUtilises();
+    }
+
     public void deleteProduitLie(Button e){
 		
 		int index = produitsLiesHbox.getChildren().indexOf(e);
 		
-		Produit produit = MongoAccess.request("produit", "nom",  ((Button) produitsLiesHbox.getChildren().get(index -1)).getText()).as(Produit.class);
+		//Produit produit = MongoAccess.request("produit", "nom",  ((Button) produitsLiesHbox.getChildren().get(index -1)).getText()).as(Produit.class);
+		
+		String texte_produit = ((Button) produitsLiesHbox.getChildren().get(index -1)).getText();
 		
 		produitsLiesHbox.getChildren().remove(index -1, index +1);
 		
-		traitementSelectionne.deleteProduit(produit);
+		tacheTraitementSelectionne.deleteProduit(texte_produit);
 		
 		TacheTraitement.update(tacheTraitementSelectionne);
 		
 		produitsLiesHbox.getChildren().clear();
 		for (String p : tacheTraitementSelectionne.getProduitsLies_names()){
-			affichageProduitsUtilises();
+			affichageProduitsUtilises(p);
 		}
 		
 	}
@@ -446,7 +468,7 @@ public class Fiche_tache_traitement_controller  implements Initializable{
 		
 		produitsLiesHbox.getChildren().clear();
 		for (String p : tacheTraitementSelectionne.getProduitsLies_names()){
-			affichageProduitsUtilises();
+			affichageProduitsUtilises(p);
 		}
 		
 		rafraichirAffichage();
@@ -470,6 +492,7 @@ public class Fiche_tache_traitement_controller  implements Initializable{
     }
     
     public void afficherProduits(){
+    	
     	liste_produits.clear();
     	liste_produits.addAll(tacheTraitementSelectionne.getTraitement().getProduits().keySet());
     	listView_produits.setItems(liste_produits);

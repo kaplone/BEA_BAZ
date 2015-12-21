@@ -49,17 +49,29 @@ public class TacheTraitement extends Commun{
     public void addProduit(String p){
     	
     	Produit p_ = MongoAccess.request("produit", "nom", p).as(Produit.class);
+    	this.addProduit(p_);
     	
-    	if (! produitsLies.keySet().contains(p)){
-    		produitsLies.put(p, p_.get_id());
-    	}
-    	
+    }
+    
+    public void addProduit(ObjectId id){
+    	Produit p_ = MongoAccess.request("produit", id).as(Produit.class).next();
+    	this.addProduit(p_);
     }
     
     public void deleteProduit(Produit p){
 
     	for (String p_ : produitsLies.keySet()){
     		if (p.getNom().equals(p_)){
+    			produitsLies.remove(p_);
+    			break;
+    		}
+    	} 	
+    }
+    
+    public void deleteProduit(String p){
+
+    	for (String p_ : produitsLies.keySet()){
+    		if (p_.equals(p)){
     			produitsLies.remove(p_);
     			break;
     		}
