@@ -123,12 +123,12 @@
                   <Insets right="10.0" />
                </HBox.margin>
             </Button>
-            <Button fx:id="versCommandeButton" mnemonicParsing="false" text="--&gt; Commande">
+            <Button fx:id="versCommandeButton" mnemonicParsing="false" onAction="#onVersCommandeButton" text="--&gt; Commande">
                <HBox.margin>
                   <Insets right="10.0" />
                </HBox.margin>
             </Button>
-            <Button fx:id="versOeuvreButton" mnemonicParsing="false" text="--&gt; Oeuvre">
+            <Button fx:id="versOeuvreButton" mnemonicParsing="false" onAction="#onVersOeuvreButton" text="--&gt; Oeuvre">
                <HBox.margin>
                   <Insets right="10.0" />
                </HBox.margin>
@@ -138,7 +138,7 @@
                   <Insets right="10.0" />
                </HBox.margin>
             </Button>
-            <Button fx:id="versModelesButton" mnemonicParsing="false" text="Modèles">
+            <Button fx:id="versModelsButton" mnemonicParsing="false" onAction="#onVersModelsButton" text="Modèles">
                <HBox.margin>
                   <Insets left="50.0" right="10.0" />
                </HBox.margin>
@@ -154,17 +154,17 @@
                   <Insets left="10.0" />
                </HBox.margin>
             </Button>
-            <Button fx:id="versModelsButton" mnemonicParsing="false" text="Modeles">
+            <Button fx:id="versAuteursButton" mnemonicParsing="false" onAction="#onVersAuteursButton" text="Auteurs">
                <HBox.margin>
                   <Insets left="10.0" />
                </HBox.margin>
             </Button>
-            <Button fx:id="matieres_button" mnemonicParsing="false" onAction="#onMatieres_button" text="Matières">
+            <Button fx:id="versMatieresButton" mnemonicParsing="false" onAction="#onVersMatieresButton" text="Matières">
                <HBox.margin>
                   <Insets left="10.0" />
                </HBox.margin>
             </Button>
-            <Button fx:id="techniques_button" mnemonicParsing="false" onAction="#onTechniques_button" text="Techniques">
+            <Button fx:id="versTechniquesButton" mnemonicParsing="false" onAction="#onVersTechniquesButton" text="Techniques">
                <HBox.margin>
                   <Insets left="10.0" />
                </HBox.margin>

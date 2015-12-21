@@ -11,6 +11,8 @@ import org.jongo.MongoCursor;
 import utils.MongoAccess;
 import models.Fichier;
 import models.Messages;
+import models.Oeuvre;
+import models.OeuvreTraitee;
 import models.Client;
 import models.Commande;
 import models.Traitement;
@@ -47,7 +49,7 @@ public class Fiche_fichier_controller  implements Initializable{
 	@FXML
 	private TextArea remarques_fichier_textArea;
 	@FXML
-	private Button nouveau_fichier;
+	private Button nouveau_fichier_button;
 	@FXML
 	private Button mise_a_jour_fichier;
 	@FXML
@@ -71,7 +73,13 @@ public class Fiche_fichier_controller  implements Initializable{
 	@FXML
 	private Button versFichiersButton;
 	@FXML
+	private Button versMatieresButton;
+	@FXML
+	private Button versTechniquesButton;
+	@FXML
 	private Button versModelsButton;
+	@FXML
+	private Button versAuteursButton;
 	@FXML
 	private ImageView fichier_imageView;
 	
@@ -89,8 +97,24 @@ public class Fiche_fichier_controller  implements Initializable{
 	
 	private boolean edit = false;
 	
+	private Oeuvre oeuvre;
+	private OeuvreTraitee oeuvreTraitee;
+	
 	@FXML
 	public void onVersCommandeButton(){
+		
+		Scene fiche_commande_scene = new Scene((Parent) JfxUtils.loadFxml("/views/fiche_commande.fxml"), 1275, 722);
+		fiche_commande_scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+		
+		currentStage.setScene(fiche_commande_scene);	
+	}
+	@FXML
+	public void onVersOeuvreButton(){
+		
+		Scene fiche_oeuvre_scene = new Scene((Parent) JfxUtils.loadFxml("/views/fiche_oeuvre.fxml"), 1275, 722);
+		fiche_oeuvre_scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+		
+		currentStage.setScene(fiche_oeuvre_scene);	
 	}
 	
 	@FXML
@@ -103,6 +127,22 @@ public class Fiche_fichier_controller  implements Initializable{
 	}
 	@FXML
     public void onVersFichiersButton(){}
+	
+	@FXML
+    public void onVersModelsButton(){
+    	Scene fiche_model_scene = new Scene((Parent) JfxUtils.loadFxml("/views/fiche_model.fxml"), 1275, 722);
+		fiche_model_scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+		
+		currentStage.setScene(fiche_model_scene);
+    }
+    @FXML
+    public void onVersAuteursButton(){
+    	Scene fiche_auteur_scene = new Scene((Parent) JfxUtils.loadFxml("/views/fiche_auteur.fxml"), 1275, 722);
+		fiche_auteur_scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+		
+		currentStage.setScene(fiche_auteur_scene);
+    }
+	
     @FXML
     public void onVersTraitementsButton(){
     	Scene fiche_traitement_scene = new Scene((Parent) JfxUtils.loadFxml("/views/fiche_traitement.fxml"), 1275, 722);
@@ -111,14 +151,14 @@ public class Fiche_fichier_controller  implements Initializable{
 		currentStage.setScene(fiche_traitement_scene);
     }
     @FXML
-    public void onMatieres_button(){
+    public void onVersMatieresButton(){
     	Scene fiche_matiere_scene = new Scene((Parent) JfxUtils.loadFxml("/views/fiche_matiere.fxml"), 1275, 722);
 		fiche_matiere_scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 		
 		currentStage.setScene(fiche_matiere_scene);
     }
     @FXML
-    public void onTechniques_button(){
+    public void onVersTechniquesButton(){
     	Scene fiche_technique_scene = new Scene((Parent) JfxUtils.loadFxml("/views/fiche_technique.fxml"), 1275, 722);
 		fiche_technique_scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 		
@@ -163,7 +203,7 @@ public class Fiche_fichier_controller  implements Initializable{
     	remarques_fichier_textArea.setText("");
     	nom_fichier_textField.setPromptText("saisir le nom du nouvel model");
     	remarques_fichier_textArea.setPromptText("éventuelles remarques");
-    	nouveau_fichier.setVisible(false);
+    	nouveau_fichier_button.setVisible(false);
     	
     	fichierSelectionne = new Fichier();
     	
@@ -182,7 +222,7 @@ public class Fiche_fichier_controller  implements Initializable{
     	remarques_fichier_textArea.setText("");
     	nom_fichier_textField.setPromptText("");
     	remarques_fichier_textArea.setPromptText("");
-    	nouveau_fichier.setText("Nouvel model");
+    	nouveau_fichier_button.setText("Nouvel model");
     	rafraichirAffichage();
     	fichiers_listView.getSelectionModel().select(fichierSelectionne);
     	affichageInfos();
@@ -190,16 +230,18 @@ public class Fiche_fichier_controller  implements Initializable{
     
     public void rafraichirAffichage(){
     	
-    	liste_fichiers = FXCollections.observableArrayList();
-		
-		
-		
-		fichierCursor = MongoAccess.request("model").as(Fichier.class);
-		
-		while (fichierCursor.hasNext()){
-			liste_fichiers.add(fichierCursor.next());
+    	if(Messages.getObservableFichiers() != null){
+			liste_fichiers = Messages.getObservableFichiers();
 		}
-		
+		else {
+			liste_fichiers = FXCollections.observableArrayList();
+			oeuvreTraitee = Messages.getOeuvreTraitee();
+			oeuvre = Messages.getOeuvre();
+			
+			liste_fichiers.addAll(oeuvreTraitee.getFichiers());
+			Messages.setObservableFichiers(liste_fichiers);
+		}
+	
 		fichiers_listView.setItems(liste_fichiers);
     	
     }
@@ -227,7 +269,7 @@ public class Fiche_fichier_controller  implements Initializable{
     	mise_a_jour_fichier.setVisible(false);
     	nom_fichier_textField.setEditable(false);
 		remarques_fichier_textArea.setEditable(false);
-		nouveau_fichier.setVisible(true);
+		nouveau_fichier_button.setVisible(true);
 		rafraichirAffichage();
 		fichiers_listView.getSelectionModel().select(fichierSelectionne);
     	affichageInfos();
@@ -245,8 +287,8 @@ public class Fiche_fichier_controller  implements Initializable{
     	
     	fichierSelectionne.setNom(nom_fichier_textField.getText());
     	fichierSelectionne.setRemarques(remarques_fichier_textArea.getText());
-    	//fichierSelectionne.setCheminVersModelSTR(fichier_legende_textField.getText());
-    	
+    	fichierSelectionne.setLegende(fichier_legende_textField.getText());
+
     	annuler.setVisible(false);
     	editer.setVisible(true);
     	mise_a_jour_fichier.setVisible(false);
@@ -255,14 +297,12 @@ public class Fiche_fichier_controller  implements Initializable{
 		
 		if (edit) {
 			Fichier.update(fichierSelectionne);
-			//afficherClient();
 			rafraichirAffichage();
 			onAnnulerEditButton();
 		}
 		else {
 			
 		   Fichier.save(fichierSelectionne);
-		   //afficherClient();
 		   onAnnulerEditButton();
 		}
     	
@@ -325,15 +365,42 @@ protected File chooseExport(){
 		}
 		
 		versClientButton.setVisible(true);
-		versCommandeButton.setVisible(false);
-		versOeuvreButton.setVisible(false);
+		
+		if(Messages.getCommande() != null){
+			versCommandeButton.setVisible(true);
+		}
+		else {
+			versCommandeButton.setVisible(false);
+		}
+		
+		if (Messages.getOeuvre() != null){
+			versOeuvreButton.setVisible(true);
+		}
+		else {
+			versOeuvreButton.setVisible(false);
+		}
+		
+		
 		versRapportButton.setVisible(false);
+		versAuteursButton.setVisible(true);
 		
 		versModelsButton.setVisible(false);
 
 		currentStage = Messages.getStage();
 		
-		liste_fichiers = Messages.getObservableFichiers();
+		if(Messages.getObservableFichiers() != null){
+			liste_fichiers = Messages.getObservableFichiers();
+		}
+		else {
+			liste_fichiers = FXCollections.observableArrayList();
+			oeuvreTraitee = Messages.getOeuvreTraitee();
+			oeuvre = Messages.getOeuvre();
+			
+			liste_fichiers.addAll(oeuvreTraitee.getFichiers());
+			Messages.setObservableFichiers(liste_fichiers);
+		}
+		
+		
 		fichiers_listView.setItems(liste_fichiers);
 		
 		int index = 0;
