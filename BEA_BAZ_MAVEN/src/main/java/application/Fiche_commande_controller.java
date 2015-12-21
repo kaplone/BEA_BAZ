@@ -118,6 +118,7 @@ public class Fiche_commande_controller  implements Initializable{
 	
 	private ArrayList<ChoiceBox<String>> traitements_selectionnes;
 	private ArrayList<String> traitements_attendus;
+	private Map<String, ObjectId> traitements_attendus_id;
 
 	private ObservableList<String> observableTraitements;
 	private Map<String, ObjectId> traitements_id;
@@ -485,27 +486,25 @@ public class Fiche_commande_controller  implements Initializable{
     	
     	oeuvresTraitees = FXCollections.observableArrayList();
     	
-    	if (Messages.getCommande_id() != null){
-    		
-            commandeSelectionne = MongoAccess.request("commande", Messages.getCommande_id()).as(Commande.class).next();
+    	if (Messages.getObservablOeuvresTraitees() == null){
         	
     	    oeuvresTraitees = commandeSelectionne.getOeuvresTraitees_id()
     	    		                             .values()
     	    		                             .stream()
     	    		                             .map(a -> MongoAccess.request("oeuvreTraitee", a).as(OeuvreTraitee.class).next())
     	    		                             .collect(Collectors.toList());
-    		
-    		oeuvres_nom_colonne.setCellValueFactory(new PropertyValueFactory<OeuvreTraitee, String>("nom"));
-    		oeuvres_fait_colonne.setCellValueFactory(new PropertyValueFactory<OeuvreTraitee, ImageView>("icone_progression"));
-    		
+
     		obs_oeuvres = FXCollections.observableArrayList(oeuvresTraitees);
     		Messages.setObservablOeuvresTraitees(obs_oeuvres);
     	}
 
-    	else if(Messages.getObservablOeuvresTraitees() == null){
+    	else if(Messages.getObservablOeuvresTraitees() != null){
     		
     		obs_oeuvres = Messages.getObservablOeuvresTraitees();	
     	}
+    	
+    	oeuvres_nom_colonne.setCellValueFactory(new PropertyValueFactory<OeuvreTraitee, String>("nom"));
+		oeuvres_fait_colonne.setCellValueFactory(new PropertyValueFactory<OeuvreTraitee, ImageView>("icone_progression"));
     	
 		tableOeuvre.setItems(obs_oeuvres);
 
@@ -638,47 +637,8 @@ public class Fiche_commande_controller  implements Initializable{
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		
-		traitements_id = new TreeMap<>();
-		liste_oeuvres = FXCollections.observableArrayList();
-		observableTraitements = FXCollections.observableArrayList();
-		observableAuteurs = FXCollections.observableArrayList();
-		traitements_attendus = new ArrayList<>();
-		traitements_selectionnes = new ArrayList<>();
-		oeuvresTraitees = new ArrayList<>();
-		
 		client = MongoAccess.request("client", Messages.getClient_id()).as(Client.class).next(); 
 		
-		afficherTraitements();
-		afficherAuteurs();
-		afficherModeles();
-		
-        if (Messages.getCommande() != null) {
-        	
-        	commande = MongoAccess.request("commande", Messages.getCommande_id()).as(Commande.class).next(); 
-			
-        	Messages.setOeuvresTraitees_id(commande.getOeuvresTraitees_id());
-        	
-        	model = MongoAccess.request("model", commande.getModele_id()).as(Model.class).next();
-        	Messages.setModel_name(model_name);
-        	Messages.setModel(model);
-    		auteur = MongoAccess.request("auteur", commande.getAuteur_id()).as(Auteur.class).next();
-    		Messages.setAuteur(auteur);
-	
-    		afficherCommande();
-    		afficherOeuvres();
-			
-		}
-		else {
-			
-			commande = new Commande();
-		}
-        
-        afficherAuteurs();
-		afficherModeles();
-	
-		index = 0;
-	    i = 0;
-
 		versClientButton.setVisible(true);
 		versCommandeButton.setVisible(false);
 		versOeuvreButton.setVisible(false);
@@ -691,12 +651,42 @@ public class Fiche_commande_controller  implements Initializable{
 		versAuteursButton.setVisible(true);
 		
 		currentStage = Messages.getStage();
-        
-		if (Messages.getCommande() != null) {
+		
+		observableTraitements = FXCollections.observableArrayList();
+		traitements_id = new TreeMap<>();
+		traitements_selectionnes = new ArrayList<>();
+		observableAuteurs = FXCollections.observableArrayList();
+		oeuvresTraitees = new ArrayList<>();
+		traitements_attendus = new ArrayList<>();
+		traitements_attendus_id = new TreeMap<>();
+		
+		afficherTraitements();
+		
+        if (Messages.getCommande() != null) {
+        	
+        	commande = MongoAccess.request("commande", Messages.getCommande_id()).as(Commande.class).next(); 
+        	commandeSelectionne = commande;	
 			
-			commandeSelectionne = commande;	
+        	Messages.setOeuvresTraitees_id(commande.getOeuvresTraitees_id());
+        	
+        	model = MongoAccess.request("model", commande.getModele_id()).as(Model.class).next();
+        	Messages.setModel_name(model_name);
+        	Messages.setModel(model);
+        	
+    		auteur = MongoAccess.request("auteur", commande.getAuteur_id()).as(Auteur.class).next();
+    		Messages.setAuteur(auteur);
+    		
+    		traitements_attendus_id = commande.getTraitements_attendus_id();
+    		traitements_attendus.addAll(traitements_attendus_id.keySet());
+    		
+    		afficherCommande();
+    		afficherOeuvres();
 		}
+
 		else { 
+			
+			commande = new Commande();
+			liste_oeuvres = FXCollections.observableArrayList();
 			
 			dateCommandePicker.setValue(LocalDate.now());
 			dateDebutProjetPicker.setValue(LocalDate.now());
@@ -714,12 +704,6 @@ public class Fiche_commande_controller  implements Initializable{
 			commandeExportVbox.setVisible(false);
 			versRapportButton.setVisible(false);
 			
-			versModelesButton.setVisible(false);
-			versTraitementsButton.setVisible(false);
-			versFichiersButton.setVisible(false);
-			versProduitsButton.setVisible(false);
-			versAuteursButton.setVisible(false);
-			
 			fiche_commande_label.setText("FICHE COMMANDE (nouvelle commande) :");
 			nom_commande_label.setText("");
 
@@ -731,5 +715,9 @@ public class Fiche_commande_controller  implements Initializable{
 				
 			}
 		}
+		
+		afficherAuteurs();
+		afficherModeles();
+		
 	}
 }
