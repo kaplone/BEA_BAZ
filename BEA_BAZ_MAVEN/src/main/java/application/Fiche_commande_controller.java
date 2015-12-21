@@ -3,6 +3,7 @@ package application;
 import java.net.URL;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -492,18 +493,29 @@ public class Fiche_commande_controller  implements Initializable{
 		}
     }
     
+    public Comparator<OeuvreTraitee> otTrieeParNom = 
+    		(OeuvreTraitee o1, OeuvreTraitee o2)-> o1.getNom().compareTo(o2.getNom());
+    
     public void afficherOeuvres(){
     	
     	oeuvresTraitees = FXCollections.observableArrayList();
     	
     	if (Messages.getObservablOeuvresTraitees() == null){
         	
-    	    oeuvresTraitees = commandeSelectionne.getOeuvresTraitees_id()
-    	    		                             .values()
-    	    		                             .stream()
-    	    		                             .map(a -> MongoAccess.request("oeuvreTraitee", a).as(OeuvreTraitee.class).next())
-    	    		                             .collect(Collectors.toList());
-
+//    	    oeuvresTraitees = commandeSelectionne.getOeuvresTraitees_id()
+//    	    		                             .values()
+//    	    		                             .stream()
+//    	    		                             .map(a -> MongoAccess.request("oeuvreTraitee", a).as(OeuvreTraitee.class).next())
+//    	    		                             .collect(Collectors.toList());
+    		
+    		oeuvresTraiteesCursor = MongoAccess.request("oeuvreTraitee", commandeSelectionne).as(OeuvreTraitee.class);
+    		
+    		while (oeuvresTraiteesCursor.hasNext()){
+    			oeuvresTraitees.add(oeuvresTraiteesCursor.next());
+    		}
+    		
+    		oeuvresTraitees.sort(otTrieeParNom);
+    		
     		obs_oeuvres = FXCollections.observableArrayList(oeuvresTraitees);
     		Messages.setObservablOeuvresTraitees(obs_oeuvres);
     	}

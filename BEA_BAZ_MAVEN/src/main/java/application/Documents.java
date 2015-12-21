@@ -671,6 +671,7 @@ public class Documents {
 	            ot.setKey2(o.getKey2());
 	            ot.setCote(o.getCote_archives_6s());
 	            ot.setNom(o.getNom());
+	            ot.setCommande_id(commande_id);
 
 	            utils.MongoAccess.save("oeuvreTraitee", ot);
 	            
@@ -684,6 +685,7 @@ public class Documents {
 	            	tt.setFait_(Progression.TODO_);
 	            	tt.setTraitement_id(tousLesTraitements_id.get(t));
 	            	tt.setNom(t);
+	            	
 
 	            	utils.MongoAccess.save("tacheTraitement", tt);
 	            	ot.addTraitementAttendu(tt.getNom(), tt.get_id());
@@ -741,12 +743,15 @@ public class Documents {
             		continue;
             	} 
             	
-            	alterations = new ArrayList<>();
+            	
         	}
         	
+        	alterations = new ArrayList<>();
 	            
             //For each row, iterate through all the columns
             Iterator<Cell> cellIterator = row.cellIterator();
+            
+            
 
             while (cellIterator.hasNext()){
             	

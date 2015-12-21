@@ -37,13 +37,13 @@ public class MongoAccess {
 		LoadConfig.loadSettings();
 	
 		try {
-//			MongoClientURI uri  = new MongoClientURI(String.format("mongodb://%s:%s@%s:%s/%s", 
-//					                                 Settings.getLogin(),
-//					                                 Settings.getPass(),
-//					                                 Settings.getAdresse(),
-//					                                 Settings.getPort(),
-//					                                 Settings.getBase())); 
-			MongoClientURI uri  = new MongoClientURI("mongodb://127.0.0.1/test3"); 
+			MongoClientURI uri  = new MongoClientURI(String.format("mongodb://%s:%s@%s:%s/%s", 
+					                                 Settings.getLogin(),
+					                                 Settings.getPass(),
+					                                 Settings.getAdresse(),
+					                                 Settings.getPort(),
+					                                 Settings.getBase())); 
+			//MongoClientURI uri  = new MongoClientURI("mongodb://127.0.0.1/test3"); 
 			MongoClient client = new MongoClient(uri);
 			db = client.getDB(uri.getDatabase());	
 			jongo = new Jongo(db);
@@ -86,10 +86,11 @@ public class MongoAccess {
 		
 		Find find = null;
 		collec = jongo.getCollection(table);
-		find = collec.find("{commande._id :  #}", commande.get_id());
+		find = collec.find("{commande_id :  #}", commande.get_id());
 
 		return find;
 	}
+
     
     public static Find request(String table, String field, ObjectId objectId) {	
     	
