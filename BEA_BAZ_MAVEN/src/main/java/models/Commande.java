@@ -122,7 +122,7 @@ public class Commande  extends Commun{
 		return traitements_attendus_id.keySet();
 	}
 
-	public void addTraitement_attendu(String traitement_attendu, ObjectId id) {
+	public void addTraitement_attendu_id(String traitement_attendu, ObjectId id) {
 		this.traitements_attendus_id.put(traitement_attendu, id);
 	}
 

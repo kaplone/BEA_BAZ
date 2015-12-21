@@ -3,6 +3,7 @@ package application;
 import java.net.URL;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -308,6 +309,7 @@ public class Fiche_commande_controller  implements Initializable{
 		
 				
         traitements_attendus.clear();
+        commande.setTraitements_attendus_id(new HashMap<String, ObjectId>());
 		
 		for (Node cb : traitementGrid.getChildren()){
 			
@@ -320,11 +322,16 @@ public class Fiche_commande_controller  implements Initializable{
 				String traitement_attendu = ((ChoiceBox<String>) cb).getValue();
 				
 				traitements_attendus.add(traitement_attendu);
-				commande.addTraitement_attendu(traitement_attendu, traitements_id.get(traitement_attendu));
+				commande.addTraitement_attendu_id(traitement_attendu, traitements_id.get(traitement_attendu));
+				
 			}
 			
 		}
 		
+		traitements_attendus_id = commande.getTraitements_attendus_id();
+		Messages.setTraitementsAttendus_id(traitements_attendus_id);
+		System.out.println("mise a jour : " + traitements_attendus_id.keySet());
+	
 		if (edit) {
 			Commande.update(commande);
 		}
@@ -350,11 +357,13 @@ public class Fiche_commande_controller  implements Initializable{
 
 		commandes_id.put(commande.getNom(), commande.get_id());
 		Messages.setCommandes_id(commandes_id);
-		
+	
+		afficherTraitements();
 		afficherCommande();
 	    afficherModeles();
 	    afficherAuteurs();
 	    afficherOeuvres();
+	    
 
 	}
 	
@@ -375,12 +384,12 @@ public class Fiche_commande_controller  implements Initializable{
 		
 		if (Messages.getTraitementsAttendus_id() == null){
 		    
-    		traitements_id = commande.getTraitements_attendus_id();
-    		Messages.setTraitementsAttendus_id(traitements_id);
+			traitements_attendus_id = commande.getTraitements_attendus_id();
+    		Messages.setTraitementsAttendus_id(traitements_attendus_id);
     		
     	}
     	else {
-    		traitements_id = Messages.getTraitementsAttendus_id();
+    		traitements_attendus_id = Messages.getTraitementsAttendus_id();
     	}
 		
 
@@ -389,11 +398,12 @@ public class Fiche_commande_controller  implements Initializable{
 		}
         
         int i = 0;
+        System.out.println("afficher : " + traitements_attendus_id.keySet());
         
-        ObservableList<String> menuList = FXCollections.observableArrayList(traitements_id.keySet());
+        ObservableList<String> menuList = FXCollections.observableArrayList(traitements_attendus_id.keySet());        
         menuList.add(null);
 
-		for (String t : traitements_id.keySet()){
+		for (String t : traitements_attendus_id.keySet()){
 
 			traitements_selectionnes.get(i).setItems(menuList);
 			traitements_selectionnes.get(i).getSelectionModel().select(i);
