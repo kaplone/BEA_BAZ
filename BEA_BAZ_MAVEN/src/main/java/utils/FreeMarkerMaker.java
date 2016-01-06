@@ -180,8 +180,7 @@ public class FreeMarkerMaker {
 		    		                "Traverse Marius AUTRAN\n" +
 		    		                "83 500 La Seyne-sur-Mer");
 		      
-		      context.put("commande", "RESTAURATION DE DOCUMENTS D'ARCHIVES FONDS CHARLY\n" + 
-		                              "525 caricatures réalisées à la gouache, à l'aquarelle et au feutre");
+		      context.put("commande", "RESTAURATION DE DOCUMENTS D'ARCHIVES FONDS CHARLY");
 		      
 		      System.out.println("__03");
 

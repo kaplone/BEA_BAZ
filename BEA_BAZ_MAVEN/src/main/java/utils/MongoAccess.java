@@ -194,7 +194,7 @@ public class MongoAccess {
 		collec = jongo.getCollection(table);
 		
 		String query = String.format("{%s : #}", field);
-		String reg = String.format(".*%s.PR.1.JPG", valeur);
+		String reg = String.format("%s.PR.1.JPG", valeur);
 		
 		System.out.println(query);
 		System.out.println(reg);

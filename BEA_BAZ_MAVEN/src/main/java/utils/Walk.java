@@ -102,6 +102,8 @@ public class Walk {
 			
 			Fichier fichier = new Fichier();
 			fichier.setFichierLie(path.toString());
+			fichier.setNom(path.getFileName().toString());
+			
 			
 			String legende = "";
 			
@@ -154,80 +156,6 @@ public class Walk {
 			
 			OeuvreTraitee.update(oeuvreConcernee);
 		}
-		
-		File repertoires(String ajout,Path path) {
-			File file = new File (ajout + path);
-			File parent = new File (ajout + path.getParent());
-			parent.mkdirs();
-			return file;
-		}
-		
-//		private static BufferedReader getOutput(Process p) {
-//	        return new BufferedReader(new InputStreamReader(p.getInputStream()));
-//	    }
-//
-//	    private static BufferedReader getError(Process p) {
-//	        return new BufferedReader(new InputStreamReader(p.getErrorStream()));
-//	    }
-//		
-//		void convertir(Path path){
-//			
-//			String commande2 = "mencoder %s -ovc x264 -sws 9 -x264encopts nocabac:level_idc=30:bframes=0:bitrate=2000:threads=auto:turbo=1:global_header:threads=auto:subq=5:frameref=6:partitions=all:trellis=1:chroma_me:me=umh -oac faac -faacopts mpeg=4:object=2:raw:br=192 -of lavf -lavfopts format=mp4 -o %s";
-//			String commande3 = String.format(commande2, path, (repertoires ("/home/autor/Desktop/EXPORT/temp", path)).toString());
-//
-//			
-//            Process p = null;
-//			
-//			try {
-//				p = Runtime.getRuntime().exec(commande3);
-//				BufferedReader output = getOutput(p);
-//	            BufferedReader error = getError(p);
-//	            String ligne = "";
-//
-//	            while ((ligne = output.readLine()) != null) {
-//	                System.out.println("- " + ligne);
-//	            }
-//	            
-//	            while ((ligne = error.readLine()) != null) {
-//	                System.out.println("+ " + ligne);
-//	            }
-//	            
-//				p.waitFor();
-//			} catch (IOException | InterruptedException e1) {
-//				// TODO Auto-generated catch block
-//				e1.printStackTrace();
-//			}
-//			
-//		}
-//		
-//		void faststart(String pathIn, String pathOut) {
-//			
-//			String commande4 = "/home/autor/Desktop/faststart/qt-faststart %s %s";
-//			String commande5 = String.format(commande4, pathIn, pathOut);
-//			//System.out.println(commande3);
-//			
-//            Process p = null;
-//			
-//			try {
-//				p = Runtime.getRuntime().exec(commande5);
-//				BufferedReader output = getOutput(p);
-//	            BufferedReader error = getError(p);
-//	            String ligne = "";
-//
-//	            while ((ligne = output.readLine()) != null) {
-//	                System.out.println("- " + ligne);
-//	            }
-//	            
-//	            while ((ligne = error.readLine()) != null) {
-//	                System.out.println("+ " + ligne);
-//	            }
-//	            
-//				p.waitFor();
-//			} catch (IOException | InterruptedException e1) {
-//				// TODO Auto-generated catch block
-//				e1.printStackTrace();
-//			}
-//		}
 
 	}
 

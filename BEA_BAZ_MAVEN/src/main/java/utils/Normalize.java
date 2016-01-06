@@ -38,10 +38,10 @@ public class Normalize {
 	}
 	
 	public static String normalizeNormStringField(String s) {
-		return s.replace('.', (char) 158);
+		return s.replace('.', '_');
 	}
 	
 	public static String normalizeDenormStringField(String s) {
-		return s.replace((char) 158, '.');
+		return s.replace('_', '.');
 	}
 }

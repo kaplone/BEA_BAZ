@@ -318,7 +318,7 @@ public class Fiche_oeuvre_controller  implements Initializable{
 			}
 		}
 		
-		Fichier fichierSelectionne = MongoAccess.request("fichier", "fichierLie", oeuvreSelectionne.getCote_archives_6s(), true).as(Fichier.class);
+		Fichier fichierSelectionne = MongoAccess.request("fichier", "nom", oeuvreSelectionne.getCote_archives_6s(), true).as(Fichier.class);
 		
 //		System.out.println(fichierSelectionne.getFichierLie().toString());
 		
@@ -680,6 +680,8 @@ public class Fiche_oeuvre_controller  implements Initializable{
 	public void onTechniqueSelect(){
 		
         String t = techniques_listView.getSelectionModel().getSelectedItem();
+        
+        System.out.println(t);
 			
 		oeuvreSelectionne.addTechnique(t, techniques_id.get(t));
 
