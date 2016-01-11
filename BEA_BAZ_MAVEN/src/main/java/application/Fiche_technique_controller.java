@@ -3,9 +3,12 @@ package application;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 
+import org.bson.types.ObjectId;
 import org.jongo.MongoCursor;
 
 import utils.MongoAccess;
@@ -86,6 +89,8 @@ public class Fiche_technique_controller  implements Initializable{
 	private boolean edit = false;
 	
 	private File file;
+	
+	private Map<String, ObjectId> techniques_id;
 
 	MongoCursor<Technique> techniqueCursor ;
 	Technique techniqueSelectionne;
@@ -264,16 +269,20 @@ public class Fiche_technique_controller  implements Initializable{
     public void rafraichirAffichage(){
 
 		liste_techniques  = FXCollections.observableArrayList();
-		
-		
-		
+		techniques_id = new TreeMap<>();
+
 		techniqueCursor = MongoAccess.request("technique").as(Technique.class);
 		
 		while (techniqueCursor.hasNext()){
-			liste_techniques.add(techniqueCursor.next());
+			Technique t = techniqueCursor.next();
+			liste_techniques.add(t);
+			techniques_id.put(t.getNom(), t.get_id());
 		}
+		Messages.setTechniques_id(techniques_id);
 		
 		listView_techniques.setItems(liste_techniques);
+		
+		
     	
     }
     
