@@ -306,6 +306,11 @@ public class Messages {
 
 
 	public static void setTechniques_id(Map<String, ObjectId> techniques_id) {
+		
+		System.out.println(techniques_id.size());
+		System.out.println(techniques_id.values());
+		System.out.println(techniques_id.toString());
+		
 		Messages.techniques_id = techniques_id;
 	}
 

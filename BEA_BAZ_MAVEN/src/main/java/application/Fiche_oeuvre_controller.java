@@ -543,9 +543,11 @@ public class Fiche_oeuvre_controller  implements Initializable{
    public void afficherTechniques(){
 	   
 	   techniques.clear();
-	   techniques_id = new TreeMap<>();
     	
        if (Messages.getTechniques_id() == null){
+    	   
+    	   System.out.println("Messages.getTechniques_id() == null");
+    	   techniques_id = new TreeMap<>();
 
            techniquesCursor = MongoAccess.request("technique").as(Technique.class);
     		
@@ -558,6 +560,9 @@ public class Fiche_oeuvre_controller  implements Initializable{
     		Messages.setTechniques_id(techniques_id);
        }
        else {
+    	   System.out.println("Messages.getTechniques_id() != null");
+    	   
+    	   techniques_id = Messages.getTechniques_id();
     	   techniques.addAll(Messages.getTechniques_id().keySet());
        }
        techniques_listView.setItems(techniques);		
@@ -682,6 +687,7 @@ public class Fiche_oeuvre_controller  implements Initializable{
         String t = techniques_listView.getSelectionModel().getSelectedItem();
         
         System.out.println(t);
+        System.out.println(techniques_id);
 			
 		oeuvreSelectionne.addTechnique(t, techniques_id.get(t));
 

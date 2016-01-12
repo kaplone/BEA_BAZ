@@ -376,6 +376,8 @@ public class Fiche_technique_controller  implements Initializable{
     
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
+		
+		techniques_id = new TreeMap<>();
 
 		nom_technique_textField.setEditable(false);
 		nom_complet_technique_textField.setEditable(false);
@@ -409,9 +411,12 @@ public class Fiche_technique_controller  implements Initializable{
 		
         techniqueCursor = MongoAccess.request("technique").as(Technique.class);
 		
-		while (techniqueCursor.hasNext()){
-			liste_techniques.add(techniqueCursor.next());
+        while (techniqueCursor.hasNext()){
+			Technique t = techniqueCursor.next();
+			liste_techniques.add(t);
+			techniques_id.put(t.getNom(), t.get_id());
 		}
+		Messages.setTechniques_id(techniques_id);
 		
 		listView_techniques.setItems(liste_techniques);
 		
