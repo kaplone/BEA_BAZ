@@ -193,15 +193,17 @@ public class MongoAccess {
 		FindOne one = null;
 		collec = jongo.getCollection(table);
 		
-		String query = String.format("{%s : #}", field);
-		String reg = String.format("%s.PR.1.JPG", valeur);
+//		String query = String.format("{%s : #}", field);
+//		String reg = String.format("%s.PR.1.JPG", valeur);
+//		
+//		System.out.println(query);
+//		System.out.println(reg);
 		
-		System.out.println(query);
-		System.out.println(reg);
 		
-		
-		one = collec.findOne(query, Pattern.compile(reg));
+//		one = collec.findOne(query, Pattern.compile(reg));
 		//{$regex: #}}", "jo.*"
+		
+		one = collec.findOne(String.format("{\"%s\" : \"%s\"}", field, String.format("%s.PR.1.JPG", valeur)));
 		
 		System.out.println(one);
 		System.out.println(one.as(Fichier.class));
