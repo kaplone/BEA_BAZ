@@ -40,16 +40,16 @@ public class Main_BEA_BAZ extends Application {
 	
 		System.out.println(isMongodRunning());
 		
-		if(! isMongodRunning()){
-			Process p;
-			try {
-				p = Runtime.getRuntime().exec(cmdArrayd);
-				System.out.println("lancement du serveur");
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
+//		if(! isMongodRunning()){
+//			Process p;
+//			try {
+//				p = Runtime.getRuntime().exec(cmdArrayd);
+//				System.out.println("lancement du serveur");
+//			} catch (IOException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//		}
 		
 		utils.MongoAccess.connect();
 		
