@@ -435,6 +435,8 @@ public class Fiche_commande_controller  implements Initializable{
 		
 		for ( OeuvreTraitee ot : oeuvresAExporter){
 			
+			System.out.println("export de la fiche : " + ot.getCote() + " en cours ...");
+			
 			Oeuvre o = ot.getOeuvre();
 			FreeMarkerMaker.odt2pdf(o, ot);
 		}

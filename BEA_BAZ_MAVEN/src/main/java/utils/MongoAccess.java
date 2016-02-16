@@ -156,7 +156,7 @@ public class MongoAccess {
 		
 		Find find = null;
 		collec = jongo.getCollection(table);
-		find = collec.find("{commande._id :  #, progressionOeuvreTraitee : #}", commande.get_id(), progres.name());
+		find = collec.find("{commande_id :  #, progressionOeuvreTraitee : #}", commande.get_id(), progres.name());
 
 		return find;
 	}
