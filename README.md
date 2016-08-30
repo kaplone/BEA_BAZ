@@ -10,3 +10,6 @@
 
 ####paramètres d'une oeuvre
 ![oeuvre](beabaz_03.png)
+
+####paramètres d'un produit
+![produit](beabaz_04.png)
